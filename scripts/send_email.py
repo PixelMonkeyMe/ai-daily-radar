@@ -1,22 +1,25 @@
-"""邮件推送：读取最新 report.json，生成 HTML 邮件，通过 Resend API 发送。
+"""邮件推送：读取最新 report.json，生成 HTML 邮件，通过 QQ 邮箱 SMTP 发送。
 
 环境变量：
-  RESEND_API_KEY: Resend.com API 密钥（免费 3000 封/月）
+  SMTP_AUTH_CODE: QQ 邮箱 SMTP 授权码（在 QQ 邮箱 → 设置 → 账户 → POP3/SMTP 中获取）
+  SMTP_USER: 发件人邮箱（默认 fancocat@qq.com）
   MAIL_TO: 收件人邮箱（默认 fancocat@qq.com）
 """
 import json
 import os
 import sys
 import glob
-
-import requests
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.header import Header
 
 BASE = os.path.join(os.path.dirname(__file__), "..")
 REPORTS_DIR = os.path.join(BASE, "data", "reports")
-RESEND_API_URL = "https://api.resend.com/emails"
 
-DEFAULT_TO = "fancocat@qq.com"
-FROM_ADDR = "AI Daily Radar <onboarding@resend.dev>"  # Resend 沙箱默认发件人
+SMTP_SERVER = "smtp.qq.com"
+SMTP_PORT = 465  # SSL
+DEFAULT_EMAIL = "fancocat@qq.com"
 
 
 def build_email_html(report):
@@ -108,34 +111,33 @@ def build_email_html(report):
 
 
 def send_email(report):
-    """发送邮件"""
-    api_key = os.environ.get("RESEND_API_KEY", "").strip()
-    if not api_key:
-        print("未设置 RESEND_API_KEY，跳过邮件推送")
+    """通过 QQ 邮箱 SMTP 发送邮件"""
+    auth_code = os.environ.get("SMTP_AUTH_CODE", "").strip()
+    if not auth_code:
+        print("未设置 SMTP_AUTH_CODE，跳过邮件推送")
         return False
 
-    to_addr = os.environ.get("MAIL_TO", DEFAULT_TO).strip()
+    from_addr = os.environ.get("SMTP_USER", DEFAULT_EMAIL).strip()
+    to_addr = os.environ.get("MAIL_TO", DEFAULT_EMAIL).strip()
     subject = f"AI 日报雷达 | {report['date']} | {len(report['items'])} 条资讯"
     html_content = build_email_html(report)
 
     try:
-        r = requests.post(
-            RESEND_API_URL,
-            json={
-                "from": FROM_ADDR,
-                "to": [to_addr],
-                "subject": subject,
-                "html": html_content,
-            },
-            headers={"Authorization": f"Bearer {api_key}"},
-            timeout=30,
-        )
-        if r.status_code != 200:
-            print(f"邮件发送失败: HTTP {r.status_code}")
-            print(f"Resend 返回: {r.text}")
-            return False
+        msg = MIMEMultipart("alternative")
+        msg["From"] = f"AI Daily Radar <{from_addr}>"
+        msg["To"] = to_addr
+        msg["Subject"] = Header(subject, "utf-8")
+        msg.attach(MIMEText(html_content, "html", "utf-8"))
+
+        with smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT, timeout=30) as server:
+            server.login(from_addr, auth_code)
+            server.sendmail(from_addr, [to_addr], msg.as_string())
+
         print(f"邮件已发送至 {to_addr} (subject: {subject})")
         return True
+    except smtplib.SMTPAuthenticationError as e:
+        print(f"SMTP 认证失败，请检查 SMTP_AUTH_CODE 是否正确: {e}")
+        return False
     except Exception as e:
         print(f"邮件发送失败: {e}")
         return False
