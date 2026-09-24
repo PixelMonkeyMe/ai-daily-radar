@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 日报雷达 · 2026-09-21</title>
+<style>
+  * { box-sizing: border-box; margin: 0; }
+  body { background: #f4f5f7; color: #1f2329; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; line-height: 1.7; }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 24px 16px 60px; }
+  header.top { background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); color: #fff; padding: 36px 16px 30px; }
+  .top-inner { max-width: 860px; margin: 0 auto; }
+  h1 { font-size: 26px; letter-spacing: 1px; }
+  .meta { color: rgba(255,255,255,.75); font-size: 13px; margin-top: 8px; }
+  .badge { display: inline-block; background: rgba(255,255,255,.15); border-radius: 99px; padding: 2px 12px; font-size: 12px; margin-top: 10px; }
+  .nav { margin-top: 14px; font-size: 13px; }
+  .nav a { color: #cfe3ff; text-decoration: none; margin-right: 18px; border-bottom: 1px dashed rgba(255,255,255,.4); }
+  .card { background: #fff; border-radius: 14px; padding: 22px 22px 16px; margin: 18px 0; box-shadow: 0 1px 4px rgba(0,0,0,.05); }
+  .card h2 { font-size: 18px; line-height: 1.4; }
+  .card h2 a { color: #1f2329; text-decoration: none; }
+  .card h2 a:hover { color: #1677ff; }
+  .tags { margin: 8px 0 4px; font-size: 12px; color: #8a919c; }
+  .tag-src { background: #eef3ff; color: #1677ff; border-radius: 6px; padding: 1px 8px; margin-right: 8px; }
+  .tag-star { color: #f5a623; letter-spacing: 2px; }
+  .similar { font-size: 12px; color: #8a919c; margin-top: 4px; }
+  .similar b { color: #1677ff; font-weight: 600; }
+  .story-group { background: #fff; border-radius: 14px; padding: 18px 22px; margin: 18px 0; box-shadow: 0 1px 4px rgba(0,0,0,.05); border-left: 4px solid #1677ff; }
+  .story-group-header { font-size: 12px; color: #1677ff; font-weight: 600; margin-bottom: 10px; }
+  .story-group .card { margin: 10px 0; box-shadow: none; border: 1px solid #e5e8ec; }
+  .story-group .card:first-of-type { margin-top: 0; }
+  .top5-badge { display: inline-block; background: #fff0f0; color: #e63946; border-radius: 6px; padding: 0 8px; font-size: 12px; margin-left: 8px; font-weight: 600; }
+  dl { margin-top: 10px; }
+  dt { font-weight: 700; font-size: 14px; color: #203a43; margin-top: 12px; padding-left: 10px; border-left: 3px solid #2c5364; }
+  dd { font-size: 14.5px; color: #3c434c; margin: 4px 0 0 13px; }
+  .archive { font-size: 14px; margin-top: 26px; }
+  .archive a { color: #1677ff; text-decoration: none; margin-right: 14px; display: inline-block; margin-bottom: 6px; }
+  .raw p { font-size: 14.5px; color: #3c434c; margin-top: 8px; }
+  .stat-chips { margin-top: 12px; }
+  .chip { display: inline-block; background: #fff; border: 1px solid #e5e8ec; border-radius: 99px; padding: 3px 14px; font-size: 13px; color: #3c434c; margin: 0 8px 8px 0; }
+  .trend { background: #f0f7ff; border-radius: 10px; padding: 10px 14px; margin: 8px 0; font-size: 14.5px; }
+  details { margin-top: 10px; }
+  summary { cursor: pointer; color: #1677ff; font-size: 14px; }
+  .item-line { font-size: 13.5px; margin: 6px 0; }
+  .item-line a { color: #1f2329; text-decoration: none; }
+  .item-line a:hover { color: #1677ff; }
+  .brief { font-size: 14.5px; color: #3c434c; margin-top: 8px; }
+  .summary-card { border: 2px solid #2c5364; background: linear-gradient(180deg, #f7fbfc, #ffffff); }
+  .summary-title { font-size: 20px; color: #203a43; }
+  h3.group { margin: 22px 0 6px; font-size: 16px; color: #203a43; }
+  footer { text-align: center; color: #a0a6ad; font-size: 12px; margin-top: 40px; }
+  .fav-btn { background: none; border: none; cursor: pointer; font-size: 16px; color: #c8ccd2; vertical-align: middle; margin-left: 6px; padding: 0 2px; }
+  .fav-btn.on { color: #f5a623; }
+  .fav-link-box { background: #f0f7ff; border: 1px dashed #1677ff; border-radius: 10px; padding: 12px 14px; margin: 14px 0; font-size: 13px; word-break: break-all; }
+  .fav-link-box .lnk { color: #1677ff; }
+  .copy-btn { display: inline-block; margin-top: 8px; background: #1677ff; color: #fff; border: none; border-radius: 8px; padding: 6px 16px; font-size: 13px; cursor: pointer; }
+  .fav-toolbar { margin: 14px 0; display: flex; gap: 10px; flex-wrap: wrap; }
+  .fav-search { flex: 1; min-width: 200px; padding: 8px 12px; border: 1px solid #d9dde3; border-radius: 8px; font-size: 14px; }
+  .sort-btn { padding: 8px 14px; border: 1px solid #d9dde3; background: #fff; border-radius: 8px; font-size: 13px; cursor: pointer; }
+  .fav-bar { margin-top: 16px; }
+  .fav-bar a { display: block; background: #fff7e8; border: 1px solid #f5c26b; border-radius: 12px; padding: 12px 16px; color: #8a5a00; text-decoration: none; font-size: 14.5px; }
+  .fav-bar a:hover { background: #ffefc9; }
+  .fav-chip { display: inline-block; background: #f5a623; color: #fff; border-radius: 99px; padding: 0 10px; font-size: 13px; margin: 0 4px; }
+  .history-day { padding: 8px 0 12px; }
+  .history-day .item-line { padding: 4px 0; border-bottom: 1px dashed #e5e8ec; }
+  .history-day .item-line:last-child { border-bottom: none; }
+  .history-date { font-weight: 600; color: #203a43; }
+  .already-fav { display: inline-block; background: #fff7e8; color: #8a5a00; border-radius: 6px; padding: 0 8px; font-size: 12px; margin-left: 6px; font-weight: 600; }
+  .export-pdf-btn { display: inline-block; background: #e63946; color: #fff; border: none; border-radius: 8px; padding: 8px 18px; font-size: 14px; cursor: pointer; margin: 10px 0; font-weight: 600; }
+  .export-pdf-btn:hover { background: #c1121f; }
+  .export-pdf-btn:disabled { background: #ccc; cursor: not-allowed; }
+  .pdf-loading { display: none; background: #fff3cd; border: 1px solid #ffc107; border-radius: 8px; padding: 10px 16px; margin: 10px 0; font-size: 14px; color: #856404; }
+  @media print {
+    .export-pdf-btn, .pdf-loading, .fav-btn, .fav-bar, .nav, header.top .badge { display: none !important; }
+    body { background: #fff; }
+    .wrap { max-width: 100%; padding: 0; }
+    .card { box-shadow: none; border: 1px solid #ddd; page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<header class="top"><div class="top-inner">
+  <h1>AI 日报雷达</h1>
+  <div class="meta">数据抓取时间：2026-09-21 15:02 (北京时间) · 共 22 条</div>
+  <span class="badge">原始榜单（未配置 API 密钥）</span>
+  <div class="nav"><a href="../index.html">最新日报</a><a href="../digests/index.html">周期汇总（周/月/季）</a><a href="../favorites.html">我的收藏夹</a></div>
+</div></header>
+<div class="wrap">
+<div class="fav-bar"><a href="../favorites.html">★ 我的收藏夹（<span class="fav-chip" id="fav-chip">0</span>条）· 点条目旁的 ☆ 即可收藏</a></div><div class="card raw"><h2><a href="https://github.com/browser-use/jev-ultrafast" target="_blank" rel="noopener">browser-use/jev-ultrafast</a><button class="fav-btn" title="收藏" data-t="browser-use/jev-ultrafast" data-u="https://github.com/browser-use/jev-ultrafast" data-s="GitHub 新星项目" data-d="2026-09-21" data-b="i. am. speed.">☆</button></h2><div class="tags"><span class="tag-src">GitHub 新星项目</span> Python | ⭐ 13145 | 新建于 2026-09-16</div><p>i. am. speed.</p></div>
+<div class="card raw"><h2><a href="https://github.com/NandhaKishorM/laya" target="_blank" rel="noopener">NandhaKishorM/laya</a><button class="fav-btn" title="收藏" data-t="NandhaKishorM/laya" data-u="https://github.com/NandhaKishorM/laya" data-s="GitHub 新星项目" data-d="2026-09-21" data-b="">☆</button></h2><div class="tags"><span class="tag-src">GitHub 新星项目</span> Python | ⭐ 5792 | 新建于 2026-09-18</div><p></p></div>
+<div class="card raw"><h2><a href="https://github.com/tamaratran/fast-jev-compaction" target="_blank" rel="noopener">tamaratran/fast-jev-compaction</a><button class="fav-btn" title="收藏" data-t="tamaratran/fast-jev-compaction" data-u="https://github.com/tamaratran/fast-jev-compaction" data-s="GitHub 新星项目" data-d="2026-09-21" data-b="Claude Code plugin that replaces the compaction summary with Jev decisions: every tool call and result is scored in one fast request, stale ones are dropped or truncated, everything kept stays verbatim.">☆</button></h2><div class="tags"><span class="tag-src">GitHub 新星项目</span> TypeScript | ⭐ 5532 | 新建于 2026-09-17</div><p>Claude Code plugin that replaces the compaction summary with Jev decisions: every tool call and result is scored in one fast request, stale ones are dropped or truncated, everything kept stays verbatim.</p></div>
+<div class="card raw"><h2><a href="https://github.com/zai-org/ZCode" target="_blank" rel="noopener">zai-org/ZCode</a><button class="fav-btn" title="收藏" data-t="zai-org/ZCode" data-u="https://github.com/zai-org/ZCode" data-s="GitHub 新星项目" data-d="2026-09-21" data-b="Z.ai&#x27;s coding agent harness. Powerful, intelligent, extensible.">☆</button></h2><div class="tags"><span class="tag-src">GitHub 新星项目</span> TypeScript | ⭐ 4029 | 新建于 2026-09-20</div><p>Z.ai&#x27;s coding agent harness. Powerful, intelligent, extensible.</p></div>
+<div class="card raw"><h2><a href="https://github.com/robbietilton/Compositor" target="_blank" rel="noopener">robbietilton/Compositor</a><button class="fav-btn" title="收藏" data-t="robbietilton/Compositor" data-u="https://github.com/robbietilton/Compositor" data-s="GitHub 新星项目" data-d="2026-09-21" data-b="The Photoshop alternative for Mac">☆</button></h2><div class="tags"><span class="tag-src">GitHub 新星项目</span> Swift | ⭐ 3891 | 新建于 2026-09-16</div><p>The Photoshop alternative for Mac</p></div>
+<div class="card raw"><h2><a href="https://github.com/TheoLeeCJ/SemIf" target="_blank" rel="noopener">TheoLeeCJ/SemIf</a><button class="fav-btn" title="收藏" data-t="TheoLeeCJ/SemIf" data-u="https://github.com/TheoLeeCJ/SemIf" data-s="GitHub 新星项目" data-d="2026-09-21" data-b="Semantic ifs from open models, on a 3090 at home. Independent; not affiliated with Jev or TypeSafe.">☆</button></h2><div class="tags"><span class="tag-src">GitHub 新星项目</span> Python | ⭐ 2627 | 新建于 2026-09-16</div><p>Semantic ifs from open models, on a 3090 at home. Independent; not affiliated with Jev or TypeSafe.</p></div>
+<div class="card raw"><h2><a href="https://qwen.ai/blog?id=qwen-image-2.1" target="_blank" rel="noopener">Qwen Image 2.1</a><button class="fav-btn" title="收藏" data-t="Qwen Image 2.1" data-u="https://qwen.ai/blog?id=qwen-image-2.1" data-s="Hacker News" data-d="2026-09-21" data-b="595 points | 164 评论">☆</button></h2><div class="tags"><span class="tag-src">Hacker News</span> </div><p>595 points | 164 评论</p></div>
+<div class="card raw"><h2><a href="https://pirateface.co/" target="_blank" rel="noopener">Pirate Face Rescues LLM Models from Deletion</a><button class="fav-btn" title="收藏" data-t="Pirate Face Rescues LLM Models from Deletion" data-u="https://pirateface.co/" data-s="Hacker News" data-d="2026-09-21" data-b="522 points | 149 评论">☆</button></h2><div class="tags"><span class="tag-src">Hacker News</span> </div><p>522 points | 149 评论</p></div>
+<div class="card raw"><h2><a href="https://agentexecutor.io" target="_blank" rel="noopener">AX – Google’s Open Agentic Orchestrator</a><button class="fav-btn" title="收藏" data-t="AX – Google’s Open Agentic Orchestrator" data-u="https://agentexecutor.io" data-s="Hacker News" data-d="2026-09-21" data-b="410 points | 162 评论">☆</button></h2><div class="tags"><span class="tag-src">Hacker News</span> </div><p>410 points | 162 评论</p></div>
+<div class="card raw"><h2><a href="https://softwarecrisis.dev/letters/llmentalist/" target="_blank" rel="noopener">The LLMentalist Effect (2023)</a><button class="fav-btn" title="收藏" data-t="The LLMentalist Effect (2023)" data-u="https://softwarecrisis.dev/letters/llmentalist/" data-s="Hacker News" data-d="2026-09-21" data-b="178 points | 260 评论">☆</button></h2><div class="tags"><span class="tag-src">Hacker News</span> </div><p>178 points | 260 评论</p></div>
+<div class="card raw"><h2><a href="https://www.ft.com/content/c0cd359d-df84-4208-a789-ffa864b43666" target="_blank" rel="noopener">AI chatbots give wrong answers to financial queries &#x27;most of the time&#x27;</a><button class="fav-btn" title="收藏" data-t="AI chatbots give wrong answers to financial queries &#x27;most of the time&#x27;" data-u="https://www.ft.com/content/c0cd359d-df84-4208-a789-ffa864b43666" data-s="Hacker News" data-d="2026-09-21" data-b="59 points | 22 评论">☆</button></h2><div class="tags"><span class="tag-src">Hacker News</span> </div><p>59 points | 22 评论</p></div>
+<div class="card raw"><h2><a href="https://tinybrains.dev" target="_blank" rel="noopener">Show HN: A competition for small neural networks that play strategy games</a><button class="fav-btn" title="收藏" data-t="Show HN: A competition for small neural networks that play strategy games" data-u="https://tinybrains.dev" data-s="Hacker News" data-d="2026-09-21" data-b="59 points | 18 评论">☆</button></h2><div class="tags"><span class="tag-src">Hacker News</span> </div><p>59 points | 18 评论</p></div>
+<div class="card raw"><h2><a href="https://www.qbitai.com/2026/09/493179.html" target="_blank" rel="noopener">开源Top2！实测阶跃Step 5 Preview，真有点猛啊…</a><button class="fav-btn" title="收藏" data-t="开源Top2！实测阶跃Step 5 Preview，真有点猛啊…" data-u="https://www.qbitai.com/2026/09/493179.html" data-s="量子位" data-d="2026-09-21" data-b="激活参数仅27B">☆</button></h2><div class="tags"><span class="tag-src">量子位</span> Mon, 21 Sep 2026</div><p>激活参数仅27B</p></div>
+<div class="card raw"><h2><a href="https://www.qbitai.com/2026/09/493175.html" target="_blank" rel="noopener">中国Neocloud市场第一！商汤大装置全面领跑</a><button class="fav-btn" title="收藏" data-t="中国Neocloud市场第一！商汤大装置全面领跑" data-u="https://www.qbitai.com/2026/09/493175.html" data-s="量子位" data-d="2026-09-21" data-b="沙利文报告">☆</button></h2><div class="tags"><span class="tag-src">量子位</span> Mon, 21 Sep 2026</div><p>沙利文报告</p></div>
+<div class="card raw"><h2><a href="https://www.qbitai.com/2026/09/493114.html" target="_blank" rel="noopener">百曜科技发起，《AI虚拟细胞（AIVC）技术趋势、产业生态与应用前景研究报告》正式发布</a><button class="fav-btn" title="收藏" data-t="百曜科技发起，《AI虚拟细胞（AIVC）技术趋势、产业生态与应用前景研究报告》正式发布" data-u="https://www.qbitai.com/2026/09/493114.html" data-s="量子位" data-d="2026-09-21" data-b="《AI 虚拟细胞（AIVC）技术趋势、产业生态与应用前景研究报告——AI 时代生命科学的新型基础设施》正式发布。">☆</button></h2><div class="tags"><span class="tag-src">量子位</span> Mon, 21 Sep 2026</div><p>《AI 虚拟细胞（AIVC）技术趋势、产业生态与应用前景研究报告——AI 时代生命科学的新型基础设施》正式发布。</p></div>
+<div class="card raw"><h2><a href="https://www.qbitai.com/2026/09/493109.html" target="_blank" rel="noopener">IDC评估中国AI算力管理平台:范式智能四项维度获满分，综合评分第一</a><button class="fav-btn" title="收藏" data-t="IDC评估中国AI算力管理平台:范式智能四项维度获满分，综合评分第一" data-u="https://www.qbitai.com/2026/09/493109.html" data-s="量子位" data-d="2026-09-21" data-b="范式成为《中国AI算力管理平台技术能力评估，2026》综合评分位列第一的厂商。">☆</button></h2><div class="tags"><span class="tag-src">量子位</span> Mon, 21 Sep 2026</div><p>范式成为《中国AI算力管理平台技术能力评估，2026》综合评分位列第一的厂商。</p></div>
+<div class="card raw"><h2><a href="https://www.qbitai.com/2026/09/493091.html" target="_blank" rel="noopener">汽车行业首个AI超级智能体「迪迪虾」来了！腾势多款车型即将OTA</a><button class="fav-btn" title="收藏" data-t="汽车行业首个AI超级智能体「迪迪虾」来了！腾势多款车型即将OTA" data-u="https://www.qbitai.com/2026/09/493091.html" data-s="量子位" data-d="2026-09-21" data-b="近日，比亚迪重磅发布了AI超级智能体「迪迪虾」，首搭腾势N8L纯电车型上">☆</button></h2><div class="tags"><span class="tag-src">量子位</span> Mon, 21 Sep 2026</div><p>近日，比亚迪重磅发布了AI超级智能体「迪迪虾」，首搭腾势N8L纯电车型上</p></div>
+<div class="card raw"><h2><a href="https://www.infoq.cn/article/QK7zfPgQPCmZyITumZNG?utm_source=rss&amp;utm_medium=article" target="_blank" rel="noopener">如何通过几行 Python 代码，使用BERT进行词嵌入？</a><button class="fav-btn" title="收藏" data-t="如何通过几行 Python 代码，使用BERT进行词嵌入？" data-u="https://www.infoq.cn/article/QK7zfPgQPCmZyITumZNG?utm_source=rss&amp;utm_medium=article" data-s="InfoQ 中文" data-d="2026-09-21" data-b="
+在自然语言处理领域中，诞生于 2018 年末的 BERT 非常的“火热”。强悍如 BERT，在十多项 NLP 的任务上强势屠榜，业界声称 BERT 将开创自然语言处理领域新的纪元。在本文中，作者 Anirudh_S 将展示如何只使用几行 Python 代码，就可以使用深度学习自然语言处理模型（BERT）将单词嵌入到向量中。
+
+本文最初发表于 Towards Data Science，经原作者 A">☆</button></h2><div class="tags"><span class="tag-src">InfoQ 中文</span> Thu, 19 Dec 2019</div><p>
+在自然语言处理领域中，诞生于 2018 年末的 BERT 非常的“火热”。强悍如 BERT，在十多项 NLP 的任务上强势屠榜，业界声称 BERT 将开创自然语言处理领域新的纪元。在本文中，作者 Anirudh_S 将展示如何只使用几行 Python 代码，就可以使用深度学习自然语言处理模型（BERT）将单词嵌入到向量中。
+
+本文最初发表于 Towards Data Science，经原作者 A</p></div>
+<div class="card raw"><h2><a href="https://www.infoq.cn/article/TUoE8y6VxqCsBLfP2FFo?utm_source=rss&amp;utm_medium=article" target="_blank" rel="noopener">金融科技盛宴（三）：银行的移动端应用</a><button class="fav-btn" title="收藏" data-t="金融科技盛宴（三）：银行的移动端应用" data-u="https://www.infoq.cn/article/TUoE8y6VxqCsBLfP2FFo?utm_source=rss&amp;utm_medium=article" data-s="InfoQ 中文" data-d="2026-09-21" data-b="
+导读：这是系列文章之一。本系列梳理了国内外银行信息化历程，包含区块链、云计算、物联网、移动端、人工智能各方面的应用情况。
+
+一、移动端技术发展简介
+本文讨论的银行移动端应用主要指手机银行，手机银行是银行对渠道端技术发展的一种适应，每次移动应用开发技术的升级也自然带来手机银行技术的升级。
+手机银行曾经采用过的移动客户端开发技术包括STK、BREW、WAP、JAVA等。
+基于STK卡的短消息方式是将">☆</button></h2><div class="tags"><span class="tag-src">InfoQ 中文</span> Thu, 19 Dec 2019</div><p>
+导读：这是系列文章之一。本系列梳理了国内外银行信息化历程，包含区块链、云计算、物联网、移动端、人工智能各方面的应用情况。
+
+一、移动端技术发展简介
+本文讨论的银行移动端应用主要指手机银行，手机银行是银行对渠道端技术发展的一种适应，每次移动应用开发技术的升级也自然带来手机银行技术的升级。
+手机银行曾经采用过的移动客户端开发技术包括STK、BREW、WAP、JAVA等。
+基于STK卡的短消息方式是将</p></div>
+<div class="card raw"><h2><a href="https://www.infoq.cn/article/wogJJODkzi4whCqmSv92?utm_source=rss&amp;utm_medium=article" target="_blank" rel="noopener">阿里巴巴架构再调整：鲁肃接棒行癫任CTO，孙权就任蚂蚁金服CEO</a><button class="fav-btn" title="收藏" data-t="阿里巴巴架构再调整：鲁肃接棒行癫任CTO，孙权就任蚂蚁金服CEO" data-u="https://www.infoq.cn/article/wogJJODkzi4whCqmSv92?utm_source=rss&amp;utm_medium=article" data-s="InfoQ 中文" data-d="2026-09-21" data-b="12 月 19 日，阿里巴巴集团总裁张勇发布全员信，宣布新一轮面向未来的升级，集中发力推进全球化、内需、大数据和云计算三大战略。张勇在公开信中表示，阿里历来在最好的时刻变阵。
+此次架构调整，行癫将卸任阿里集团 CTO 工作，鲁肃调任阿里集团 CTO，向张勇汇报；蒋凡在现有淘宝天猫总裁的职责基础上，将代表集团分管阿里妈妈事业群，总裁张忆芬向蒋凡汇报；集团 B2B 事业群总裁戴珊在负责 ICBU、16">☆</button></h2><div class="tags"><span class="tag-src">InfoQ 中文</span> Thu, 19 Dec 2019</div><p>12 月 19 日，阿里巴巴集团总裁张勇发布全员信，宣布新一轮面向未来的升级，集中发力推进全球化、内需、大数据和云计算三大战略。张勇在公开信中表示，阿里历来在最好的时刻变阵。
+此次架构调整，行癫将卸任阿里集团 CTO 工作，鲁肃调任阿里集团 CTO，向张勇汇报；蒋凡在现有淘宝天猫总裁的职责基础上，将代表集团分管阿里妈妈事业群，总裁张忆芬向蒋凡汇报；集团 B2B 事业群总裁戴珊在负责 ICBU、16</p></div>
+<div class="card raw"><h2><a href="https://www.infoq.cn/article/E2HhuiTBPLLkYfVWgX9R?utm_source=rss&amp;utm_medium=article" target="_blank" rel="noopener">千万用户同时在线也不卡顿：优酷智能档在大型直播场景下的技术实践</a><button class="fav-btn" title="收藏" data-t="千万用户同时在线也不卡顿：优酷智能档在大型直播场景下的技术实践" data-u="https://www.infoq.cn/article/E2HhuiTBPLLkYfVWgX9R?utm_source=rss&amp;utm_medium=article" data-s="InfoQ 中文" data-d="2026-09-21" data-b="
+本文整理自阿里文娱高级技术专家肖文良在阿里文娱2019双11猫晚技术沙龙中的演讲，主要讲解了为如何通过优酷智能档减少用户卡顿，尤其是在双11直播场景下，如何提升用户观看体验。具体包括智能档的落地挑战、算法架构、技术策略等部分。
+
+一、优酷智能档的前世今生
+今天要分享的主题是优酷智能档技术，即自适应码率播放技术。为什么要分享这个话题呢？一方面它是一个比较新的探索尝试：优酷在这方面的投入是国内比较前">☆</button></h2><div class="tags"><span class="tag-src">InfoQ 中文</span> Thu, 19 Dec 2019</div><p>
+本文整理自阿里文娱高级技术专家肖文良在阿里文娱2019双11猫晚技术沙龙中的演讲，主要讲解了为如何通过优酷智能档减少用户卡顿，尤其是在双11直播场景下，如何提升用户观看体验。具体包括智能档的落地挑战、算法架构、技术策略等部分。
+
+一、优酷智能档的前世今生
+今天要分享的主题是优酷智能档技术，即自适应码率播放技术。为什么要分享这个话题呢？一方面它是一个比较新的探索尝试：优酷在这方面的投入是国内比较前</p></div>
+<div class="card raw"><h2><a href="https://www.infoq.cn/article/eaOKAzmisZdL8QD5xq5R?utm_source=rss&amp;utm_medium=article" target="_blank" rel="noopener">2019年这6场收购如何改变大数据和AI市场？</a><button class="fav-btn" title="收藏" data-t="2019年这6场收购如何改变大数据和AI市场？" data-u="https://www.infoq.cn/article/eaOKAzmisZdL8QD5xq5R?utm_source=rss&amp;utm_medium=article" data-s="InfoQ 中文" data-d="2026-09-21" data-b="
+2019年，在经历了一系列大型的并购事件之后，大数据和AI市场相比之前发生了很大的变化。
+
+相比2019年初，即将进入2020年的大数据和AI市场看起来与之前不太一样。数据、数据管理、数据分析、商业智能、机器学习、人工智能，还有其他相关的技术，都炙手可热。几乎每一位CIO都在他们的组织里至少部署了其中的一项技术，或者想要这么做。
+技术越高端，部署的难度就越高，而技术厂商在进行产品和服务数字化转型">☆</button></h2><div class="tags"><span class="tag-src">InfoQ 中文</span> Thu, 19 Dec 2019</div><p>
+2019年，在经历了一系列大型的并购事件之后，大数据和AI市场相比之前发生了很大的变化。
+
+相比2019年初，即将进入2020年的大数据和AI市场看起来与之前不太一样。数据、数据管理、数据分析、商业智能、机器学习、人工智能，还有其他相关的技术，都炙手可热。几乎每一位CIO都在他们的组织里至少部署了其中的一项技术，或者想要这么做。
+技术越高端，部署的难度就越高，而技术厂商在进行产品和服务数字化转型</p></div><div class="archive"><b>历史日报：</b><a href="archive/2026-09-24.html">2026-09-24</a><a href="archive/2026-09-21.html">2026-09-21</a></div>
+<footer>由 GitHub Actions 自动生成 · 解读由 Kimi 提供 · 仅供个人学习参考</footer>
+</div>
+<script src="../fav.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="../export_pdf.js"></script>
+</body>
+</html>

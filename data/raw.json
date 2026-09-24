@@ -1,0 +1,231 @@
+{
+  "fetched_at": "2026-09-24 10:36 (北京时间)",
+  "items": [
+    {
+      "source": "GitHub 趋势榜",
+      "title": "anthropics//financial-services",
+      "url": "https://github.com/anthropics/financial-services",
+      "description": "",
+      "extra": "Python | 36,990"
+    },
+    {
+      "source": "GitHub 趋势榜",
+      "title": "google//ax",
+      "url": "https://github.com/google/ax",
+      "description": "Google's open agentic orchestration runtime",
+      "extra": "Go | 9,178"
+    },
+    {
+      "source": "GitHub 趋势榜",
+      "title": "davila7//claude-code-templates",
+      "url": "https://github.com/davila7/claude-code-templates",
+      "description": "CLI tool for configuring and monitoring Claude Code",
+      "extra": "Python | 31,526"
+    },
+    {
+      "source": "GitHub 趋势榜",
+      "title": "BuilderIO//agent-native",
+      "url": "https://github.com/BuilderIO/agent-native",
+      "description": "A framework for building agentic apps",
+      "extra": "TypeScript | 6,585"
+    },
+    {
+      "source": "GitHub 趋势榜",
+      "title": "obra//superpowers",
+      "url": "https://github.com/obra/superpowers",
+      "description": "An agentic skills framework & software development methodology that works.",
+      "extra": "Shell | 290,728"
+    },
+    {
+      "source": "GitHub 趋势榜",
+      "title": "dream-num//univer",
+      "url": "https://github.com/dream-num/univer",
+      "description": "The Office Harness for AI Agents — Spreadsheets, Docs, Slides, Canvas, Relational Tables, and PDF in one runtime.",
+      "extra": "TypeScript | 16,384"
+    },
+    {
+      "source": "GitHub 趋势榜",
+      "title": "Open-Dev-Society//OpenStock",
+      "url": "https://github.com/Open-Dev-Society/OpenStock",
+      "description": "OpenStock is an open-source alternative to expensive market platforms. Track real-time prices, set personalized alerts, and explore detailed company insights — built openly, for everyone, forever free.",
+      "extra": "TypeScript | 18,876"
+    },
+    {
+      "source": "GitHub 趋势榜",
+      "title": "agent-substrate//substrate",
+      "url": "https://github.com/agent-substrate/substrate",
+      "description": "Agent Substrate: the core system",
+      "extra": "Go | 3,527"
+    },
+    {
+      "source": "GitHub 新星项目",
+      "title": "NandhaKishorM/laya",
+      "url": "https://github.com/NandhaKishorM/laya",
+      "description": "Non-autoregressive System 1 decision engine. Typed choice, score and yes/no decisions over any text in a single forward pass, in 100+ languages, with a router that picks the right checkpoint per request.",
+      "extra": "Python | ⭐ 20709 | 新建于 2026-09-18"
+    },
+    {
+      "source": "GitHub 新星项目",
+      "title": "zai-org/ZCode",
+      "url": "https://github.com/zai-org/ZCode",
+      "description": "Z.ai's coding agent harness. Powerful, intelligent, extensible.",
+      "extra": "TypeScript | ⭐ 6555 | 新建于 2026-09-20"
+    },
+    {
+      "source": "GitHub 新星项目",
+      "title": "mizorewww/laya-mlx",
+      "url": "https://github.com/mizorewww/laya-mlx",
+      "description": "Native MLX runtime for Laya typed decision models — 7–14 ms short decisions on M3 Max. No text generation, PyTorch, or cloud API.",
+      "extra": "Python | ⭐ 5985 | 新建于 2026-09-19"
+    },
+    {
+      "source": "GitHub 新星项目",
+      "title": "jev-chat/jev-chat-jarvis",
+      "url": "https://github.com/jev-chat/jev-chat-jarvis",
+      "description": "装在手机上的对话副驾：在微信 / QQ / X / 飞书里读懂对方、给出候选回复、一键填入输入框，发不发由你。非侵入，只读屏幕，不 hook 不改包。",
+      "extra": "Kotlin | ⭐ 5312 | 新建于 2026-09-21"
+    },
+    {
+      "source": "GitHub 新星项目",
+      "title": "unreallabsai/unreal-agent",
+      "url": "https://github.com/unreallabsai/unreal-agent",
+      "description": "Async-first agent harness",
+      "extra": "Go | ⭐ 1745 | 新建于 2026-09-21"
+    },
+    {
+      "source": "GitHub 新星项目",
+      "title": "bespokelabsai/nimble",
+      "url": "https://github.com/bespokelabsai/nimble",
+      "description": "Local typed decisions, contrastive data curation, and model evaluation.",
+      "extra": "Python | ⭐ 1691 | 新建于 2026-09-18"
+    },
+    {
+      "source": "Hacker News",
+      "title": "Claude discovers a novel enzyme system with CRISPR-like repeats",
+      "url": "https://www.anthropic.com/news/claude-discovers-novel-enzyme-system",
+      "description": "519 points | 542 评论",
+      "extra": ""
+    },
+    {
+      "source": "Hacker News",
+      "title": "Gemini 3.8 text-to-speech",
+      "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-8-text-to-speech/",
+      "description": "256 points | 124 评论",
+      "extra": ""
+    },
+    {
+      "source": "Hacker News",
+      "title": "Linux support is coming to Snapdragon X2 Series",
+      "url": "https://www.qualcomm.com/news/onq/2026/09/snapdragon-summit-agentic-ai-pcs-linux",
+      "description": "175 points | 73 评论",
+      "extra": ""
+    },
+    {
+      "source": "Hacker News",
+      "title": "VSCode's SSH Agent Is Bananas (2025)",
+      "url": "https://fly.io/blog/vscode-ssh-wtf/",
+      "description": "135 points | 87 评论",
+      "extra": ""
+    },
+    {
+      "source": "Hacker News",
+      "title": "Mercury 2.5 LLM hits 770 tokens per second",
+      "url": "https://artificialanalysis.ai/models/mercury-2-5",
+      "description": "56 points | 26 评论",
+      "extra": ""
+    },
+    {
+      "source": "Product Hunt",
+      "title": "Pactto",
+      "url": "https://www.producthunt.com/products/pactto-replay",
+      "description": "\n            The room where creative teams align and AI takes action\n          \n          \n            Discussion\n            |\n            Link\n          ",
+      "extra": "2026-05-13T18:15"
+    },
+    {
+      "source": "Product Hunt",
+      "title": "Koreshield",
+      "url": "https://www.producthunt.com/products/koreshield",
+      "description": "\n            Security and evidence for AI support agents\n          \n          \n            Discussion\n            |\n            Link\n          ",
+      "extra": "2026-09-22T05:47"
+    },
+    {
+      "source": "Product Hunt",
+      "title": "Lightmeter",
+      "url": "https://www.producthunt.com/products/lightmeter-2",
+      "description": "\n            Film Camera designed for everyday moments\n          \n          \n            Discussion\n            |\n            Link\n          ",
+      "extra": "2026-09-21T21:06"
+    },
+    {
+      "source": "Product Hunt",
+      "title": "Jev State",
+      "url": "https://www.producthunt.com/products/jev-state",
+      "description": "\n            Turn AI conversations into tests and runnable code\n          \n          \n            Discussion\n            |\n            Link\n          ",
+      "extra": "2026-09-22T11:53"
+    },
+    {
+      "source": "Product Hunt",
+      "title": "CodeSpotlight",
+      "url": "https://www.producthunt.com/products/codespotlight",
+      "description": "\n            Make your code impossible to miss.\n          \n          \n            Discussion\n            |\n            Link\n          ",
+      "extra": "2026-09-21T05:59"
+    },
+    {
+      "source": "Product Hunt",
+      "title": "Claude Opus 5.5",
+      "url": "https://www.producthunt.com/products/claude-fable-5-1",
+      "description": "\n            Anthropic's first model in their new Claude 5.5 family\n          \n          \n            Discussion\n            |\n            Link\n          ",
+      "extra": "2026-09-22T09:36"
+    },
+    {
+      "source": "量子位",
+      "title": "成立九年，中科类脑把积累装进Token工厂",
+      "url": "https://www.qbitai.com/2026/09/496615.html",
+      "description": "",
+      "extra": "Thu, 24 Sep 2026"
+    },
+    {
+      "source": "量子位",
+      "title": "联想亮相阿里云栖大会：联想天禧AI把超级组织落地到端侧",
+      "url": "https://www.qbitai.com/2026/09/496609.html",
+      "description": "联想天禧AI携全场景多端产品矩阵亮相阿里云栖大会",
+      "extra": "Wed, 23 Sep 2026"
+    },
+    {
+      "source": "量子位",
+      "title": "让Token生产更高效：异构混推的关键技术演进与创新实践",
+      "url": "https://www.qbitai.com/2026/09/496578.html",
+      "description": "商汤大装置异构混推创新实践与技术演进",
+      "extra": "Wed, 23 Sep 2026"
+    },
+    {
+      "source": "量子位",
+      "title": "汇智智能发布Hellome：国内首个FDE直连智能体服务平台，把AI交付周期压进“周”",
+      "url": "https://www.qbitai.com/2026/09/496493.html",
+      "description": "企业AI服务迎来平台化交付时代",
+      "extra": "Wed, 23 Sep 2026"
+    },
+    {
+      "source": "量子位",
+      "title": "达卯科技完成新一轮融资，算电协同核心软件层“稀缺标的”",
+      "url": "https://www.qbitai.com/2026/09/496494.html",
+      "description": "打造算电协同领域“Windows”级操作系统",
+      "extra": "Wed, 23 Sep 2026"
+    },
+    {
+      "source": "量子位",
+      "title": "它石智航顶尖团队引领中国具身智能率先迈入规模化落地阶段",
+      "url": "https://www.qbitai.com/2026/09/496481.html",
+      "description": "它石智航将继续扩大研发团队，加快布局生产基地，全面提升机器人交付能力",
+      "extra": "Wed, 23 Sep 2026"
+    }
+  ],
+  "sources_status": {
+    "GitHub 趋势榜": 8,
+    "GitHub 新星项目": 6,
+    "Hacker News": 5,
+    "HuggingFace 热门模型": 0,
+    "Product Hunt": 6,
+    "Reddit ML": 0,
+    "国内媒体": 6
+  }
+}

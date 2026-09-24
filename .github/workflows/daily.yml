@@ -1,0 +1,48 @@
+name: AI 日报雷达
+
+on:
+  schedule:
+    # 每天北京时间 09:00（UTC 01:00）自动运行
+    - cron: "0 1 * * *"
+  workflow_dispatch:   # 允许手动点按钮随时运行
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: 安装依赖
+        run: pip install -r requirements.txt
+
+      - name: 抓取信息源
+        run: python scripts/fetch_sources.py
+
+      - name: Kimi 生成解读
+        env:
+          MOONSHOT_API_KEY: ${{ secrets.MOONSHOT_API_KEY }}
+        run: python scripts/summarize.py
+
+      - name: 生成网页（含故事分组 + Top5 补全 + SQLite 持久化）
+        run: python scripts/build_site.py
+
+      - name: 邮件推送日报
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          MAIL_TO: fancocat@qq.com
+        run: python scripts/send_email.py
+
+      - name: 提交当天报告 + SQLite 数据库
+        run: |
+          git config user.name "ai-daily-radar-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add data/reports data/radar.db docs
+          git commit -m "日报 $(date +%F)" || echo "无新内容，跳过提交"
+          git push

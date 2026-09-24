@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 日报雷达 · 2026-09-24</title>
+<style>
+  * { box-sizing: border-box; margin: 0; }
+  body { background: #f4f5f7; color: #1f2329; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; line-height: 1.7; }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 24px 16px 60px; }
+  header.top { background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); color: #fff; padding: 36px 16px 30px; }
+  .top-inner { max-width: 860px; margin: 0 auto; }
+  h1 { font-size: 26px; letter-spacing: 1px; }
+  .meta { color: rgba(255,255,255,.75); font-size: 13px; margin-top: 8px; }
+  .badge { display: inline-block; background: rgba(255,255,255,.15); border-radius: 99px; padding: 2px 12px; font-size: 12px; margin-top: 10px; }
+  .nav { margin-top: 14px; font-size: 13px; }
+  .nav a { color: #cfe3ff; text-decoration: none; margin-right: 18px; border-bottom: 1px dashed rgba(255,255,255,.4); }
+  .card { background: #fff; border-radius: 14px; padding: 22px 22px 16px; margin: 18px 0; box-shadow: 0 1px 4px rgba(0,0,0,.05); }
+  .card h2 { font-size: 18px; line-height: 1.4; }
+  .card h2 a { color: #1f2329; text-decoration: none; }
+  .card h2 a:hover { color: #1677ff; }
+  .tags { margin: 8px 0 4px; font-size: 12px; color: #8a919c; }
+  .tag-src { background: #eef3ff; color: #1677ff; border-radius: 6px; padding: 1px 8px; margin-right: 8px; }
+  .tag-star { color: #f5a623; letter-spacing: 2px; }
+  .similar { font-size: 12px; color: #8a919c; margin-top: 4px; }
+  .similar b { color: #1677ff; font-weight: 600; }
+  .story-group { background: #fff; border-radius: 14px; padding: 18px 22px; margin: 18px 0; box-shadow: 0 1px 4px rgba(0,0,0,.05); border-left: 4px solid #1677ff; }
+  .story-group-header { font-size: 12px; color: #1677ff; font-weight: 600; margin-bottom: 10px; }
+  .story-group .card { margin: 10px 0; box-shadow: none; border: 1px solid #e5e8ec; }
+  .story-group .card:first-of-type { margin-top: 0; }
+  .top5-badge { display: inline-block; background: #fff0f0; color: #e63946; border-radius: 6px; padding: 0 8px; font-size: 12px; margin-left: 8px; font-weight: 600; }
+  dl { margin-top: 10px; }
+  dt { font-weight: 700; font-size: 14px; color: #203a43; margin-top: 12px; padding-left: 10px; border-left: 3px solid #2c5364; }
+  dd { font-size: 14.5px; color: #3c434c; margin: 4px 0 0 13px; }
+  .archive { font-size: 14px; margin-top: 26px; }
+  .archive a { color: #1677ff; text-decoration: none; margin-right: 14px; display: inline-block; margin-bottom: 6px; }
+  .raw p { font-size: 14.5px; color: #3c434c; margin-top: 8px; }
+  .stat-chips { margin-top: 12px; }
+  .chip { display: inline-block; background: #fff; border: 1px solid #e5e8ec; border-radius: 99px; padding: 3px 14px; font-size: 13px; color: #3c434c; margin: 0 8px 8px 0; }
+  .trend { background: #f0f7ff; border-radius: 10px; padding: 10px 14px; margin: 8px 0; font-size: 14.5px; }
+  details { margin-top: 10px; }
+  summary { cursor: pointer; color: #1677ff; font-size: 14px; }
+  .item-line { font-size: 13.5px; margin: 6px 0; }
+  .item-line a { color: #1f2329; text-decoration: none; }
+  .item-line a:hover { color: #1677ff; }
+  .brief { font-size: 14.5px; color: #3c434c; margin-top: 8px; }
+  .summary-card { border: 2px solid #2c5364; background: linear-gradient(180deg, #f7fbfc, #ffffff); }
+  .summary-title { font-size: 20px; color: #203a43; }
+  h3.group { margin: 22px 0 6px; font-size: 16px; color: #203a43; }
+  footer { text-align: center; color: #a0a6ad; font-size: 12px; margin-top: 40px; }
+  .fav-btn { background: none; border: none; cursor: pointer; font-size: 16px; color: #c8ccd2; vertical-align: middle; margin-left: 6px; padding: 0 2px; }
+  .fav-btn.on { color: #f5a623; }
+  .fav-link-box { background: #f0f7ff; border: 1px dashed #1677ff; border-radius: 10px; padding: 12px 14px; margin: 14px 0; font-size: 13px; word-break: break-all; }
+  .fav-link-box .lnk { color: #1677ff; }
+  .copy-btn { display: inline-block; margin-top: 8px; background: #1677ff; color: #fff; border: none; border-radius: 8px; padding: 6px 16px; font-size: 13px; cursor: pointer; }
+  .fav-toolbar { margin: 14px 0; display: flex; gap: 10px; flex-wrap: wrap; }
+  .fav-search { flex: 1; min-width: 200px; padding: 8px 12px; border: 1px solid #d9dde3; border-radius: 8px; font-size: 14px; }
+  .sort-btn { padding: 8px 14px; border: 1px solid #d9dde3; background: #fff; border-radius: 8px; font-size: 13px; cursor: pointer; }
+  .fav-bar { margin-top: 16px; }
+  .fav-bar a { display: block; background: #fff7e8; border: 1px solid #f5c26b; border-radius: 12px; padding: 12px 16px; color: #8a5a00; text-decoration: none; font-size: 14.5px; }
+  .fav-bar a:hover { background: #ffefc9; }
+  .fav-chip { display: inline-block; background: #f5a623; color: #fff; border-radius: 99px; padding: 0 10px; font-size: 13px; margin: 0 4px; }
+  .history-day { padding: 8px 0 12px; }
+  .history-day .item-line { padding: 4px 0; border-bottom: 1px dashed #e5e8ec; }
+  .history-day .item-line:last-child { border-bottom: none; }
+  .history-date { font-weight: 600; color: #203a43; }
+  .already-fav { display: inline-block; background: #fff7e8; color: #8a5a00; border-radius: 6px; padding: 0 8px; font-size: 12px; margin-left: 6px; font-weight: 600; }
+  .export-pdf-btn { display: inline-block; background: #e63946; color: #fff; border: none; border-radius: 8px; padding: 8px 18px; font-size: 14px; cursor: pointer; margin: 10px 0; font-weight: 600; }
+  .export-pdf-btn:hover { background: #c1121f; }
+  .export-pdf-btn:disabled { background: #ccc; cursor: not-allowed; }
+  .pdf-loading { display: none; background: #fff3cd; border: 1px solid #ffc107; border-radius: 8px; padding: 10px 16px; margin: 10px 0; font-size: 14px; color: #856404; }
+  @media print {
+    .export-pdf-btn, .pdf-loading, .fav-btn, .fav-bar, .nav, header.top .badge { display: none !important; }
+    body { background: #fff; }
+    .wrap { max-width: 100%; padding: 0; }
+    .card { box-shadow: none; border: 1px solid #ddd; page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<header class="top"><div class="top-inner">
+  <h1>AI 日报雷达</h1>
+  <div class="meta">数据抓取时间：2026-09-24 10:36 (北京时间) · 共 31 条</div>
+  <span class="badge">原始榜单（未配置 API 密钥）</span>
+  <div class="nav"><a href="digests/index.html">周期汇总（周/月/季）</a><a href="favorites.html">我的收藏夹</a></div>
+</div></header>
+<div class="wrap">
+<div class="fav-bar"><a href="favorites.html">★ 我的收藏夹（<span class="fav-chip" id="fav-chip">0</span>条）· 点条目旁的 ☆ 即可收藏</a></div><div><button class="export-pdf-btn" onclick="exportDailyPDF()">📄 导出当日日报为 PDF</button><div class="pdf-loading" id="pdf-loading">⏳ 正在生成 PDF，请稍候...</div></div><div class="card raw"><h2><a href="https://github.com/anthropics/financial-services" target="_blank" rel="noopener">anthropics//financial-services</a><button class="fav-btn" title="收藏" data-t="anthropics//financial-services" data-u="https://github.com/anthropics/financial-services" data-s="GitHub 趋势榜" data-d="2026-09-24" data-b="">☆</button></h2><div class="tags"><span class="tag-src">GitHub 趋势榜</span> Python | 36,990</div><p></p></div>
+<div class="card raw"><h2><a href="https://github.com/google/ax" target="_blank" rel="noopener">google//ax</a><button class="fav-btn" title="收藏" data-t="google//ax" data-u="https://github.com/google/ax" data-s="GitHub 趋势榜" data-d="2026-09-24" data-b="Google&#x27;s open agentic orchestration runtime">☆</button></h2><div class="tags"><span class="tag-src">GitHub 趋势榜</span> Go | 9,178</div><p>Google&#x27;s open agentic orchestration runtime</p></div>
+<div class="card raw"><h2><a href="https://github.com/davila7/claude-code-templates" target="_blank" rel="noopener">davila7//claude-code-templates</a><button class="fav-btn" title="收藏" data-t="davila7//claude-code-templates" data-u="https://github.com/davila7/claude-code-templates" data-s="GitHub 趋势榜" data-d="2026-09-24" data-b="CLI tool for configuring and monitoring Claude Code">☆</button></h2><div class="tags"><span class="tag-src">GitHub 趋势榜</span> Python | 31,526</div><p>CLI tool for configuring and monitoring Claude Code</p></div>
+<div class="card raw"><h2><a href="https://github.com/BuilderIO/agent-native" target="_blank" rel="noopener">BuilderIO//agent-native</a><button class="fav-btn" title="收藏" data-t="BuilderIO//agent-native" data-u="https://github.com/BuilderIO/agent-native" data-s="GitHub 趋势榜" data-d="2026-09-24" data-b="A framework for building agentic apps">☆</button></h2><div class="tags"><span class="tag-src">GitHub 趋势榜</span> TypeScript | 6,585</div><p>A framework for building agentic apps</p></div>
+<div class="card raw"><h2><a href="https://github.com/obra/superpowers" target="_blank" rel="noopener">obra//superpowers</a><button class="fav-btn" title="收藏" data-t="obra//superpowers" data-u="https://github.com/obra/superpowers" data-s="GitHub 趋势榜" data-d="2026-09-24" data-b="An agentic skills framework &amp; software development methodology that works.">☆</button></h2><div class="tags"><span class="tag-src">GitHub 趋势榜</span> Shell | 290,728</div><p>An agentic skills framework &amp; software development methodology that works.</p></div>
+<div class="card raw"><h2><a href="https://github.com/dream-num/univer" target="_blank" rel="noopener">dream-num//univer</a><button class="fav-btn" title="收藏" data-t="dream-num//univer" data-u="https://github.com/dream-num/univer" data-s="GitHub 趋势榜" data-d="2026-09-24" data-b="The Office Harness for AI Agents — Spreadsheets, Docs, Slides, Canvas, Relational Tables, and PDF in one runtime.">☆</button></h2><div class="tags"><span class="tag-src">GitHub 趋势榜</span> TypeScript | 16,384</div><p>The Office Harness for AI Agents — Spreadsheets, Docs, Slides, Canvas, Relational Tables, and PDF in one runtime.</p></div>
+<div class="card raw"><h2><a href="https://github.com/Open-Dev-Society/OpenStock" target="_blank" rel="noopener">Open-Dev-Society//OpenStock</a><button class="fav-btn" title="收藏" data-t="Open-Dev-Society//OpenStock" data-u="https://github.com/Open-Dev-Society/OpenStock" data-s="GitHub 趋势榜" data-d="2026-09-24" data-b="OpenStock is an open-source alternative to expensive market platforms. Track real-time prices, set personalized alerts, and explore detailed company insights — built openly, for everyone, forever free.">☆</button></h2><div class="tags"><span class="tag-src">GitHub 趋势榜</span> TypeScript | 18,876</div><p>OpenStock is an open-source alternative to expensive market platforms. Track real-time prices, set personalized alerts, and explore detailed company insights — built openly, for everyone, forever free.</p></div>
+<div class="card raw"><h2><a href="https://github.com/agent-substrate/substrate" target="_blank" rel="noopener">agent-substrate//substrate</a><button class="fav-btn" title="收藏" data-t="agent-substrate//substrate" data-u="https://github.com/agent-substrate/substrate" data-s="GitHub 趋势榜" data-d="2026-09-24" data-b="Agent Substrate: the core system">☆</button></h2><div class="tags"><span class="tag-src">GitHub 趋势榜</span> Go | 3,527</div><p>Agent Substrate: the core system</p></div>
+<div class="card raw"><h2><a href="https://github.com/NandhaKishorM/laya" target="_blank" rel="noopener">NandhaKishorM/laya</a><button class="fav-btn" title="收藏" data-t="NandhaKishorM/laya" data-u="https://github.com/NandhaKishorM/laya" data-s="GitHub 新星项目" data-d="2026-09-24" data-b="Non-autoregressive System 1 decision engine. Typed choice, score and yes/no decisions over any text in a single forward pass, in 100+ languages, with a router that picks the right checkpoint per request.">☆</button></h2><div class="tags"><span class="tag-src">GitHub 新星项目</span> Python | ⭐ 20709 | 新建于 2026-09-18</div><div class="similar">📌 此前曾在 <b>2026-09-21</b> 出现</div><p>Non-autoregressive System 1 decision engine. Typed choice, score and yes/no decisions over any text in a single forward pass, in 100+ languages, with a router that picks the right checkpoint per request.</p></div>
+<div class="card raw"><h2><a href="https://github.com/zai-org/ZCode" target="_blank" rel="noopener">zai-org/ZCode</a><button class="fav-btn" title="收藏" data-t="zai-org/ZCode" data-u="https://github.com/zai-org/ZCode" data-s="GitHub 新星项目" data-d="2026-09-24" data-b="Z.ai&#x27;s coding agent harness. Powerful, intelligent, extensible.">☆</button></h2><div class="tags"><span class="tag-src">GitHub 新星项目</span> TypeScript | ⭐ 6555 | 新建于 2026-09-20</div><div class="similar">📌 此前曾在 <b>2026-09-21</b> 出现</div><p>Z.ai&#x27;s coding agent harness. Powerful, intelligent, extensible.</p></div>
+<div class="card raw"><h2><a href="https://github.com/mizorewww/laya-mlx" target="_blank" rel="noopener">mizorewww/laya-mlx</a><button class="fav-btn" title="收藏" data-t="mizorewww/laya-mlx" data-u="https://github.com/mizorewww/laya-mlx" data-s="GitHub 新星项目" data-d="2026-09-24" data-b="Native MLX runtime for Laya typed decision models — 7–14 ms short decisions on M3 Max. No text generation, PyTorch, or cloud API.">☆</button></h2><div class="tags"><span class="tag-src">GitHub 新星项目</span> Python | ⭐ 5985 | 新建于 2026-09-19</div><p>Native MLX runtime for Laya typed decision models — 7–14 ms short decisions on M3 Max. No text generation, PyTorch, or cloud API.</p></div>
+<div class="card raw"><h2><a href="https://github.com/jev-chat/jev-chat-jarvis" target="_blank" rel="noopener">jev-chat/jev-chat-jarvis</a><button class="fav-btn" title="收藏" data-t="jev-chat/jev-chat-jarvis" data-u="https://github.com/jev-chat/jev-chat-jarvis" data-s="GitHub 新星项目" data-d="2026-09-24" data-b="装在手机上的对话副驾：在微信 / QQ / X / 飞书里读懂对方、给出候选回复、一键填入输入框，发不发由你。非侵入，只读屏幕，不 hook 不改包。">☆</button></h2><div class="tags"><span class="tag-src">GitHub 新星项目</span> Kotlin | ⭐ 5312 | 新建于 2026-09-21</div><p>装在手机上的对话副驾：在微信 / QQ / X / 飞书里读懂对方、给出候选回复、一键填入输入框，发不发由你。非侵入，只读屏幕，不 hook 不改包。</p></div>
+<div class="card raw"><h2><a href="https://github.com/unreallabsai/unreal-agent" target="_blank" rel="noopener">unreallabsai/unreal-agent</a><button class="fav-btn" title="收藏" data-t="unreallabsai/unreal-agent" data-u="https://github.com/unreallabsai/unreal-agent" data-s="GitHub 新星项目" data-d="2026-09-24" data-b="Async-first agent harness">☆</button></h2><div class="tags"><span class="tag-src">GitHub 新星项目</span> Go | ⭐ 1745 | 新建于 2026-09-21</div><p>Async-first agent harness</p></div>
+<div class="card raw"><h2><a href="https://github.com/bespokelabsai/nimble" target="_blank" rel="noopener">bespokelabsai/nimble</a><button class="fav-btn" title="收藏" data-t="bespokelabsai/nimble" data-u="https://github.com/bespokelabsai/nimble" data-s="GitHub 新星项目" data-d="2026-09-24" data-b="Local typed decisions, contrastive data curation, and model evaluation.">☆</button></h2><div class="tags"><span class="tag-src">GitHub 新星项目</span> Python | ⭐ 1691 | 新建于 2026-09-18</div><p>Local typed decisions, contrastive data curation, and model evaluation.</p></div>
+<div class="card raw"><h2><a href="https://www.anthropic.com/news/claude-discovers-novel-enzyme-system" target="_blank" rel="noopener">Claude discovers a novel enzyme system with CRISPR-like repeats</a><button class="fav-btn" title="收藏" data-t="Claude discovers a novel enzyme system with CRISPR-like repeats" data-u="https://www.anthropic.com/news/claude-discovers-novel-enzyme-system" data-s="Hacker News" data-d="2026-09-24" data-b="519 points | 542 评论">☆</button></h2><div class="tags"><span class="tag-src">Hacker News</span> </div><p>519 points | 542 评论</p></div>
+<div class="card raw"><h2><a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-8-text-to-speech/" target="_blank" rel="noopener">Gemini 3.8 text-to-speech</a><button class="fav-btn" title="收藏" data-t="Gemini 3.8 text-to-speech" data-u="https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-8-text-to-speech/" data-s="Hacker News" data-d="2026-09-24" data-b="256 points | 124 评论">☆</button></h2><div class="tags"><span class="tag-src">Hacker News</span> </div><p>256 points | 124 评论</p></div>
+<div class="card raw"><h2><a href="https://www.qualcomm.com/news/onq/2026/09/snapdragon-summit-agentic-ai-pcs-linux" target="_blank" rel="noopener">Linux support is coming to Snapdragon X2 Series</a><button class="fav-btn" title="收藏" data-t="Linux support is coming to Snapdragon X2 Series" data-u="https://www.qualcomm.com/news/onq/2026/09/snapdragon-summit-agentic-ai-pcs-linux" data-s="Hacker News" data-d="2026-09-24" data-b="175 points | 73 评论">☆</button></h2><div class="tags"><span class="tag-src">Hacker News</span> </div><p>175 points | 73 评论</p></div>
+<div class="card raw"><h2><a href="https://fly.io/blog/vscode-ssh-wtf/" target="_blank" rel="noopener">VSCode&#x27;s SSH Agent Is Bananas (2025)</a><button class="fav-btn" title="收藏" data-t="VSCode&#x27;s SSH Agent Is Bananas (2025)" data-u="https://fly.io/blog/vscode-ssh-wtf/" data-s="Hacker News" data-d="2026-09-24" data-b="135 points | 87 评论">☆</button></h2><div class="tags"><span class="tag-src">Hacker News</span> </div><p>135 points | 87 评论</p></div>
+<div class="card raw"><h2><a href="https://artificialanalysis.ai/models/mercury-2-5" target="_blank" rel="noopener">Mercury 2.5 LLM hits 770 tokens per second</a><button class="fav-btn" title="收藏" data-t="Mercury 2.5 LLM hits 770 tokens per second" data-u="https://artificialanalysis.ai/models/mercury-2-5" data-s="Hacker News" data-d="2026-09-24" data-b="56 points | 26 评论">☆</button></h2><div class="tags"><span class="tag-src">Hacker News</span> </div><p>56 points | 26 评论</p></div>
+<div class="card raw"><h2><a href="https://www.producthunt.com/products/pactto-replay" target="_blank" rel="noopener">Pactto</a><button class="fav-btn" title="收藏" data-t="Pactto" data-u="https://www.producthunt.com/products/pactto-replay" data-s="Product Hunt" data-d="2026-09-24" data-b="
+            The room where creative teams align and AI takes action
+          
+          
+            Discussion
+            |
+            Link
+          ">☆</button></h2><div class="tags"><span class="tag-src">Product Hunt</span> 2026-05-13T18:15</div><p>
+            The room where creative teams align and AI takes action
+          
+          
+            Discussion
+            |
+            Link
+          </p></div>
+<div class="card raw"><h2><a href="https://www.producthunt.com/products/koreshield" target="_blank" rel="noopener">Koreshield</a><button class="fav-btn" title="收藏" data-t="Koreshield" data-u="https://www.producthunt.com/products/koreshield" data-s="Product Hunt" data-d="2026-09-24" data-b="
+            Security and evidence for AI support agents
+          
+          
+            Discussion
+            |
+            Link
+          ">☆</button></h2><div class="tags"><span class="tag-src">Product Hunt</span> 2026-09-22T05:47</div><p>
+            Security and evidence for AI support agents
+          
+          
+            Discussion
+            |
+            Link
+          </p></div>
+<div class="card raw"><h2><a href="https://www.producthunt.com/products/lightmeter-2" target="_blank" rel="noopener">Lightmeter</a><button class="fav-btn" title="收藏" data-t="Lightmeter" data-u="https://www.producthunt.com/products/lightmeter-2" data-s="Product Hunt" data-d="2026-09-24" data-b="
+            Film Camera designed for everyday moments
+          
+          
+            Discussion
+            |
+            Link
+          ">☆</button></h2><div class="tags"><span class="tag-src">Product Hunt</span> 2026-09-21T21:06</div><p>
+            Film Camera designed for everyday moments
+          
+          
+            Discussion
+            |
+            Link
+          </p></div>
+<div class="card raw"><h2><a href="https://www.producthunt.com/products/jev-state" target="_blank" rel="noopener">Jev State</a><button class="fav-btn" title="收藏" data-t="Jev State" data-u="https://www.producthunt.com/products/jev-state" data-s="Product Hunt" data-d="2026-09-24" data-b="
+            Turn AI conversations into tests and runnable code
+          
+          
+            Discussion
+            |
+            Link
+          ">☆</button></h2><div class="tags"><span class="tag-src">Product Hunt</span> 2026-09-22T11:53</div><p>
+            Turn AI conversations into tests and runnable code
+          
+          
+            Discussion
+            |
+            Link
+          </p></div>
+<div class="card raw"><h2><a href="https://www.producthunt.com/products/codespotlight" target="_blank" rel="noopener">CodeSpotlight</a><button class="fav-btn" title="收藏" data-t="CodeSpotlight" data-u="https://www.producthunt.com/products/codespotlight" data-s="Product Hunt" data-d="2026-09-24" data-b="
+            Make your code impossible to miss.
+          
+          
+            Discussion
+            |
+            Link
+          ">☆</button></h2><div class="tags"><span class="tag-src">Product Hunt</span> 2026-09-21T05:59</div><p>
+            Make your code impossible to miss.
+          
+          
+            Discussion
+            |
+            Link
+          </p></div>
+<div class="card raw"><h2><a href="https://www.producthunt.com/products/claude-fable-5-1" target="_blank" rel="noopener">Claude Opus 5.5</a><button class="fav-btn" title="收藏" data-t="Claude Opus 5.5" data-u="https://www.producthunt.com/products/claude-fable-5-1" data-s="Product Hunt" data-d="2026-09-24" data-b="
+            Anthropic&#x27;s first model in their new Claude 5.5 family
+          
+          
+            Discussion
+            |
+            Link
+          ">☆</button></h2><div class="tags"><span class="tag-src">Product Hunt</span> 2026-09-22T09:36</div><p>
+            Anthropic&#x27;s first model in their new Claude 5.5 family
+          
+          
+            Discussion
+            |
+            Link
+          </p></div>
+<div class="card raw"><h2><a href="https://www.qbitai.com/2026/09/496615.html" target="_blank" rel="noopener">成立九年，中科类脑把积累装进Token工厂</a><button class="fav-btn" title="收藏" data-t="成立九年，中科类脑把积累装进Token工厂" data-u="https://www.qbitai.com/2026/09/496615.html" data-s="量子位" data-d="2026-09-24" data-b="">☆</button></h2><div class="tags"><span class="tag-src">量子位</span> Thu, 24 Sep 2026</div><p></p></div>
+<div class="card raw"><h2><a href="https://www.qbitai.com/2026/09/496609.html" target="_blank" rel="noopener">联想亮相阿里云栖大会：联想天禧AI把超级组织落地到端侧</a><button class="fav-btn" title="收藏" data-t="联想亮相阿里云栖大会：联想天禧AI把超级组织落地到端侧" data-u="https://www.qbitai.com/2026/09/496609.html" data-s="量子位" data-d="2026-09-24" data-b="联想天禧AI携全场景多端产品矩阵亮相阿里云栖大会">☆</button></h2><div class="tags"><span class="tag-src">量子位</span> Wed, 23 Sep 2026</div><p>联想天禧AI携全场景多端产品矩阵亮相阿里云栖大会</p></div>
+<div class="card raw"><h2><a href="https://www.qbitai.com/2026/09/496578.html" target="_blank" rel="noopener">让Token生产更高效：异构混推的关键技术演进与创新实践</a><button class="fav-btn" title="收藏" data-t="让Token生产更高效：异构混推的关键技术演进与创新实践" data-u="https://www.qbitai.com/2026/09/496578.html" data-s="量子位" data-d="2026-09-24" data-b="商汤大装置异构混推创新实践与技术演进">☆</button></h2><div class="tags"><span class="tag-src">量子位</span> Wed, 23 Sep 2026</div><p>商汤大装置异构混推创新实践与技术演进</p></div>
+<div class="card raw"><h2><a href="https://www.qbitai.com/2026/09/496493.html" target="_blank" rel="noopener">汇智智能发布Hellome：国内首个FDE直连智能体服务平台，把AI交付周期压进“周”</a><button class="fav-btn" title="收藏" data-t="汇智智能发布Hellome：国内首个FDE直连智能体服务平台，把AI交付周期压进“周”" data-u="https://www.qbitai.com/2026/09/496493.html" data-s="量子位" data-d="2026-09-24" data-b="企业AI服务迎来平台化交付时代">☆</button></h2><div class="tags"><span class="tag-src">量子位</span> Wed, 23 Sep 2026</div><p>企业AI服务迎来平台化交付时代</p></div>
+<div class="card raw"><h2><a href="https://www.qbitai.com/2026/09/496494.html" target="_blank" rel="noopener">达卯科技完成新一轮融资，算电协同核心软件层“稀缺标的”</a><button class="fav-btn" title="收藏" data-t="达卯科技完成新一轮融资，算电协同核心软件层“稀缺标的”" data-u="https://www.qbitai.com/2026/09/496494.html" data-s="量子位" data-d="2026-09-24" data-b="打造算电协同领域“Windows”级操作系统">☆</button></h2><div class="tags"><span class="tag-src">量子位</span> Wed, 23 Sep 2026</div><p>打造算电协同领域“Windows”级操作系统</p></div>
+<div class="card raw"><h2><a href="https://www.qbitai.com/2026/09/496481.html" target="_blank" rel="noopener">它石智航顶尖团队引领中国具身智能率先迈入规模化落地阶段</a><button class="fav-btn" title="收藏" data-t="它石智航顶尖团队引领中国具身智能率先迈入规模化落地阶段" data-u="https://www.qbitai.com/2026/09/496481.html" data-s="量子位" data-d="2026-09-24" data-b="它石智航将继续扩大研发团队，加快布局生产基地，全面提升机器人交付能力">☆</button></h2><div class="tags"><span class="tag-src">量子位</span> Wed, 23 Sep 2026</div><p>它石智航将继续扩大研发团队，加快布局生产基地，全面提升机器人交付能力</p></div><div class="archive"><h3 class="group">历史日报</h3><details><summary><span class="history-date">2026-09-21</span> （共 22 条）· 点击展开</summary><div class="history-day"><div class="item-line"><span class="tag-src">GitHub 新星项目</span><a href="https://github.com/browser-use/jev-ultrafast" target="_blank" rel="noopener">browser-use/jev-ultrafast</a><button class="fav-btn" title="收藏" data-t="browser-use/jev-ultrafast" data-u="https://github.com/browser-use/jev-ultrafast" data-s="GitHub 新星项目" data-d="2026-09-21" data-b="">☆</button></div>
+<div class="item-line"><span class="tag-src">GitHub 新星项目</span><a href="https://github.com/NandhaKishorM/laya" target="_blank" rel="noopener">NandhaKishorM/laya</a><button class="fav-btn" title="收藏" data-t="NandhaKishorM/laya" data-u="https://github.com/NandhaKishorM/laya" data-s="GitHub 新星项目" data-d="2026-09-21" data-b="">☆</button></div>
+<div class="item-line"><span class="tag-src">GitHub 新星项目</span><a href="https://github.com/tamaratran/fast-jev-compaction" target="_blank" rel="noopener">tamaratran/fast-jev-compaction</a><button class="fav-btn" title="收藏" data-t="tamaratran/fast-jev-compaction" data-u="https://github.com/tamaratran/fast-jev-compaction" data-s="GitHub 新星项目" data-d="2026-09-21" data-b="">☆</button></div>
+<div class="item-line"><span class="tag-src">GitHub 新星项目</span><a href="https://github.com/zai-org/ZCode" target="_blank" rel="noopener">zai-org/ZCode</a><button class="fav-btn" title="收藏" data-t="zai-org/ZCode" data-u="https://github.com/zai-org/ZCode" data-s="GitHub 新星项目" data-d="2026-09-21" data-b="">☆</button></div>
+<div class="item-line"><span class="tag-src">GitHub 新星项目</span><a href="https://github.com/robbietilton/Compositor" target="_blank" rel="noopener">robbietilton/Compositor</a><button class="fav-btn" title="收藏" data-t="robbietilton/Compositor" data-u="https://github.com/robbietilton/Compositor" data-s="GitHub 新星项目" data-d="2026-09-21" data-b="">☆</button></div>
+<div class="item-line"><span class="tag-src">GitHub 新星项目</span><a href="https://github.com/TheoLeeCJ/SemIf" target="_blank" rel="noopener">TheoLeeCJ/SemIf</a><button class="fav-btn" title="收藏" data-t="TheoLeeCJ/SemIf" data-u="https://github.com/TheoLeeCJ/SemIf" data-s="GitHub 新星项目" data-d="2026-09-21" data-b="">☆</button></div>
+<div class="item-line"><span class="tag-src">Hacker News</span><a href="https://qwen.ai/blog?id=qwen-image-2.1" target="_blank" rel="noopener">Qwen Image 2.1</a><button class="fav-btn" title="收藏" data-t="Qwen Image 2.1" data-u="https://qwen.ai/blog?id=qwen-image-2.1" data-s="Hacker News" data-d="2026-09-21" data-b="">☆</button></div>
+<div class="item-line"><span class="tag-src">Hacker News</span><a href="https://pirateface.co/" target="_blank" rel="noopener">Pirate Face Rescues LLM Models from Deletion</a><button class="fav-btn" title="收藏" data-t="Pirate Face Rescues LLM Models from Deletion" data-u="https://pirateface.co/" data-s="Hacker News" data-d="2026-09-21" data-b="">☆</button></div>
+<div class="item-line"><span class="tag-src">Hacker News</span><a href="https://agentexecutor.io" target="_blank" rel="noopener">AX – Google’s Open Agentic Orchestrator</a><button class="fav-btn" title="收藏" data-t="AX – Google’s Open Agentic Orchestrator" data-u="https://agentexecutor.io" data-s="Hacker News" data-d="2026-09-21" data-b="">☆</button></div>
+<div class="item-line"><span class="tag-src">Hacker News</span><a href="https://softwarecrisis.dev/letters/llmentalist/" target="_blank" rel="noopener">The LLMentalist Effect (2023)</a><button class="fav-btn" title="收藏" data-t="The LLMentalist Effect (2023)" data-u="https://softwarecrisis.dev/letters/llmentalist/" data-s="Hacker News" data-d="2026-09-21" data-b="">☆</button></div>
+<div class="item-line"><span class="tag-src">Hacker News</span><a href="https://www.ft.com/content/c0cd359d-df84-4208-a789-ffa864b43666" target="_blank" rel="noopener">AI chatbots give wrong answers to financial queries &#x27;most of the time&#x27;</a><button class="fav-btn" title="收藏" data-t="AI chatbots give wrong answers to financial queries &#x27;most of the time&#x27;" data-u="https://www.ft.com/content/c0cd359d-df84-4208-a789-ffa864b43666" data-s="Hacker News" data-d="2026-09-21" data-b="">☆</button></div>
+<div class="item-line"><span class="tag-src">Hacker News</span><a href="https://tinybrains.dev" target="_blank" rel="noopener">Show HN: A competition for small neural networks that play strategy games</a><button class="fav-btn" title="收藏" data-t="Show HN: A competition for small neural networks that play strategy games" data-u="https://tinybrains.dev" data-s="Hacker News" data-d="2026-09-21" data-b="">☆</button></div>
+<div class="item-line"><span class="tag-src">量子位</span><a href="https://www.qbitai.com/2026/09/493179.html" target="_blank" rel="noopener">开源Top2！实测阶跃Step 5 Preview，真有点猛啊…</a><button class="fav-btn" title="收藏" data-t="开源Top2！实测阶跃Step 5 Preview，真有点猛啊…" data-u="https://www.qbitai.com/2026/09/493179.html" data-s="量子位" data-d="2026-09-21" data-b="">☆</button></div>
+<div class="item-line"><span class="tag-src">量子位</span><a href="https://www.qbitai.com/2026/09/493175.html" target="_blank" rel="noopener">中国Neocloud市场第一！商汤大装置全面领跑</a><button class="fav-btn" title="收藏" data-t="中国Neocloud市场第一！商汤大装置全面领跑" data-u="https://www.qbitai.com/2026/09/493175.html" data-s="量子位" data-d="2026-09-21" data-b="">☆</button></div>
+<div class="item-line"><span class="tag-src">量子位</span><a href="https://www.qbitai.com/2026/09/493114.html" target="_blank" rel="noopener">百曜科技发起，《AI虚拟细胞（AIVC）技术趋势、产业生态与应用前景研究报告》正式发布</a><button class="fav-btn" title="收藏" data-t="百曜科技发起，《AI虚拟细胞（AIVC）技术趋势、产业生态与应用前景研究报告》正式发布" data-u="https://www.qbitai.com/2026/09/493114.html" data-s="量子位" data-d="2026-09-21" data-b="">☆</button></div>
+<div class="item-line"><span class="tag-src">量子位</span><a href="https://www.qbitai.com/2026/09/493109.html" target="_blank" rel="noopener">IDC评估中国AI算力管理平台:范式智能四项维度获满分，综合评分第一</a><button class="fav-btn" title="收藏" data-t="IDC评估中国AI算力管理平台:范式智能四项维度获满分，综合评分第一" data-u="https://www.qbitai.com/2026/09/493109.html" data-s="量子位" data-d="2026-09-21" data-b="">☆</button></div>
+<div class="item-line"><span class="tag-src">量子位</span><a href="https://www.qbitai.com/2026/09/493091.html" target="_blank" rel="noopener">汽车行业首个AI超级智能体「迪迪虾」来了！腾势多款车型即将OTA</a><button class="fav-btn" title="收藏" data-t="汽车行业首个AI超级智能体「迪迪虾」来了！腾势多款车型即将OTA" data-u="https://www.qbitai.com/2026/09/493091.html" data-s="量子位" data-d="2026-09-21" data-b="">☆</button></div>
+<div class="item-line"><span class="tag-src">InfoQ 中文</span><a href="https://www.infoq.cn/article/QK7zfPgQPCmZyITumZNG?utm_source=rss&amp;utm_medium=article" target="_blank" rel="noopener">如何通过几行 Python 代码，使用BERT进行词嵌入？</a><button class="fav-btn" title="收藏" data-t="如何通过几行 Python 代码，使用BERT进行词嵌入？" data-u="https://www.infoq.cn/article/QK7zfPgQPCmZyITumZNG?utm_source=rss&amp;utm_medium=article" data-s="InfoQ 中文" data-d="2026-09-21" data-b="">☆</button></div>
+<div class="item-line"><span class="tag-src">InfoQ 中文</span><a href="https://www.infoq.cn/article/TUoE8y6VxqCsBLfP2FFo?utm_source=rss&amp;utm_medium=article" target="_blank" rel="noopener">金融科技盛宴（三）：银行的移动端应用</a><button class="fav-btn" title="收藏" data-t="金融科技盛宴（三）：银行的移动端应用" data-u="https://www.infoq.cn/article/TUoE8y6VxqCsBLfP2FFo?utm_source=rss&amp;utm_medium=article" data-s="InfoQ 中文" data-d="2026-09-21" data-b="">☆</button></div>
+<div class="item-line"><span class="tag-src">InfoQ 中文</span><a href="https://www.infoq.cn/article/wogJJODkzi4whCqmSv92?utm_source=rss&amp;utm_medium=article" target="_blank" rel="noopener">阿里巴巴架构再调整：鲁肃接棒行癫任CTO，孙权就任蚂蚁金服CEO</a><button class="fav-btn" title="收藏" data-t="阿里巴巴架构再调整：鲁肃接棒行癫任CTO，孙权就任蚂蚁金服CEO" data-u="https://www.infoq.cn/article/wogJJODkzi4whCqmSv92?utm_source=rss&amp;utm_medium=article" data-s="InfoQ 中文" data-d="2026-09-21" data-b="">☆</button></div>
+<div class="item-line"><span class="tag-src">InfoQ 中文</span><a href="https://www.infoq.cn/article/E2HhuiTBPLLkYfVWgX9R?utm_source=rss&amp;utm_medium=article" target="_blank" rel="noopener">千万用户同时在线也不卡顿：优酷智能档在大型直播场景下的技术实践</a><button class="fav-btn" title="收藏" data-t="千万用户同时在线也不卡顿：优酷智能档在大型直播场景下的技术实践" data-u="https://www.infoq.cn/article/E2HhuiTBPLLkYfVWgX9R?utm_source=rss&amp;utm_medium=article" data-s="InfoQ 中文" data-d="2026-09-21" data-b="">☆</button></div>
+<div class="item-line"><span class="tag-src">InfoQ 中文</span><a href="https://www.infoq.cn/article/eaOKAzmisZdL8QD5xq5R?utm_source=rss&amp;utm_medium=article" target="_blank" rel="noopener">2019年这6场收购如何改变大数据和AI市场？</a><button class="fav-btn" title="收藏" data-t="2019年这6场收购如何改变大数据和AI市场？" data-u="https://www.infoq.cn/article/eaOKAzmisZdL8QD5xq5R?utm_source=rss&amp;utm_medium=article" data-s="InfoQ 中文" data-d="2026-09-21" data-b="">☆</button></div></div><div style="margin-top:8px;font-size:13px;"><a href="archive/2026-09-21.html">查看完整日报 →</a></div></details></div>
+<footer>由 GitHub Actions 自动生成 · 解读由 Kimi 提供 · 仅供个人学习参考</footer>
+</div>
+<script src="fav.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="export_pdf.js"></script>
+</body>
+</html>
