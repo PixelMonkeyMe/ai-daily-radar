@@ -130,7 +130,10 @@ def send_email(report):
             headers={"Authorization": f"Bearer {api_key}"},
             timeout=30,
         )
-        r.raise_for_status()
+        if r.status_code != 200:
+            print(f"邮件发送失败: HTTP {r.status_code}")
+            print(f"Resend 返回: {r.text}")
+            return False
         print(f"邮件已发送至 {to_addr} (subject: {subject})")
         return True
     except Exception as e:
