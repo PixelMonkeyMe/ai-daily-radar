@@ -25,7 +25,7 @@ STARS = {1: "★☆☆☆☆", 2: "★★☆☆☆", 3: "★★★☆☆", 4: "�
 CSS = """
   * { box-sizing: border-box; margin: 0; }
   body { background: #f4f5f7; color: #1f2329; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; line-height: 1.7; }
-  .wrap { max-width: 860px; margin: 0 auto; padding: 24px 16px 60px; }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 24px 16px 60px; background: #fff; }
   header.top { background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); color: #fff; padding: 36px 16px 30px; }
   .top-inner { max-width: 860px; margin: 0 auto; }
   h1 { font-size: 26px; letter-spacing: 1px; }
