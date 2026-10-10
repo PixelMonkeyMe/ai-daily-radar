@@ -556,7 +556,7 @@ def build_daily():
             render_card(i, rep.get("ai_enabled"), rep["date"], i.get("_similar_dates", []))
             for i in rep["items"]
         )
-        links = "".join(f'<a href="archive/{d}.html">{d}</a>' for d in dates)
+        links = "".join(f'<a href="{d}.html">{d}</a>' for d in dates)
         page = PAGE.format(
             title=rep["date"], css=CSS, heading="AI 日报雷达",
             meta=f'数据抓取时间：{esc(rep["fetched_at"])} · 共 {len(rep["items"])} 条',
