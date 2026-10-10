@@ -74,6 +74,11 @@ CSS = """
   .fav-toolbar { margin: 14px 0; display: flex; gap: 10px; flex-wrap: wrap; }
   .fav-search { flex: 1; min-width: 200px; padding: 8px 12px; border: 1px solid #d9dde3; border-radius: 8px; font-size: 14px; }
   .sort-btn { padding: 8px 14px; border: 1px solid #d9dde3; background: #fff; border-radius: 8px; font-size: 13px; cursor: pointer; }
+  .fav-date-filter { margin: 10px 0; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; font-size: 13px; color: #3c434c; }
+  .fav-date-filter label { display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+  .fav-date-filter input[type="date"] { padding: 6px 10px; border: 1px solid #d9dde3; border-radius: 8px; font-size: 13px; color: #1f2329; }
+  .fav-date-reset { padding: 6px 14px; border: 1px solid #d9dde3; background: #fff; border-radius: 8px; font-size: 13px; cursor: pointer; color: #8a919c; }
+  .fav-date-reset:hover { background: #f4f5f7; }
   .fav-bar { margin-top: 16px; }
   .fav-bar a { display: block; background: #fff7e8; border: 1px solid #f5c26b; border-radius: 12px; padding: 12px 16px; color: #8a5a00; text-decoration: none; font-size: 14.5px; }
   .fav-bar a:hover { background: #ffefc9; }
@@ -214,7 +219,26 @@ FAV_JS = r"""(function () {
   });
 
   var sortDesc = true;
+  var filterDate = "";
+  var filterFrom = "";
+  var filterTo = "";
+
   window.adrToggleSort = function () { sortDesc = !sortDesc; renderFavPage(); };
+
+  window.adrFilterDate = function () {
+    filterDate = (document.getElementById("fav-date").value || "");
+    filterFrom = (document.getElementById("fav-date-from").value || "");
+    filterTo = (document.getElementById("fav-date-to").value || "");
+    renderFavPage();
+  };
+
+  window.adrResetDate = function () {
+    filterDate = ""; filterFrom = ""; filterTo = "";
+    document.getElementById("fav-date").value = "";
+    document.getElementById("fav-date-from").value = "";
+    document.getElementById("fav-date-to").value = "";
+    renderFavPage();
+  };
 
   function renderFavPage() {
     var list = document.getElementById("fav-list");
@@ -224,7 +248,14 @@ FAV_JS = r"""(function () {
     if (linkBox) linkBox.textContent = favs.length ? favLink() : "收藏任意条目后，这里会生成你的专属链接";
     var q = (document.getElementById("fav-q").value || "").toLowerCase();
     var items = favs.filter(function (f) {
-      return !q || ((f.t || "") + " " + (f.b || "") + " " + (f.s || "")).toLowerCase().indexOf(q) >= 0;
+      // 关键词过滤
+      if (q && ((f.t || "") + " " + (f.b || "") + " " + (f.s || "")).toLowerCase().indexOf(q) < 0) return false;
+      // 日期过滤
+      var d = f.d || "";
+      if (filterDate && d !== filterDate) return false;
+      if (filterFrom && d < filterFrom) return false;
+      if (filterTo && d > filterTo) return false;
+      return true;
     });
     items.sort(function (a, b) {
       var c = (a.d || "").localeCompare(b.d || "") || (a.t || "").localeCompare(b.t || "");
@@ -463,6 +494,14 @@ def build_daily():
 
     # ─── Top 5 补全 ───────────────────────────────────────────
     # 当日 importance >= 4 的条目不足 5 个时，从历史补全
+    # 构建 URL→原始条目 索引，用于回溯 AI 分析字段
+    url_to_original = {}
+    for rep in reports:
+        for item in rep["items"]:
+            u = item.get("url", "")
+            if u and u not in url_to_original:
+                url_to_original[u] = item
+
     high_imp = [i for i in latest["items"] if i.get("importance", 3) >= 4]
     top5_extra = []
     if len(high_imp) < 5:
@@ -473,6 +512,11 @@ def build_daily():
             limit=need * 3, min_importance=4)
         for h in hist:
             if h["url"] not in existing_urls and len(top5_extra) < need:
+                # 回溯原始报告，合并 AI 分析字段
+                orig = url_to_original.get(h["url"], {})
+                for key in ("what", "industry_use", "capability", "assessment", "risk", "brief", "description", "extra"):
+                    if orig.get(key) and not h.get(key):
+                        h[key] = orig[key]
                 h["_from_history"] = True
                 h["source"] = h.get("source", "") + " (历史补全)"
                 h["_similar_dates"] = []
@@ -662,6 +706,12 @@ def build_favorites():
 <div class="fav-toolbar">
   <input class="fav-search" id="fav-q" placeholder="输入关键词模糊查询（标题 / 简介 / 来源）">
   <button class="sort-btn" id="fav-sort" onclick="adrToggleSort()"></button>
+</div>
+<div class="fav-date-filter">
+  <label>日期 <input type="date" id="fav-date" onchange="adrFilterDate()"></label>
+  <label>从 <input type="date" id="fav-date-from" onchange="adrFilterDate()"></label>
+  <label>到 <input type="date" id="fav-date-to" onchange="adrFilterDate()"></label>
+  <button class="fav-date-reset" onclick="adrResetDate()">重置筛选</button>
 </div>
 <div class="tags" id="fav-count"></div>
 </div>

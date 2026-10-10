@@ -91,7 +91,26 @@
   });
 
   var sortDesc = true;
+  var filterDate = "";
+  var filterFrom = "";
+  var filterTo = "";
+
   window.adrToggleSort = function () { sortDesc = !sortDesc; renderFavPage(); };
+
+  window.adrFilterDate = function () {
+    filterDate = (document.getElementById("fav-date").value || "");
+    filterFrom = (document.getElementById("fav-date-from").value || "");
+    filterTo = (document.getElementById("fav-date-to").value || "");
+    renderFavPage();
+  };
+
+  window.adrResetDate = function () {
+    filterDate = ""; filterFrom = ""; filterTo = "";
+    document.getElementById("fav-date").value = "";
+    document.getElementById("fav-date-from").value = "";
+    document.getElementById("fav-date-to").value = "";
+    renderFavPage();
+  };
 
   function renderFavPage() {
     var list = document.getElementById("fav-list");
@@ -101,7 +120,14 @@
     if (linkBox) linkBox.textContent = favs.length ? favLink() : "收藏任意条目后，这里会生成你的专属链接";
     var q = (document.getElementById("fav-q").value || "").toLowerCase();
     var items = favs.filter(function (f) {
-      return !q || ((f.t || "") + " " + (f.b || "") + " " + (f.s || "")).toLowerCase().indexOf(q) >= 0;
+      // 关键词过滤
+      if (q && ((f.t || "") + " " + (f.b || "") + " " + (f.s || "")).toLowerCase().indexOf(q) < 0) return false;
+      // 日期过滤
+      var d = f.d || "";
+      if (filterDate && d !== filterDate) return false;
+      if (filterFrom && d < filterFrom) return false;
+      if (filterTo && d > filterTo) return false;
+      return true;
     });
     items.sort(function (a, b) {
       var c = (a.d || "").localeCompare(b.d || "") || (a.t || "").localeCompare(b.t || "");
