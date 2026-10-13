@@ -1,48 +1,114 @@
 (function () {
-  var KEY = "adr_favs";
+  /* ── Supabase 配置 ── */
+  var SUPABASE_URL = "https://bvhzexdluniqdwmsxaxw.supabase.co";
+  var SUPABASE_KEY = "sb_publishable_ZkAEga1YBOmfUrFba7yFYQ_5gt4kkMj";
+  var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  function enc(o) {
-    return btoa(unescape(encodeURIComponent(JSON.stringify(o))))
-      .replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
-  }
-  function dec(s) {
-    s = s.replace(/-/g, "+").replace(/_/g, "/");
-    while (s.length % 4) s += "=";
-    return JSON.parse(decodeURIComponent(escape(atob(s))));
-  }
-  function load() {
+  var KEY = "adr_favs";       // localStorage 缓存键
+  var cache = [];              // 内存缓存
+  var synced = true;           // 同步状态
+
+  /* ── 工具函数 ── */
+  function localLoad() {
     try { return JSON.parse(localStorage.getItem(KEY)) || []; }
     catch (e) { return []; }
   }
+  function localSave(favs) {
+    localStorage.setItem(KEY, JSON.stringify(favs));
+  }
+  function rowToFav(r) {
+    return { u: r.url, t: r.title || "", s: r.source || "", d: r.date || "", b: r.brief || "" };
+  }
+  function favToRow(f) {
+    return { url: f.u, title: f.t || "", source: f.s || "", date: f.d || "", brief: f.b || "" };
+  }
+
+  /* ── 从云端加载 ── */
+  async function cloudLoad() {
+    try {
+      var res = await sb.from("favorites").select("*").order("created_at", { ascending: false });
+      if (res.error) throw res.error;
+      var favs = (res.data || []).map(rowToFav);
+      cache = favs;
+      localSave(favs);
+      synced = true;
+      updateSyncStatus("已同步");
+    } catch (e) {
+      console.warn("cloud load failed, using cache:", e);
+      cache = localLoad();
+      synced = false;
+      updateSyncStatus("离线模式（本地缓存）");
+    }
+    refreshAll();
+  }
+
+  /* ── 云端添加收藏 ── */
+  async function cloudAdd(fav) {
+    try {
+      var row = favToRow(fav);
+      var res = await sb.from("favorites").upsert(row, { onConflict: "url" });
+      if (res.error) throw res.error;
+      synced = true;
+      updateSyncStatus("已同步");
+    } catch (e) {
+      console.warn("cloud add failed:", e);
+      synced = false;
+      updateSyncStatus("同步失败，稍后重试");
+    }
+  }
+
+  /* ── 云端删除收藏 ── */
+  async function cloudRemove(url) {
+    try {
+      var res = await sb.from("favorites").delete().eq("url", url);
+      if (res.error) throw res.error;
+      synced = true;
+      updateSyncStatus("已同步");
+    } catch (e) {
+      console.warn("cloud remove failed:", e);
+      synced = false;
+      updateSyncStatus("同步失败，稍后重试");
+    }
+  }
+
+  /* ── 迁移 localStorage 旧数据到云端 ── */
+  async function migrateLocal() {
+    var oldFavs = localLoad();
+    if (!oldFavs.length) return;
+    if (cache.length > 0) {
+      var cloudUrls = {};
+      cache.forEach(function (f) { cloudUrls[f.u] = true; });
+      var toUpload = oldFavs.filter(function (f) { return !cloudUrls[f.u]; });
+      if (!toUpload.length) return;
+      for (var i = 0; i < toUpload.length; i++) {
+        await cloudAdd(toUpload[i]);
+      }
+    } else {
+      for (var i = 0; i < oldFavs.length; i++) {
+        await cloudAdd(oldFavs[i]);
+      }
+    }
+    await cloudLoad();
+  }
+
+  /* ── 核心逻辑 ── */
+  function load() { return cache.slice(); }
   function isFav(u) {
-    var favs = load();
-    for (var i = 0; i < favs.length; i++) if (favs[i].u === u) return true;
+    for (var i = 0; i < cache.length; i++) if (cache[i].u === u) return true;
     return false;
   }
-  function save(favs) {
-    localStorage.setItem(KEY, JSON.stringify(favs));
+
+  function refreshAll() {
     refreshButtons();
     renderFavPage();
     markAlreadyFav();
   }
-  function importHash() {
-    if (location.hash.indexOf("#f=") !== 0) return;
-    try {
-      var incoming = dec(location.hash.slice(3));
-      if (!incoming || !incoming.length) return;
-      var byUrl = {};
-      load().forEach(function (f) { byUrl[f.u] = f; });
-      incoming.forEach(function (f) { if (f && f.u) byUrl[f.u] = f; });
-      var merged = [];
-      for (var k in byUrl) merged.push(byUrl[k]);
-      localStorage.setItem(KEY, JSON.stringify(merged));
-    } catch (e) {}
+
+  function updateSyncStatus(msg) {
+    var el = document.getElementById("fav-sync-status");
+    if (el) el.textContent = msg;
   }
-  function favPageUrl() {
-    var sc = document.querySelector('script[src*="fav.js"]');
-    return sc ? sc.src.replace(/fav\.js.*$/, "favorites.html") : "favorites.html";
-  }
-  function favLink() { return favPageUrl() + "#f=" + enc(load()); }
+
   function refreshButtons() {
     var btns = document.querySelectorAll(".fav-btn");
     for (var i = 0; i < btns.length; i++) {
@@ -52,8 +118,9 @@
       btns[i].title = on ? "取消收藏" : "收藏";
     }
     var chip = document.getElementById("fav-chip");
-    if (chip) chip.textContent = load().length;
+    if (chip) chip.textContent = cache.length;
   }
+
   function markAlreadyFav() {
     var cards = document.querySelectorAll(".card");
     for (var i = 0; i < cards.length; i++) {
@@ -75,19 +142,25 @@
       }
     }
   }
+
   document.addEventListener("click", function (ev) {
     var b = ev.target;
     if (!b.classList || !b.classList.contains("fav-btn")) return;
     var u = b.getAttribute("data-u");
-    var favs = load();
     if (isFav(u)) {
-      favs = favs.filter(function (f) { return f.u !== u; });
+      cache = cache.filter(function (f) { return f.u !== u; });
+      localSave(cache);
+      refreshAll();
+      cloudRemove(u);
     } else {
-      favs.push({ t: b.getAttribute("data-t"), u: u,
+      var fav = { t: b.getAttribute("data-t"), u: u,
                   s: b.getAttribute("data-s"), d: b.getAttribute("data-d"),
-                  b: b.getAttribute("data-b") });
+                  b: b.getAttribute("data-b") };
+      cache.push(fav);
+      localSave(cache);
+      refreshAll();
+      cloudAdd(fav);
     }
-    save(favs);
   });
 
   var sortDesc = true;
@@ -116,13 +189,9 @@
     var list = document.getElementById("fav-list");
     if (!list) return;
     var favs = load();
-    var linkBox = document.getElementById("fav-link");
-    if (linkBox) linkBox.textContent = favs.length ? favLink() : "收藏任意条目后，这里会生成你的专属链接";
     var q = (document.getElementById("fav-q").value || "").toLowerCase();
     var items = favs.filter(function (f) {
-      // 关键词过滤
       if (q && ((f.t || "") + " " + (f.b || "") + " " + (f.s || "")).toLowerCase().indexOf(q) < 0) return false;
-      // 日期过滤
       var d = f.d || "";
       if (filterDate && d !== filterDate) return false;
       if (filterFrom && d < filterFrom) return false;
@@ -174,31 +243,24 @@
     });
   }
 
-  window.adrCopy = function () {
-    var link = favLink();
-    function ok() {
-      var b = document.getElementById("fav-copy");
-      if (b) b.textContent = "已复制！粘贴存到书签或发到自己微信";
-    }
-    function fallback() {
-      var ta = document.createElement("textarea");
-      ta.value = link;
-      document.body.appendChild(ta);
-      ta.select();
-      try { document.execCommand("copy"); ok(); } catch (e) {}
-      document.body.removeChild(ta);
-    }
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(link).then(ok, fallback);
-    } else { fallback(); }
+  window.adrExport = function () {
+    var data = JSON.stringify(load(), null, 2);
+    var blob = new Blob([data], { type: "application/json" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "ai-daily-radar-favorites.json";
+    a.click();
+    URL.revokeObjectURL(a.href);
   };
 
-  importHash();
   document.addEventListener("DOMContentLoaded", function () {
     refreshButtons();
     renderFavPage();
     markAlreadyFav();
     var q = document.getElementById("fav-q");
     if (q) q.addEventListener("input", renderFavPage);
+    cloudLoad().then(function () {
+      migrateLocal();
+    });
   });
 })();

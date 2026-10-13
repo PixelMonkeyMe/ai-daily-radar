@@ -85,18 +85,18 @@
 <body>
 <header class="top"><div class="top-inner">
   <h1>我的收藏夹</h1>
-  <div class="meta">收藏保存在你的专属链接里 · 无需登录 · 跨设备查看</div>
+  <div class="meta">收藏自动同步到云端 · 无需登录 · 跨设备实时查看</div>
   <span class="badge">收藏夹</span>
   <div class="nav"><a href="index.html">日报首页</a><a href="digests/index.html">周期汇总（周/月/季）</a></div>
 </div></header>
 <div class="wrap">
 <div class="card">
-<h2>跨设备查看收藏</h2>
+<h2>☁️ 云端收藏</h2>
 <div class="fav-link-box">
-  收藏保存在下面这个专属链接里（无需登录）。把它<b>存为书签</b>或<b>发到自己微信/文件传输助手</b>，
-  手机、电脑任何设备打开即可看到收藏。在别的设备新增收藏后，记得重新保存一次新链接。<br>
-  <span class="lnk" id="fav-link"></span><br>
-  <button class="copy-btn" id="fav-copy" onclick="adrCopy()">一键复制专属链接</button>
+  收藏自动保存到云端数据库，任何设备（手机/电脑/平板）打开本网站即可查看，无需手动同步。
+  数据实时同步，换设备也不用担心丢失。<br>
+  <span id="fav-sync-status" style="color:#1677ff;font-weight:600"></span><br>
+  <button class="copy-btn" id="fav-copy" onclick="adrExport()">📥 导出收藏为 JSON 备份</button>
 </div>
 <div class="fav-toolbar">
   <input class="fav-search" id="fav-q" placeholder="输入关键词模糊查询（标题 / 简介 / 来源）">
@@ -113,6 +113,7 @@
 <div id="fav-list"></div><div><button class="export-pdf-btn" onclick="exportFavoritesPDF()">📄 导出收藏夹为 PDF</button><div class="pdf-loading" id="pdf-loading">⏳ 正在生成 PDF，请稍候...</div></div>
 <footer>由 GitHub Actions 自动生成 · 解读由 Kimi 提供 · 仅供个人学习参考</footer>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="fav.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="export_pdf.js"></script>
