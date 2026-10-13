@@ -1,0 +1,27 @@
+{
+  "name": "ai-daily-radar",
+  "version": "1.0.0",
+  "description": "每天自动汇聚 GitHub 趋势项目、Hacker News AI 热帖、HuggingFace 热门模型、国内 AI 新闻，",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PixelMonkeyMe/ai-daily-radar.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/PixelMonkeyMe/ai-daily-radar/issues"
+  },
+  "homepage": "https://github.com/PixelMonkeyMe/ai-daily-radar#readme",
+  "devDependencies": {
+    "@playwright/mcp": "^0.0.83"
+  }
+}
