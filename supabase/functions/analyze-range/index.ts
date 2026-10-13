@@ -20,7 +20,7 @@ Deno.serve(async (req) => {
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
-    const kimiApiKey = Deno.env.get('KIMI_API_KEY')!
+    const kimiApiKey = Deno.env.get('kimi_api_key')!
 
     const supabase = createClient(supabaseUrl, supabaseKey)
 
