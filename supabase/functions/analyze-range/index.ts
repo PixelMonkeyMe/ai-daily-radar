@@ -96,7 +96,7 @@ ${JSON.stringify(itemsSummary, null, 2)}
       body: JSON.stringify({
         model: 'kimi-k2.6',
         messages: [{ role: 'user', content: prompt }],
-        temperature: 0.7,
+        temperature: 1,
       }),
     })
 
