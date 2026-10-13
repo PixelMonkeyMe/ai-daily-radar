@@ -31,6 +31,8 @@ jobs:
         run: python scripts/summarize.py
 
       - name: 生成网页（含故事分组 + Top5 补全 + SQLite 持久化）
+        env:
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: python scripts/build_site.py
 
       - name: 邮件推送日报
