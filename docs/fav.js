@@ -310,13 +310,13 @@
   function refreshButtons() {
     var btns = document.querySelectorAll(".fav-btn");
     for (var i = 0; i < btns.length; i++) {
-      var on = isFav(btns[i].getAttribute("data-u"));
+      var on = isLoggedIn() && isFav(btns[i].getAttribute("data-u"));
       btns[i].textContent = on ? "★" : "☆";
       btns[i].className = on ? "fav-btn on" : "fav-btn";
       btns[i].title = on ? "取消收藏" : (isLoggedIn() ? "收藏" : "登录后收藏");
     }
     var chip = document.getElementById("fav-chip");
-    if (chip) chip.textContent = cache.length;
+    if (chip) chip.textContent = isLoggedIn() ? cache.length : "";
   }
 
   function markAlreadyFav() {
@@ -328,7 +328,7 @@
       var header = cards[i].querySelector("h2");
       if (!header) continue;
       var existing = header.querySelector(".already-fav");
-      if (isFav(url)) {
+      if (isLoggedIn() && isFav(url)) {
         if (!existing) {
           var tag = document.createElement("span");
           tag.className = "already-fav";
@@ -347,6 +347,15 @@
     if (!b.classList || !b.classList.contains("fav-btn")) return;
     var u = b.getAttribute("data-u");
 
+    /* 未登录 → 一律弹登录弹窗 */
+    if (!isLoggedIn()) {
+      pendingFav = { t: b.getAttribute("data-t"), u: u,
+                     s: b.getAttribute("data-s"), d: b.getAttribute("data-d"),
+                     b: b.getAttribute("data-b") };
+      showLoginModal();
+      return;
+    }
+
     if (isFav(u)) {
       /* 取消收藏 */
       cache = cache.filter(function (f) { return f.u !== u; });
@@ -354,14 +363,7 @@
       refreshAll();
       cloudRemove(u);
     } else {
-      /* 收藏 → 需要先登录 */
-      if (!isLoggedIn()) {
-        pendingFav = { t: b.getAttribute("data-t"), u: u,
-                       s: b.getAttribute("data-s"), d: b.getAttribute("data-d"),
-                       b: b.getAttribute("data-b") };
-        showLoginModal();
-        return;
-      }
+      /* 收藏 */
       var fav = { t: b.getAttribute("data-t"), u: u,
                   s: b.getAttribute("data-s"), d: b.getAttribute("data-d"),
                   b: b.getAttribute("data-b") };
