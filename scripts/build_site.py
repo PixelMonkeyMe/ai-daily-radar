@@ -736,11 +736,8 @@ FAV_JS = r"""(function () {
       .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
       .replace(/\*(.+?)\*/g, '<em>$1</em>')
       .replace(/^- (.+)$/gm, '<li style="margin:4px 0;margin-left:20px">$1</li>')
-      .replace(/
-
-/g, '<br><br>')
-      .replace(/
-/g, '<br>');
+      .split('\n\n').join('<br><br>')
+      .split('\n').join('<br>');
   }
 })();
 """
