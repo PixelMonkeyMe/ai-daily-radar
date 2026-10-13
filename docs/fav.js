@@ -6,7 +6,8 @@
 
   var KEY = "adr_favs";       // localStorage 缓存键
   var cache = [];              // 内存缓存
-  var synced = true;           // 同步状态
+  var currentUser = null;      // 当前登录用户
+  var pendingFav = null;       // 待收藏项（登录后自动收藏）
 
   /* ── 工具函数 ── */
   function localLoad() {
@@ -19,24 +20,140 @@
   function rowToFav(r) {
     return { u: r.url, t: r.title || "", s: r.source || "", d: r.date || "", b: r.brief || "" };
   }
-  function favToRow(f) {
-    return { url: f.u, title: f.t || "", source: f.s || "", date: f.d || "", brief: f.b || "" };
+  function favToRow(f, userId) {
+    return { url: f.u, title: f.t || "", source: f.s || "", date: f.d || "", brief: f.b || "", user_id: userId };
   }
+
+  /* ── 认证相关 ── */
+  function isLoggedIn() { return !!currentUser; }
+
+  async function checkAuth() {
+    var res = await sb.auth.getUser();
+    currentUser = (res.data && res.data.user) ? res.data.user : null;
+    updateAuthUI();
+    return currentUser;
+  }
+
+  function updateAuthUi() {
+    /* 导航栏登录状态 */
+    var loginBtn = document.getElementById("adr-login-btn");
+    var logoutBtn = document.getElementById("adr-logout-btn");
+    var userInfo = document.getElementById("adr-user-info");
+    if (loginBtn) loginBtn.style.display = currentUser ? "none" : "inline-block";
+    if (logoutBtn) logoutBtn.style.display = currentUser ? "inline-block" : "none";
+    if (userInfo) {
+      userInfo.style.display = currentUser ? "inline" : "none";
+      if (currentUser) userInfo.textContent = currentUser.email;
+    }
+    /* 收藏夹页面状态 */
+    var syncEl = document.getElementById("fav-sync-status");
+    if (syncEl && currentUser) {
+      syncEl.textContent = "已同步 · " + currentUser.email;
+    }
+  }
+
+  /* 显示登录弹窗 */
+  function showLoginModal() {
+    var modal = document.getElementById("adr-login-modal");
+    if (modal) {
+      modal.style.display = "flex";
+      var input = document.getElementById("adr-login-email");
+      if (input) { input.value = ""; input.focus(); }
+      var msg = document.getElementById("adr-login-msg");
+      if (msg) msg.textContent = "";
+    }
+  }
+
+  function hideLoginModal() {
+    var modal = document.getElementById("adr-login-modal");
+    if (modal) modal.style.display = "none";
+  }
+
+  /* 发送 Magic Link */
+  window.adrSendMagicLink = async function () {
+    var input = document.getElementById("adr-login-email");
+    var msg = document.getElementById("adr-login-msg");
+    var btn = document.getElementById("adr-login-submit");
+    var email = (input ? input.value : "").trim();
+    if (!email || email.indexOf("@") < 0) {
+      if (msg) msg.textContent = "请输入有效的邮箱地址";
+      return;
+    }
+    if (btn) { btn.disabled = true; btn.textContent = "发送中..."; }
+    if (msg) msg.textContent = "";
+
+    var res = await sb.auth.signInWithOtp({
+      email: email,
+      options: { emailRedirectTo: window.location.href }
+    });
+
+    if (btn) { btn.disabled = false; btn.textContent = "发送登录链接"; }
+
+    if (res.error) {
+      if (msg) msg.textContent = "发送失败：" + res.error.message;
+    } else {
+      if (msg) {
+        msg.style.color = "#1677ff";
+        msg.textContent = "✅ 登录链接已发送到 " + email + "，请查收邮箱并点击链接";
+      }
+    }
+  };
+
+  /* 登出 */
+  window.adrLogout = async function () {
+    await sb.auth.signOut();
+    currentUser = null;
+    cache = [];
+    localSave([]);
+    updateAuthUi();
+    refreshAll();
+    /* 如果在收藏夹页面，显示提示 */
+    var list = document.getElementById("fav-list");
+    if (list) {
+      list.innerHTML = '<p style="color:#8a919c;font-size:14px;margin:12px 0">已登出。请重新登录以查看收藏。</p>';
+    }
+  };
+
+  /* 监听认证状态变化 */
+  sb.auth.onAuthStateChange(function (event, session) {
+    if (event === "SIGNED_IN" && session && session.user) {
+      currentUser = session.user;
+      updateAuthUi();
+      hideLoginModal();
+      cloudLoad().then(function () {
+        migrateLocal();
+        /* 如果有待收藏项，自动收藏 */
+        if (pendingFav) {
+          var fav = pendingFav;
+          pendingFav = null;
+          if (!isFav(fav.u)) {
+            cache.push(fav);
+            localSave(cache);
+            refreshAll();
+            cloudAdd(fav);
+          }
+        }
+      });
+    }
+  });
 
   /* ── 从云端加载 ── */
   async function cloudLoad() {
+    if (!isLoggedIn()) {
+      cache = localLoad();
+      refreshAll();
+      return;
+    }
     try {
       var res = await sb.from("favorites").select("*").order("created_at", { ascending: false });
       if (res.error) throw res.error;
       var favs = (res.data || []).map(rowToFav);
       cache = favs;
       localSave(favs);
-      synced = true;
       updateSyncStatus("已同步");
     } catch (e) {
       console.warn("cloud load failed, using cache:", e);
       cache = localLoad();
-      synced = false;
       updateSyncStatus("离线模式（本地缓存）");
     }
     refreshAll();
@@ -44,49 +161,42 @@
 
   /* ── 云端添加收藏 ── */
   async function cloudAdd(fav) {
+    if (!isLoggedIn()) return;
     try {
-      var row = favToRow(fav);
-      var res = await sb.from("favorites").upsert(row, { onConflict: "url" });
+      var row = favToRow(fav, currentUser.id);
+      var res = await sb.from("favorites").upsert(row, { onConflict: "url,user_id" });
       if (res.error) throw res.error;
-      synced = true;
       updateSyncStatus("已同步");
     } catch (e) {
       console.warn("cloud add failed:", e);
-      synced = false;
       updateSyncStatus("同步失败，稍后重试");
     }
   }
 
   /* ── 云端删除收藏 ── */
   async function cloudRemove(url) {
+    if (!isLoggedIn()) return;
     try {
-      var res = await sb.from("favorites").delete().eq("url", url);
+      var res = await sb.from("favorites").delete().eq("url", url).eq("user_id", currentUser.id);
       if (res.error) throw res.error;
-      synced = true;
       updateSyncStatus("已同步");
     } catch (e) {
       console.warn("cloud remove failed:", e);
-      synced = false;
       updateSyncStatus("同步失败，稍后重试");
     }
   }
 
   /* ── 迁移 localStorage 旧数据到云端 ── */
   async function migrateLocal() {
+    if (!isLoggedIn()) return;
     var oldFavs = localLoad();
     if (!oldFavs.length) return;
-    if (cache.length > 0) {
-      var cloudUrls = {};
-      cache.forEach(function (f) { cloudUrls[f.u] = true; });
-      var toUpload = oldFavs.filter(function (f) { return !cloudUrls[f.u]; });
-      if (!toUpload.length) return;
-      for (var i = 0; i < toUpload.length; i++) {
-        await cloudAdd(toUpload[i]);
-      }
-    } else {
-      for (var i = 0; i < oldFavs.length; i++) {
-        await cloudAdd(oldFavs[i]);
-      }
+    var cloudUrls = {};
+    cache.forEach(function (f) { cloudUrls[f.u] = true; });
+    var toUpload = oldFavs.filter(function (f) { return !cloudUrls[f.u]; });
+    if (!toUpload.length) return;
+    for (var i = 0; i < toUpload.length; i++) {
+      await cloudAdd(toUpload[i]);
     }
     await cloudLoad();
   }
@@ -115,7 +225,7 @@
       var on = isFav(btns[i].getAttribute("data-u"));
       btns[i].textContent = on ? "★" : "☆";
       btns[i].className = on ? "fav-btn on" : "fav-btn";
-      btns[i].title = on ? "取消收藏" : "收藏";
+      btns[i].title = on ? "取消收藏" : (isLoggedIn() ? "收藏" : "登录后收藏");
     }
     var chip = document.getElementById("fav-chip");
     if (chip) chip.textContent = cache.length;
@@ -143,16 +253,27 @@
     }
   }
 
+  /* ── 收藏按钮点击 ── */
   document.addEventListener("click", function (ev) {
     var b = ev.target;
     if (!b.classList || !b.classList.contains("fav-btn")) return;
     var u = b.getAttribute("data-u");
+
     if (isFav(u)) {
+      /* 取消收藏 */
       cache = cache.filter(function (f) { return f.u !== u; });
       localSave(cache);
       refreshAll();
       cloudRemove(u);
     } else {
+      /* 收藏 → 需要先登录 */
+      if (!isLoggedIn()) {
+        pendingFav = { t: b.getAttribute("data-t"), u: u,
+                       s: b.getAttribute("data-s"), d: b.getAttribute("data-d"),
+                       b: b.getAttribute("data-b") };
+        showLoginModal();
+        return;
+      }
       var fav = { t: b.getAttribute("data-t"), u: u,
                   s: b.getAttribute("data-s"), d: b.getAttribute("data-d"),
                   b: b.getAttribute("data-b") };
@@ -163,6 +284,7 @@
     }
   });
 
+  /* ── 筛选/排序 ── */
   var sortDesc = true;
   var filterDate = "";
   var filterFrom = "";
@@ -185,9 +307,15 @@
     renderFavPage();
   };
 
+  /* ── 收藏夹页面渲染 ── */
   function renderFavPage() {
     var list = document.getElementById("fav-list");
     if (!list) return;
+    if (!isLoggedIn()) {
+      list.innerHTML = '<p style="color:#8a919c;font-size:14px;margin:12px 0">请先登录查看收藏。</p>';
+      document.getElementById("fav-count") && (document.getElementById("fav-count").textContent = "");
+      return;
+    }
     var favs = load();
     var q = (document.getElementById("fav-q").value || "").toLowerCase();
     var items = favs.filter(function (f) {
@@ -253,14 +381,24 @@
     URL.revokeObjectURL(a.href);
   };
 
-  document.addEventListener("DOMContentLoaded", function () {
+  /* ── 初始化 ── */
+  document.addEventListener("DOMContentLoaded", async function () {
+    /* 检查登录状态 */
+    await checkAuth();
+
     refreshButtons();
     renderFavPage();
     markAlreadyFav();
     var q = document.getElementById("fav-q");
     if (q) q.addEventListener("input", renderFavPage);
-    cloudLoad().then(function () {
-      migrateLocal();
-    });
+
+    /* 已登录则加载云端数据 */
+    if (isLoggedIn()) {
+      await cloudLoad();
+      await migrateLocal();
+    } else {
+      cache = localLoad();
+      refreshAll();
+    }
   });
 })();

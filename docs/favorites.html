@@ -74,6 +74,22 @@
   .export-pdf-btn:hover { background: #c1121f; }
   .export-pdf-btn:disabled { background: #ccc; cursor: not-allowed; }
   .pdf-loading { display: none; background: #fff3cd; border: 1px solid #ffc107; border-radius: 8px; padding: 10px 16px; margin: 10px 0; font-size: 14px; color: #856404; }
+  /* ── 登录弹窗 ── */
+  .adr-modal-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,.45); z-index:9999; justify-content:center; align-items:center; }
+  .adr-modal { background:#fff; border-radius:16px; padding:32px 28px 24px; max-width:400px; width:90%; box-shadow:0 8px 30px rgba(0,0,0,.15); text-align:center; }
+  .adr-modal h3 { font-size:20px; color:#203a43; margin-bottom:8px; }
+  .adr-modal p { font-size:14px; color:#8a919c; margin-bottom:18px; }
+  .adr-modal input[type="email"] { width:100%; padding:10px 14px; border:1px solid #d9dde3; border-radius:10px; font-size:15px; margin-bottom:12px; box-sizing:border-box; }
+  .adr-modal input[type="email"]:focus { outline:none; border-color:#1677ff; }
+  .adr-modal-btn { width:100%; padding:10px; background:#1677ff; color:#fff; border:none; border-radius:10px; font-size:15px; cursor:pointer; font-weight:600; }
+  .adr-modal-btn:hover { background:#0e5fcc; }
+  .adr-modal-btn:disabled { background:#ccc; cursor:not-allowed; }
+  .adr-modal-close { position:absolute; top:12px; right:16px; background:none; border:none; font-size:22px; color:#8a919c; cursor:pointer; }
+  .adr-modal-msg { font-size:13px; color:#e63946; margin-top:10px; min-height:20px; }
+  .adr-nav-auth { margin-left:auto; display:flex; align-items:center; gap:8px; font-size:13px; }
+  .adr-nav-auth .adr-login-btn { color:#cfe3ff; border-bottom:1px dashed rgba(255,255,255,.4); cursor:pointer; background:none; border-top:none; border-left:none; border-right:none; font-size:13px; }
+  .adr-nav-auth .adr-logout-btn { color:#cfe3ff; border-bottom:1px dashed rgba(255,255,255,.4); cursor:pointer; background:none; border-top:none; border-left:none; border-right:none; font-size:13px; display:none; }
+  .adr-nav-auth .adr-user-email { color:rgba(255,255,255,.7); font-size:12px; display:none; max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   @media print {
     .export-pdf-btn, .pdf-loading, .fav-btn, .fav-bar, .nav, header.top .badge { display: none !important; }
     body { background: #fff; }
@@ -85,16 +101,16 @@
 <body>
 <header class="top"><div class="top-inner">
   <h1>我的收藏夹</h1>
-  <div class="meta">收藏自动同步到云端 · 无需登录 · 跨设备实时查看</div>
+  <div class="meta">登录后跨设备实时同步 · 邮箱 Magic Link 免密码</div>
   <span class="badge">收藏夹</span>
-  <div class="nav"><a href="index.html">日报首页</a><a href="digests/index.html">周期汇总（周/月/季）</a></div>
+  <div class="nav" style="display:flex;align-items:center"><a href="index.html">日报首页</a><a href="digests/index.html">周期汇总（周/月/季）</a><div class="adr-nav-auth"><span class="adr-user-email" id="adr-user-info"></span><button class="adr-login-btn" id="adr-login-btn" onclick="document.getElementById('adr-login-modal').style.display='flex'">登录</button><button class="adr-logout-btn" id="adr-logout-btn" onclick="adrLogout()">登出</button></div></div>
 </div></header>
 <div class="wrap">
 <div class="card">
 <h2>☁️ 云端收藏</h2>
 <div class="fav-link-box">
-  收藏自动保存到云端数据库，任何设备（手机/电脑/平板）打开本网站即可查看，无需手动同步。
-  数据实时同步，换设备也不用担心丢失。<br>
+  收藏自动保存到云端数据库，登录后任何设备（手机/电脑/平板）打开本网站即可查看。
+  数据实时同步，换设备登录同一邮箱即可看到全部收藏。<br>
   <span id="fav-sync-status" style="color:#1677ff;font-weight:600"></span><br>
   <button class="copy-btn" id="fav-copy" onclick="adrExport()">📥 导出收藏为 JSON 备份</button>
 </div>
@@ -112,6 +128,16 @@
 </div>
 <div id="fav-list"></div><div><button class="export-pdf-btn" onclick="exportFavoritesPDF()">📄 导出收藏夹为 PDF</button><div class="pdf-loading" id="pdf-loading">⏳ 正在生成 PDF，请稍候...</div></div>
 <footer>由 GitHub Actions 自动生成 · 解读由 Kimi 提供 · 仅供个人学习参考</footer>
+</div>
+<div class="adr-modal-overlay" id="adr-login-modal">
+  <div class="adr-modal" style="position:relative">
+    <button class="adr-modal-close" onclick="document.getElementById('adr-login-modal').style.display='none'">&times;</button>
+    <h3>📬 邮箱登录</h3>
+    <p>输入邮箱，点击发送后即可收到登录链接<br>无需注册，无需密码</p>
+    <input type="email" id="adr-login-email" placeholder="your@email.com" onkeydown="if(event.key==='Enter')adrSendMagicLink()">
+    <button class="adr-modal-btn" id="adr-login-submit" onclick="adrSendMagicLink()">发送登录链接</button>
+    <div class="adr-modal-msg" id="adr-login-msg"></div>
+  </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="fav.js"></script>
