@@ -32,7 +32,8 @@
     return { u: r.url, t: r.title || "", s: r.source || "", d: r.date || "", b: r.brief || "", c: r.category || autoCategorize(r.source || "", r.title || "", r.brief || "") };
   }
   function favToRow(f, userId) {
-    return { url: f.u, title: f.t || "", source: f.s || "", date: f.d || "", brief: f.b || "", category: f.c || autoCategorize(f.s || "", f.t || "", f.b || ""), user_id: userId };
+    /* 不传 category，由数据库默认值 '行业趋势' 填充，避免列不存在时写入失败 */
+    return { url: f.u, title: f.t || "", source: f.s || "", date: f.d || "", brief: f.b || "", user_id: userId };
   }
 
   /* ── AI 自动分类 ── */
@@ -265,9 +266,24 @@
       var res = await sb.from("favorites").select("*").order("created_at", { ascending: false });
       if (res.error) throw res.error;
       var favs = (res.data || []).map(rowToFav);
-      cache = favs;
-      localSave(favs);
-      updateSyncStatus("已同步");
+      /* 云端有数据才覆盖本地；云端为空时保留本地缓存（可能是 RLS 权限问题或写入延迟） */
+      if (favs.length > 0) {
+        cache = favs;
+        localSave(favs);
+        updateSyncStatus("已同步");
+      } else {
+        /* 云端为空，尝试用本地数据 */
+        var local = localLoad();
+        if (local.length > 0) {
+          cache = local;
+          updateSyncStatus("本地缓存（云端同步中…）");
+          /* 尝试将本地数据补传到云端 */
+          migrateLocal();
+        } else {
+          cache = [];
+          updateSyncStatus("已同步（暂无收藏）");
+        }
+      }
     } catch (e) {
       console.warn("cloud load failed, using cache:", e);
       cache = localLoad();
