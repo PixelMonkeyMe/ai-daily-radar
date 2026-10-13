@@ -28,8 +28,27 @@
   function isLoggedIn() { return !!currentUser; }
 
   async function checkAuth() {
-    var res = await sb.auth.getUser();
-    currentUser = (res.data && res.data.user) ? res.data.user : null;
+    try {
+      // 优先从本地存储恢复 session
+      var sessionRes = await sb.auth.getSession();
+      if (sessionRes.data && sessionRes.data.session) {
+        currentUser = sessionRes.data.session.user;
+        // 如果 session 即将过期（5分钟内），尝试刷新
+        var expiresAt = sessionRes.data.session.expires_at;
+        var now = Math.floor(Date.now() / 1000);
+        if (expiresAt && (expiresAt - now) < 300) {
+          var refreshRes = await sb.auth.refreshSession();
+          if (refreshRes.data && refreshRes.data.session) {
+            currentUser = refreshRes.data.session.user;
+          }
+        }
+      } else {
+        currentUser = null;
+      }
+    } catch (e) {
+      console.warn('checkAuth error:', e);
+      currentUser = null;
+    }
     updateAuthUI();
     return currentUser;
   }
