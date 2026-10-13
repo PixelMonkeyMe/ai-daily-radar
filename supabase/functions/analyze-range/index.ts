@@ -94,7 +94,7 @@ ${JSON.stringify(itemsSummary, null, 2)}
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'moonshot-v1-8k',
+        model: 'kimi-k2.6',
         messages: [{ role: 'user', content: prompt }],
         temperature: 0.7,
       }),
