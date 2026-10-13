@@ -1125,6 +1125,45 @@ def build_favorites():
         f.write(page)
 
 
+def sync_items_to_supabase():
+    """将 SQLite 中的 items 同步到 Supabase，供 Edge Function 查询"""
+    import urllib.request
+
+    SUPABASE_URL = "https://bvhzexdluniqdwmsxaxw.supabase.co"
+    SUPABASE_KEY = os.environ.get("SUPABASE_SERVICE_KEY", "")
+
+    if not SUPABASE_KEY:
+        print("Supabase sync skipped: SUPABASE_SERVICE_KEY not set")
+        return
+
+    from store import _connect
+    conn = _connect()
+    rows = conn.execute("SELECT * FROM items ORDER BY date DESC LIMIT 500").fetchall()
+    conn.close()
+
+    if not rows:
+        print("Supabase sync: no items to sync")
+        return
+
+    items = [dict(r) for r in rows]
+    print(f"Supabase sync: syncing {len(items)} items...")
+
+    # Upsert items to Supabase
+    url = f"{SUPABASE_URL}/rest/v1/items"
+    data = json.dumps(items).encode()
+    req = urllib.request.Request(url, data=data, method="POST")
+    req.add_header("apikey", SUPABASE_KEY)
+    req.add_header("Authorization", f"Bearer {SUPABASE_KEY}")
+    req.add_header("Content-Type", "application/json")
+    req.add_header("Prefer", "resolution=merge-duplicates")
+
+    try:
+        resp = urllib.request.urlopen(req, timeout=30)
+        print(f"Supabase sync: success (status {resp.status})")
+    except Exception as e:
+        print(f"Supabase sync failed: {e}")
+
+
 def main():
     dates = build_daily()
     build_digests()
@@ -1139,6 +1178,8 @@ def main():
                 dst.write(src.read())
     # 清理 90 天前的 SQLite 历史数据
     cleanup_old(days=90)
+    # 同步数据到 Supabase
+    sync_items_to_supabase()
     from store import stats as db_stats
     db_info = db_stats()
     print(f"OK: 日报 {len(dates)} 期, 汇总 {len(glob.glob(os.path.join(DIGESTS_DIR, '*.json')))} 期, "
