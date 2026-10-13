@@ -90,6 +90,15 @@
   .adr-nav-auth .adr-login-btn { color:#cfe3ff; border-bottom:1px dashed rgba(255,255,255,.4); cursor:pointer; background:none; border-top:none; border-left:none; border-right:none; font-size:13px; }
   .adr-nav-auth .adr-logout-btn { color:#cfe3ff; border-bottom:1px dashed rgba(255,255,255,.4); cursor:pointer; background:none; border-top:none; border-left:none; border-right:none; font-size:13px; display:none; }
   .adr-nav-auth .adr-user-email { color:rgba(255,255,255,.7); font-size:12px; display:none; max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  /* ── 时段分析 ── */
+  .range-analyzer { background: linear-gradient(135deg, #f0f7ff, #e8f4ff); border: 1px solid #b3d7ff; border-radius: 14px; padding: 20px 24px; margin: 20px 0; }
+  .range-analyzer h3 { font-size: 16px; color: #203a43; margin-bottom: 12px; }
+  .range-analyzer .range-inputs { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .range-analyzer input[type="date"] { padding: 8px 12px; border: 1px solid #d9dde3; border-radius: 8px; font-size: 14px; color: #1f2329; }
+  .range-analyzer .analyze-btn { padding: 8px 20px; background: #1677ff; color: #fff; border: none; border-radius: 8px; font-size: 14px; cursor: pointer; font-weight: 600; }
+  .range-analyzer .analyze-btn:hover { background: #0e5fcc; }
+  .range-analyzer .analyze-btn:disabled { background: #ccc; cursor: not-allowed; }
+  .range-analyzer #range-result { margin-top: 16px; }
   @media print {
     .export-pdf-btn, .pdf-loading, .fav-btn, .fav-bar, .nav, header.top .badge { display: none !important; }
     body { background: #fff; }
@@ -106,7 +115,16 @@
   <div class="nav" style="display:flex;align-items:center"><a href="digests/index.html">周期汇总（周/月/季）</a><a href="favorites.html">我的收藏夹</a><div class="adr-nav-auth"><span class="adr-user-email" id="adr-user-info"></span><button class="adr-login-btn" id="adr-login-btn" onclick="document.getElementById('adr-login-modal').style.display='flex'">登录</button><button class="adr-logout-btn" id="adr-logout-btn" onclick="adrLogout()">登出</button></div></div>
 </div></header>
 <div class="wrap">
-<div class="fav-bar"><a href="favorites.html">★ 我的收藏夹（<span class="fav-chip" id="fav-chip">0</span>条）· 点条目旁的 ☆ 即可收藏</a></div><div><button class="export-pdf-btn" onclick="exportDailyPDF()">📄 导出当日日报为 PDF</button><div class="pdf-loading" id="pdf-loading">⏳ 正在生成 PDF，请稍候...</div></div><div class="card summary-card">
+<div class="fav-bar"><a href="favorites.html">★ 我的收藏夹（<span class="fav-chip" id="fav-chip">0</span>条）· 点条目旁的 ☆ 即可收藏</a></div><div><button class="export-pdf-btn" onclick="exportDailyPDF()">📄 导出当日日报为 PDF</button><div class="pdf-loading" id="pdf-loading">⏳ 正在生成 PDF，请稍候...</div></div><div class="range-analyzer">
+  <h3>📊 时段 AI 分析</h3>
+  <p style="font-size:13px;color:#8a919c;margin-bottom:12px">选择日期范围，AI 将分析该时段的所有内容并生成总结报告</p>
+  <div class="range-inputs">
+    <label>从 <input type="date" id="range-start"></label>
+    <label>到 <input type="date" id="range-end"></label>
+    <button class="analyze-btn" id="range-analyze-btn" onclick="adrAnalyzeRange()">开始 AI 分析</button>
+  </div>
+  <div id="range-result"></div>
+</div><div class="card summary-card">
 <h2 class="summary-title">今日总结 · AI 主编解读</h2>
 <dl>
 <dt>今日总览</dt><dd>今天AI圈两大主线：一是模型效率竞赛白热化，微软1比特模型、智谱490 tokens/s极速版、4G显存跑大模型等技术都在把AI往更轻更快推；二是AI应用层继续下沉，从销售跟进、开车记录到论文检索，各种垂直场景都在被改造。开源社区Rust语言重写办公工具成新风潮，同时关于AI到底是&#x27;工具&#x27;还是需要&#x27;技能&#x27;的争论在开发者圈持续发酵。</dd>

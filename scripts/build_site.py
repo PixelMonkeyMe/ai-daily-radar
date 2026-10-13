@@ -108,6 +108,15 @@ CSS = """
   .adr-nav-auth .adr-login-btn { color:#cfe3ff; border-bottom:1px dashed rgba(255,255,255,.4); cursor:pointer; background:none; border-top:none; border-left:none; border-right:none; font-size:13px; }
   .adr-nav-auth .adr-logout-btn { color:#cfe3ff; border-bottom:1px dashed rgba(255,255,255,.4); cursor:pointer; background:none; border-top:none; border-left:none; border-right:none; font-size:13px; display:none; }
   .adr-nav-auth .adr-user-email { color:rgba(255,255,255,.7); font-size:12px; display:none; max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  /* ── 时段分析 ── */
+  .range-analyzer { background: linear-gradient(135deg, #f0f7ff, #e8f4ff); border: 1px solid #b3d7ff; border-radius: 14px; padding: 20px 24px; margin: 20px 0; }
+  .range-analyzer h3 { font-size: 16px; color: #203a43; margin-bottom: 12px; }
+  .range-analyzer .range-inputs { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .range-analyzer input[type="date"] { padding: 8px 12px; border: 1px solid #d9dde3; border-radius: 8px; font-size: 14px; color: #1f2329; }
+  .range-analyzer .analyze-btn { padding: 8px 20px; background: #1677ff; color: #fff; border: none; border-radius: 8px; font-size: 14px; cursor: pointer; font-weight: 600; }
+  .range-analyzer .analyze-btn:hover { background: #0e5fcc; }
+  .range-analyzer .analyze-btn:disabled { background: #ccc; cursor: not-allowed; }
+  .range-analyzer #range-result { margin-top: 16px; }
   @media print {
     .export-pdf-btn, .pdf-loading, .fav-btn, .fav-bar, .nav, header.top .badge { display: none !important; }
     body { background: #fff; }
@@ -621,6 +630,88 @@ FAV_JS = r"""(function () {
       refreshAll();
     }
   });
+
+  /* ── 时段 AI 分析 ── */
+  var EDGE_FUNCTION_URL = SUPABASE_URL + "/functions/v1/analyze-range";
+
+  window.adrAnalyzeRange = async function () {
+    var startInput = document.getElementById("range-start");
+    var endInput = document.getElementById("range-end");
+    var resultDiv = document.getElementById("range-result");
+    var btn = document.getElementById("range-analyze-btn");
+
+    var startDate = startInput ? startInput.value : "";
+    var endDate = endInput ? endInput.value : "";
+
+    if (!startDate || !endDate) {
+      if (resultDiv) resultDiv.innerHTML = '<p style="color:#e63946">请选择开始和结束日期</p>';
+      return;
+    }
+
+    if (startDate > endDate) {
+      if (resultDiv) resultDiv.innerHTML = '<p style="color:#e63946">开始日期不能晚于结束日期</p>';
+      return;
+    }
+
+    if (btn) { btn.disabled = true; btn.textContent = "分析中..."; }
+    if (resultDiv) resultDiv.innerHTML = '<p style="color:#1677ff">🔄 正在分析 ' + startDate + ' 至 ' + endDate + ' 的数据，请稍候（约 10-30 秒）...</p>';
+
+    try {
+      var res = await fetch(EDGE_FUNCTION_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + SUPABASE_KEY
+        },
+        body: JSON.stringify({ start_date: startDate, end_date: endDate })
+      });
+
+      var data = await res.json();
+
+      if (btn) { btn.disabled = false; btn.textContent = "开始 AI 分析"; }
+
+      if (!data.success) {
+        if (resultDiv) resultDiv.innerHTML = '<p style="color:#e63946">分析失败：' + (data.error || "未知错误") + '</p>';
+        return;
+      }
+
+      if (!data.data) {
+        if (resultDiv) resultDiv.innerHTML = '<p style="color:#8a919c">' + (data.message || "该时段暂无数据") + '</p>';
+        return;
+      }
+
+      // Render the analysis result as markdown-like HTML
+      var html = '<div class="card summary-card">';
+      html += '<h3 class="summary-title">📊 ' + startDate + ' 至 ' + endDate + ' AI 分析报告</h3>';
+      if (data.cached) {
+        html += '<p style="color:#8a919c;font-size:12px">（缓存结果）</p>';
+      }
+      html += '<div style="margin-top:16px;line-height:1.8">';
+      html += renderMarkdown(data.data);
+      html += '</div></div>';
+
+      if (resultDiv) resultDiv.innerHTML = html;
+
+    } catch (e) {
+      if (btn) { btn.disabled = false; btn.textContent = "开始 AI 分析"; }
+      if (resultDiv) resultDiv.innerHTML = '<p style="color:#e63946">请求失败：' + e.message + '</p>';
+    }
+  };
+
+  /* 简单的 Markdown 渲染 */
+  function renderMarkdown(text) {
+    return text
+      .replace(/^## (.+)$/gm, '<h3 style="color:#203a43;margin:20px 0 10px;font-size:18px;border-left:4px solid #1677ff;padding-left:10px">$1</h3>')
+      .replace(/^### (.+)$/gm, '<h4 style="color:#2c5364;margin:16px 0 8px;font-size:16px">$1</h4>')
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.+?)\*/g, '<em>$1</em>')
+      .replace(/^- (.+)$/gm, '<li style="margin:4px 0;margin-left:20px">$1</li>')
+      .replace(/
+
+/g, '<br><br>')
+      .replace(/
+/g, '<br>');
+  }
 })();
 """
 
@@ -889,10 +980,23 @@ def build_daily():
     else:
         archive_div = ""
 
+    # 时段分析器 HTML
+    range_analyzer = '''<div class="range-analyzer">
+  <h3>📊 时段 AI 分析</h3>
+  <p style="font-size:13px;color:#8a919c;margin-bottom:12px">选择日期范围，AI 将分析该时段的所有内容并生成总结报告</p>
+  <div class="range-inputs">
+    <label>从 <input type="date" id="range-start"></label>
+    <label>到 <input type="date" id="range-end"></label>
+    <button class="analyze-btn" id="range-analyze-btn" onclick="adrAnalyzeRange()">开始 AI 分析</button>
+  </div>
+  <div id="range-result"></div>
+</div>'''
+
     index_body = (
         fav_bar("")
         + '<div><button class="export-pdf-btn" onclick="exportDailyPDF()">📄 导出当日日报为 PDF</button>'
         + '<div class="pdf-loading" id="pdf-loading">⏳ 正在生成 PDF，请稍候...</div></div>'
+        + range_analyzer
         + render_summary(latest)
         + latest_cards
         + archive_div
