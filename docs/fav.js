@@ -2,7 +2,18 @@
   /* ── Supabase 配置 ── */
   var SUPABASE_URL = "https://bvhzexdluniqdwmsxaxw.supabase.co";
   var SUPABASE_KEY = "sb_publishable_ZkAEga1YBOmfUrFba7yFYQ_5gt4kkMj";
-  var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  var _noop = function () { return Promise.resolve({ data: null, error: null }); };
+  var sb;
+  try {
+    if (window.supabase && window.supabase.createClient) {
+      sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    } else {
+      throw new Error("supabase-js not loaded");
+    }
+  } catch (e) {
+    console.warn("Supabase init failed, favorites will work in local-only mode:", e);
+    sb = { auth: { getSession: _noop, signInWithOtp: _noop, verifyOtp: _noop, signOut: _noop, refreshSession: _noop, onAuthStateChange: function () { return { data: { subscription: { unsubscribe: _noop } } }; } }, from: function () { return { select: _noop, upsert: _noop, delete: function () { return { eq: _noop }; } }; } };
+  }
 
   var KEY = "adr_favs";       // localStorage 缓存键
   var cache = [];              // 内存缓存
