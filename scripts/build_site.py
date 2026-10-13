@@ -139,9 +139,16 @@ PAGE = """<!DOCTYPE html>
   <div class="adr-modal" style="position:relative">
     <button class="adr-modal-close" onclick="document.getElementById('adr-login-modal').style.display='none'">&times;</button>
     <h3>📬 邮箱登录</h3>
-    <p>输入邮箱，点击发送后即可收到登录链接<br>无需注册，无需密码</p>
-    <input type="email" id="adr-login-email" placeholder="your@email.com" onkeydown="if(event.key==='Enter')adrSendMagicLink()">
-    <button class="adr-modal-btn" id="adr-login-submit" onclick="adrSendMagicLink()">发送登录链接</button>
+    <p>输入邮箱，收取验证码即可登录<br>无需注册，无需密码</p>
+    <div id="adr-login-step1">
+      <input type="email" id="adr-login-email" placeholder="your@email.com" onkeydown="if(event.key==='Enter')adrSendCode()">
+      <button class="adr-modal-btn" id="adr-login-submit" onclick="adrSendCode()">发送验证码</button>
+    </div>
+    <div id="adr-login-step2" style="display:none">
+      <input type="text" id="adr-login-code" placeholder="输入 6 位验证码" maxlength="6" style="letter-spacing:6px;text-align:center;font-size:20px" onkeydown="if(event.key==='Enter')adrVerifyCode()">
+      <button class="adr-modal-btn" id="adr-login-verify" onclick="adrVerifyCode()">确认登录</button>
+      <div style="margin-top:8px;font-size:13px"><a href="#" onclick="adrResendCode();return false" style="color:#1677ff">没收到？重新发送</a></div>
+    </div>
     <div class="adr-modal-msg" id="adr-login-msg"></div>
   </div>
 </div>
@@ -207,25 +214,39 @@ FAV_JS = r"""(function () {
     }
   }
 
+  var loginEmail = "";  // 当前登录邮箱
+
   /* 显示登录弹窗 */
   function showLoginModal() {
     var modal = document.getElementById("adr-login-modal");
     if (modal) {
       modal.style.display = "flex";
-      var input = document.getElementById("adr-login-email");
-      if (input) { input.value = ""; input.focus(); }
-      var msg = document.getElementById("adr-login-msg");
-      if (msg) msg.textContent = "";
+      resetLoginModal();
     }
   }
 
   function hideLoginModal() {
     var modal = document.getElementById("adr-login-modal");
     if (modal) modal.style.display = "none";
+    resetLoginModal();
   }
 
-  /* 发送 Magic Link */
-  window.adrSendMagicLink = async function () {
+  function resetLoginModal() {
+    loginEmail = "";
+    var step1 = document.getElementById("adr-login-step1");
+    var step2 = document.getElementById("adr-login-step2");
+    var emailInput = document.getElementById("adr-login-email");
+    var codeInput = document.getElementById("adr-login-code");
+    var msg = document.getElementById("adr-login-msg");
+    if (step1) step1.style.display = "block";
+    if (step2) step2.style.display = "none";
+    if (emailInput) emailInput.value = "";
+    if (codeInput) codeInput.value = "";
+    if (msg) { msg.textContent = ""; msg.style.color = "#e63946"; }
+  }
+
+  /* 发送验证码 */
+  window.adrSendCode = async function () {
     var input = document.getElementById("adr-login-email");
     var msg = document.getElementById("adr-login-msg");
     var btn = document.getElementById("adr-login-submit");
@@ -237,20 +258,64 @@ FAV_JS = r"""(function () {
     if (btn) { btn.disabled = true; btn.textContent = "发送中..."; }
     if (msg) msg.textContent = "";
 
-    var res = await sb.auth.signInWithOtp({
-      email: email,
-      options: { emailRedirectTo: window.location.href }
-    });
+    var res = await sb.auth.signInWithOtp({ email: email });
 
-    if (btn) { btn.disabled = false; btn.textContent = "发送登录链接"; }
+    if (btn) { btn.disabled = false; btn.textContent = "发送验证码"; }
 
     if (res.error) {
       if (msg) msg.textContent = "发送失败：" + res.error.message;
     } else {
-      if (msg) {
-        msg.style.color = "#1677ff";
-        msg.textContent = "✅ 登录链接已发送到 " + email + "，请查收邮箱并点击链接";
-      }
+      loginEmail = email;
+      /* 切换到验证码输入步骤 */
+      var step1 = document.getElementById("adr-login-step1");
+      var step2 = document.getElementById("adr-login-step2");
+      if (step1) step1.style.display = "none";
+      if (step2) step2.style.display = "block";
+      if (msg) { msg.style.color = "#1677ff"; msg.textContent = "验证码已发送到 " + email; }
+      var codeInput = document.getElementById("adr-login-code");
+      if (codeInput) codeInput.focus();
+    }
+  };
+
+  /* 验证验证码并登录 */
+  window.adrVerifyCode = async function () {
+    var codeInput = document.getElementById("adr-login-code");
+    var msg = document.getElementById("adr-login-msg");
+    var btn = document.getElementById("adr-login-verify");
+    var code = (codeInput ? codeInput.value : "").trim();
+    if (!code || code.length < 4) {
+      if (msg) msg.textContent = "请输入验证码";
+      return;
+    }
+    if (!loginEmail) {
+      if (msg) msg.textContent = "请先发送验证码";
+      return;
+    }
+    if (btn) { btn.disabled = true; btn.textContent = "验证中..."; }
+
+    var res = await sb.auth.verifyOtp({
+      email: loginEmail,
+      token: code,
+      type: "email"
+    });
+
+    if (btn) { btn.disabled = false; btn.textContent = "确认登录"; }
+
+    if (res.error) {
+      if (msg) { msg.style.color = "#e63946"; msg.textContent = "验证失败：" + res.error.message; }
+    }
+    /* 成功时 onAuthStateChange 会自动处理 */
+  };
+
+  /* 重新发送验证码 */
+  window.adrResendCode = async function () {
+    if (!loginEmail) return;
+    var msg = document.getElementById("adr-login-msg");
+    var res = await sb.auth.signInWithOtp({ email: loginEmail });
+    if (res.error) {
+      if (msg) { msg.style.color = "#e63946"; msg.textContent = "发送失败：" + res.error.message; }
+    } else {
+      if (msg) { msg.style.color = "#1677ff"; msg.textContent = "新验证码已发送，请查收"; }
     }
   };
 

@@ -52,25 +52,39 @@
     }
   }
 
+  var loginEmail = "";  // 当前登录邮箱
+
   /* 显示登录弹窗 */
   function showLoginModal() {
     var modal = document.getElementById("adr-login-modal");
     if (modal) {
       modal.style.display = "flex";
-      var input = document.getElementById("adr-login-email");
-      if (input) { input.value = ""; input.focus(); }
-      var msg = document.getElementById("adr-login-msg");
-      if (msg) msg.textContent = "";
+      resetLoginModal();
     }
   }
 
   function hideLoginModal() {
     var modal = document.getElementById("adr-login-modal");
     if (modal) modal.style.display = "none";
+    resetLoginModal();
   }
 
-  /* 发送 Magic Link */
-  window.adrSendMagicLink = async function () {
+  function resetLoginModal() {
+    loginEmail = "";
+    var step1 = document.getElementById("adr-login-step1");
+    var step2 = document.getElementById("adr-login-step2");
+    var emailInput = document.getElementById("adr-login-email");
+    var codeInput = document.getElementById("adr-login-code");
+    var msg = document.getElementById("adr-login-msg");
+    if (step1) step1.style.display = "block";
+    if (step2) step2.style.display = "none";
+    if (emailInput) emailInput.value = "";
+    if (codeInput) codeInput.value = "";
+    if (msg) { msg.textContent = ""; msg.style.color = "#e63946"; }
+  }
+
+  /* 发送验证码 */
+  window.adrSendCode = async function () {
     var input = document.getElementById("adr-login-email");
     var msg = document.getElementById("adr-login-msg");
     var btn = document.getElementById("adr-login-submit");
@@ -82,20 +96,64 @@
     if (btn) { btn.disabled = true; btn.textContent = "发送中..."; }
     if (msg) msg.textContent = "";
 
-    var res = await sb.auth.signInWithOtp({
-      email: email,
-      options: { emailRedirectTo: window.location.href }
-    });
+    var res = await sb.auth.signInWithOtp({ email: email });
 
-    if (btn) { btn.disabled = false; btn.textContent = "发送登录链接"; }
+    if (btn) { btn.disabled = false; btn.textContent = "发送验证码"; }
 
     if (res.error) {
       if (msg) msg.textContent = "发送失败：" + res.error.message;
     } else {
-      if (msg) {
-        msg.style.color = "#1677ff";
-        msg.textContent = "✅ 登录链接已发送到 " + email + "，请查收邮箱并点击链接";
-      }
+      loginEmail = email;
+      /* 切换到验证码输入步骤 */
+      var step1 = document.getElementById("adr-login-step1");
+      var step2 = document.getElementById("adr-login-step2");
+      if (step1) step1.style.display = "none";
+      if (step2) step2.style.display = "block";
+      if (msg) { msg.style.color = "#1677ff"; msg.textContent = "验证码已发送到 " + email; }
+      var codeInput = document.getElementById("adr-login-code");
+      if (codeInput) codeInput.focus();
+    }
+  };
+
+  /* 验证验证码并登录 */
+  window.adrVerifyCode = async function () {
+    var codeInput = document.getElementById("adr-login-code");
+    var msg = document.getElementById("adr-login-msg");
+    var btn = document.getElementById("adr-login-verify");
+    var code = (codeInput ? codeInput.value : "").trim();
+    if (!code || code.length < 4) {
+      if (msg) msg.textContent = "请输入验证码";
+      return;
+    }
+    if (!loginEmail) {
+      if (msg) msg.textContent = "请先发送验证码";
+      return;
+    }
+    if (btn) { btn.disabled = true; btn.textContent = "验证中..."; }
+
+    var res = await sb.auth.verifyOtp({
+      email: loginEmail,
+      token: code,
+      type: "email"
+    });
+
+    if (btn) { btn.disabled = false; btn.textContent = "确认登录"; }
+
+    if (res.error) {
+      if (msg) { msg.style.color = "#e63946"; msg.textContent = "验证失败：" + res.error.message; }
+    }
+    /* 成功时 onAuthStateChange 会自动处理 */
+  };
+
+  /* 重新发送验证码 */
+  window.adrResendCode = async function () {
+    if (!loginEmail) return;
+    var msg = document.getElementById("adr-login-msg");
+    var res = await sb.auth.signInWithOtp({ email: loginEmail });
+    if (res.error) {
+      if (msg) { msg.style.color = "#e63946"; msg.textContent = "发送失败：" + res.error.message; }
+    } else {
+      if (msg) { msg.style.color = "#1677ff"; msg.textContent = "新验证码已发送，请查收"; }
     }
   };
 

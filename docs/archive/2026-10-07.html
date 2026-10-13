@@ -158,9 +158,16 @@
   <div class="adr-modal" style="position:relative">
     <button class="adr-modal-close" onclick="document.getElementById('adr-login-modal').style.display='none'">&times;</button>
     <h3>📬 邮箱登录</h3>
-    <p>输入邮箱，点击发送后即可收到登录链接<br>无需注册，无需密码</p>
-    <input type="email" id="adr-login-email" placeholder="your@email.com" onkeydown="if(event.key==='Enter')adrSendMagicLink()">
-    <button class="adr-modal-btn" id="adr-login-submit" onclick="adrSendMagicLink()">发送登录链接</button>
+    <p>输入邮箱，收取验证码即可登录<br>无需注册，无需密码</p>
+    <div id="adr-login-step1">
+      <input type="email" id="adr-login-email" placeholder="your@email.com" onkeydown="if(event.key==='Enter')adrSendCode()">
+      <button class="adr-modal-btn" id="adr-login-submit" onclick="adrSendCode()">发送验证码</button>
+    </div>
+    <div id="adr-login-step2" style="display:none">
+      <input type="text" id="adr-login-code" placeholder="输入 6 位验证码" maxlength="6" style="letter-spacing:6px;text-align:center;font-size:20px" onkeydown="if(event.key==='Enter')adrVerifyCode()">
+      <button class="adr-modal-btn" id="adr-login-verify" onclick="adrVerifyCode()">确认登录</button>
+      <div style="margin-top:8px;font-size:13px"><a href="#" onclick="adrResendCode();return false" style="color:#1677ff">没收到？重新发送</a></div>
+    </div>
     <div class="adr-modal-msg" id="adr-login-msg"></div>
   </div>
 </div>
