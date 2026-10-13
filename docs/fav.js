@@ -29,10 +29,39 @@
     localStorage.setItem(KEY, JSON.stringify(favs));
   }
   function rowToFav(r) {
-    return { u: r.url, t: r.title || "", s: r.source || "", d: r.date || "", b: r.brief || "" };
+    return { u: r.url, t: r.title || "", s: r.source || "", d: r.date || "", b: r.brief || "", c: r.category || autoCategorize(r.source || "", r.title || "", r.brief || "") };
   }
   function favToRow(f, userId) {
-    return { url: f.u, title: f.t || "", source: f.s || "", date: f.d || "", brief: f.b || "", user_id: userId };
+    return { url: f.u, title: f.t || "", source: f.s || "", date: f.d || "", brief: f.b || "", category: f.c || autoCategorize(f.s || "", f.t || "", f.b || ""), user_id: userId };
+  }
+
+  /* ── AI 自动分类 ── */
+  var CATEGORIES = [
+    { name: "工具/框架", icon: "🔧", kw: ["github","框架","工具","sdk","cli","部署","开源","库","plugin","插件","vscode","docker","api","前端","后端","web"] },
+    { name: "模型/算法", icon: "🤖", kw: ["模型","llm","算法","huggingface","推理","训练","fine-tun","gpt","transformer","embedding","量化","蒸馏","token"] },
+    { name: "灵感/案例", icon: "💡", kw: ["product hunt","案例","应用","产品","创意","设计","灵感","project","产品"] },
+    { name: "学习/方法", icon: "📚", kw: ["教程","方法","论文","研究","评测","学术","benchmark","survey","指南","课程","学习","arxiv"] }
+  ];
+  function autoCategorize(source, title, brief) {
+    var text = (source + " " + title + " " + brief).toLowerCase();
+    var scores = {};
+    CATEGORIES.forEach(function (cat) {
+      scores[cat.name] = 0;
+      cat.kw.forEach(function (kw) {
+        if (text.indexOf(kw) >= 0) scores[cat.name]++;
+      });
+    });
+    var best = "行业趋势", bestScore = 0;
+    for (var name in scores) {
+      if (scores[name] > bestScore) { bestScore = scores[name]; best = name; }
+    }
+    return best;
+  }
+  function getCategoryInfo(name) {
+    for (var i = 0; i < CATEGORIES.length; i++) {
+      if (CATEGORIES[i].name === name) return CATEGORIES[i];
+    }
+    return { name: "行业趋势", icon: "📊", kw: [] };
   }
 
   /* ── 认证相关 ── */
@@ -347,11 +376,13 @@
     if (!b.classList || !b.classList.contains("fav-btn")) return;
     var u = b.getAttribute("data-u");
 
+    var _t = b.getAttribute("data-t"), _s = b.getAttribute("data-s"),
+        _d = b.getAttribute("data-d"), _b = b.getAttribute("data-b");
+    var _c = autoCategorize(_s || "", _t || "", _b || "");
+
     /* 未登录 → 一律弹登录弹窗 */
     if (!isLoggedIn()) {
-      pendingFav = { t: b.getAttribute("data-t"), u: u,
-                     s: b.getAttribute("data-s"), d: b.getAttribute("data-d"),
-                     b: b.getAttribute("data-b") };
+      pendingFav = { t: _t, u: u, s: _s, d: _d, b: _b, c: _c };
       showLoginModal();
       return;
     }
@@ -364,9 +395,7 @@
       cloudRemove(u);
     } else {
       /* 收藏 */
-      var fav = { t: b.getAttribute("data-t"), u: u,
-                  s: b.getAttribute("data-s"), d: b.getAttribute("data-d"),
-                  b: b.getAttribute("data-b") };
+      var fav = { t: _t, u: u, s: _s, d: _d, b: _b, c: _c };
       cache.push(fav);
       localSave(cache);
       refreshAll();
@@ -379,6 +408,7 @@
   var filterDate = "";
   var filterFrom = "";
   var filterTo = "";
+  var filterCategory = "";
 
   window.adrToggleSort = function () { sortDesc = !sortDesc; renderFavPage(); };
 
@@ -397,6 +427,11 @@
     renderFavPage();
   };
 
+  window.adrFilterCategory = function (cat) {
+    filterCategory = (filterCategory === cat) ? "" : cat;
+    renderFavPage();
+  };
+
   /* ── 收藏夹页面渲染 ── */
   function renderFavPage() {
     var list = document.getElementById("fav-list");
@@ -404,9 +439,16 @@
     if (!isLoggedIn()) {
       list.innerHTML = '<p style="color:#8a919c;font-size:14px;margin:12px 0">请先登录查看收藏。</p>';
       document.getElementById("fav-count") && (document.getElementById("fav-count").textContent = "");
+      renderCategoryTabs([]);
       return;
     }
     var favs = load();
+    /* 确保每条收藏都有分类（兼容旧数据） */
+    favs.forEach(function (f) {
+      if (!f.c) f.c = autoCategorize(f.s || "", f.t || "", f.b || "");
+    });
+    /* 渲染分类 tab */
+    renderCategoryTabs(favs);
     var q = (document.getElementById("fav-q").value || "").toLowerCase();
     var items = favs.filter(function (f) {
       if (q && ((f.t || "") + " " + (f.b || "") + " " + (f.s || "")).toLowerCase().indexOf(q) < 0) return false;
@@ -414,6 +456,7 @@
       if (filterDate && d !== filterDate) return false;
       if (filterFrom && d < filterFrom) return false;
       if (filterTo && d > filterTo) return false;
+      if (filterCategory && f.c !== filterCategory) return false;
       return true;
     });
     items.sort(function (a, b) {
@@ -447,6 +490,12 @@
       card.appendChild(h);
       var meta = document.createElement("div");
       meta.className = "tags";
+      /* 分类标签 */
+      var catInfo = getCategoryInfo(f.c || "行业趋势");
+      var catTag = document.createElement("span");
+      catTag.style.cssText = "background:#f0f7ff;color:#1677ff;border-radius:6px;padding:1px 8px;margin-right:8px;font-size:12px";
+      catTag.textContent = catInfo.icon + " " + catInfo.name;
+      meta.appendChild(catTag);
       var src = document.createElement("span");
       src.className = "tag-src"; src.textContent = f.s || "";
       meta.appendChild(src);
@@ -459,6 +508,30 @@
       }
       list.appendChild(card);
     });
+  }
+
+  /* ── 分类 tab 渲染 ── */
+  function renderCategoryTabs(favs) {
+    var container = document.getElementById("fav-categories");
+    if (!container) return;
+    var counts = { "全部": favs.length };
+    CATEGORIES.forEach(function (cat) { counts[cat.name] = 0; });
+    counts["行业趋势"] = 0;
+    favs.forEach(function (f) {
+      var c = f.c || "行业趋势";
+      counts[c] = (counts[c] || 0) + 1;
+    });
+    var html = "";
+    var allActive = filterCategory === "" ? " style=\"background:#1677ff;color:#fff\"" : "";
+    html += '<button class="fav-cat-tab" onclick="adrFilterCategory(\'\')"' + allActive + ' style="padding:4px 12px;border:1px solid #d9dde3;border-radius:16px;font-size:13px;cursor:pointer;margin:2px;background:' + (filterCategory === "" ? "#1677ff" : "#fff") + ';color:' + (filterCategory === "" ? "#fff" : "#333") + '">全部(' + counts["全部"] + ')</button>';
+    CATEGORIES.forEach(function (cat) {
+      var active = filterCategory === cat.name;
+      html += '<button class="fav-cat-tab" onclick="adrFilterCategory(\'' + cat.name + '\')" style="padding:4px 12px;border:1px solid #d9dde3;border-radius:16px;font-size:13px;cursor:pointer;margin:2px;background:' + (active ? "#1677ff" : "#fff") + ';color:' + (active ? "#fff" : "#333") + '">' + cat.icon + ' ' + cat.name + '(' + (counts[cat.name] || 0) + ')</button>';
+    });
+    /* 行业趋势（不在 CATEGORIES 数组里的默认分类） */
+    var trendActive = filterCategory === "行业趋势";
+    html += '<button class="fav-cat-tab" onclick="adrFilterCategory(\'行业趋势\')" style="padding:4px 12px;border:1px solid #d9dde3;border-radius:16px;font-size:13px;cursor:pointer;margin:2px;background:' + (trendActive ? "#1677ff" : "#fff") + ';color:' + (trendActive ? "#fff" : "#333") + '">📊 行业趋势(' + (counts["行业趋势"] || 0) + ')</button>';
+    container.innerHTML = html;
   }
 
   window.adrExport = function () {

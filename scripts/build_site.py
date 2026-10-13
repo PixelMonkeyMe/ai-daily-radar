@@ -212,7 +212,7 @@ def fav_bar(prefix):
             f'· 点条目旁的 ☆ 即可收藏</a></div>')
 
 
-def render_summary(rep):
+def render_summary(rep, date=""):
     s = rep.get("summary")
     if not s:
         return ""
@@ -223,8 +223,15 @@ def render_summary(rep):
         f'target="_blank" rel="noopener"><b>{esc(p.get("title"))}</b></a>'
         f'<br>{esc(p.get("reason"))}</div>'
         for p in s.get("top_picks", []))
+    overview_brief = esc((s.get("overview") or "")[:100])
+    summary_btn = ""
+    if date:
+        summary_btn = (f'<button class="fav-btn" title="收藏" '
+                       f'data-t="今日总结 · {esc(date)}" data-u="summary://{esc(date)}" '
+                       f'data-s="AI 日报总结" data-d="{esc(date)}" '
+                       f'data-b="{overview_brief}">☆</button>')
     return f"""<div class="card summary-card">
-<h2 class="summary-title">今日总结 · AI 主编解读</h2>
+<h2 class="summary-title">今日总结 · AI 主编解读{summary_btn}</h2>
 <dl>
 <dt>今日总览</dt><dd>{esc(s.get("overview"))}</dd>
 <dt>核心结论</dt><dd>{conclusions}</dd>
@@ -402,7 +409,7 @@ def build_daily():
             nav='<a href="../index.html">最新日报</a><a href="../digests/index.html">周期汇总（周/月/季）</a><a href="../favorites.html">我的收藏夹</a>',
             favjs="../fav.js",
             pdfjs="../export_pdf.js",
-            body=fav_bar("../") + render_summary(rep) + cards + f'<div class="archive"><b>历史日报：</b>{links}</div>')
+            body=fav_bar("../") + render_summary(rep, rep["date"]) + cards + f'<div class="archive"><b>历史日报：</b>{links}</div>')
         with open(os.path.join(ARCHIVE, f"{rep['date']}.html"), "w", encoding="utf-8") as fo:
             fo.write(page)
 
@@ -452,7 +459,7 @@ def build_daily():
         + '<div><button class="export-pdf-btn" onclick="exportDailyPDF()">📄 导出当日日报为 PDF</button>'
         + '<div class="pdf-loading" id="pdf-loading">⏳ 正在生成 PDF，请稍候...</div></div>'
         + range_analyzer
-        + render_summary(latest)
+        + render_summary(latest, latest["date"])
         + latest_cards
         + archive_div
     )
@@ -565,6 +572,7 @@ def build_favorites():
   <button class="fav-date-reset" onclick="adrResetDate()">重置筛选</button>
 </div>
 <div class="tags" id="fav-count"></div>
+<div id="fav-categories" style="margin:10px 0"></div>
 </div>
 <div id="fav-list"></div>"""
     page = PAGE.format(
