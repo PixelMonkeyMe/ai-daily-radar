@@ -45,7 +45,22 @@ if [ -f "$ROOT/docs/export_pdf.js" ]; then
   fi
 fi
 
-# ── 2. Python 语法校验 ──
+# ── 2. JS 函数名一致性检查 ──
+echo ""
+echo "▸ JS 函数名一致性检查"
+if [ -f "$ROOT/docs/fav.js" ]; then
+  check_result=$(python "$ROOT/scripts/check_js_consistency.py" "$ROOT/docs/fav.js" 2>/dev/null)
+  if [ "$check_result" = "OK" ]; then
+    pass "docs/fav.js 函数名一致"
+  else
+    IFS='|' read -ra errs <<< "$check_result"
+    for e in "${errs[@]}"; do
+      fail "docs/fav.js: $e"
+    done
+  fi
+fi
+
+# ── 3. Python 语法校验 ──
 echo ""
 echo "▸ Python 语法校验"
 for f in "$ROOT/scripts/"*.py; do
