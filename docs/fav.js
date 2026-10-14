@@ -90,7 +90,7 @@
       console.warn('checkAuth error:', e);
       currentUser = null;
     }
-    updateAuthUI();
+    updateAuthUi();
     return currentUser;
   }
 
@@ -297,12 +297,12 @@
     if (!isLoggedIn()) return;
     try {
       var row = favToRow(fav, currentUser.id);
-      var res = await sb.from("favorites").upsert(row, { onConflict: "url,user_id" });
+      var res = await sb.from("favorites").insert(row);
       if (res.error) throw res.error;
       updateSyncStatus("已同步");
     } catch (e) {
-      console.warn("cloud add failed:", e);
-      updateSyncStatus("同步失败，稍后重试");
+      console.error("cloud add failed:", e);
+      updateSyncStatus("❌ 同步失败：" + (e.message || "请检查数据库权限"));
     }
   }
 
@@ -314,8 +314,8 @@
       if (res.error) throw res.error;
       updateSyncStatus("已同步");
     } catch (e) {
-      console.warn("cloud remove failed:", e);
-      updateSyncStatus("同步失败，稍后重试");
+      console.error("cloud remove failed:", e);
+      updateSyncStatus("❌ 同步失败：" + (e.message || "请检查数据库权限"));
     }
   }
 
@@ -361,7 +361,7 @@
       btns[i].title = on ? "取消收藏" : (isLoggedIn() ? "收藏" : "登录后收藏");
     }
     var chip = document.getElementById("fav-chip");
-    if (chip) chip.textContent = isLoggedIn() ? cache.length : "";
+    if (chip) chip.textContent = isLoggedIn() ? cache.length : "0";
   }
 
   function markAlreadyFav() {
@@ -385,6 +385,20 @@
       }
     }
   }
+
+  /* ── 拦截未登录用户点击收藏夹链接 ── */
+  document.addEventListener("click", function (ev) {
+    var el = ev.target;
+    /* 向上查找最近的 <a> 标签 */
+    while (el && el.tagName !== "A") el = el.parentElement;
+    if (!el) return;
+    var href = el.getAttribute("href") || "";
+    /* 匹配 favorites.html 结尾的链接 */
+    if (/favorites\.html(\#.*)?$/.test(href) && !isLoggedIn()) {
+      ev.preventDefault();
+      showLoginModal();
+    }
+  });
 
   /* ── 收藏按钮点击 ── */
   document.addEventListener("click", function (ev) {
