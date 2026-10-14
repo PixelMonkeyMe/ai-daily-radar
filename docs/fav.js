@@ -637,7 +637,7 @@
     /* 复用登录弹窗的 overlay 结构，创建临时弹窗 */
     var overlay = document.createElement("div");
     overlay.className = "adr-modal-overlay";
-    overlay.style.zIndex = "10001";
+    overlay.style.cssText = "display:flex;z-index:10001";
     overlay.innerHTML = '<div class="adr-modal" style="position:relative;max-width:680px;width:90%">' +
       '<button class="adr-modal-close" id="summary-modal-close">&times;</button>' +
       '<h3>' + (title || "今日总结 · " + date) + '</h3>' + html + '</div>';
