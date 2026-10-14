@@ -29,11 +29,12 @@
     localStorage.setItem(KEY, JSON.stringify(favs));
   }
   function rowToFav(r) {
-    return { u: r.url, t: r.title || "", s: r.source || "", d: r.date || "", b: r.brief || "", c: r.category || autoCategorize(r.source || "", r.title || "", r.brief || "") };
+    /* 始终用 autoCategorize 计算分类，不依赖数据库默认值（旧数据全是 '行业趋势'） */
+    return { u: r.url, t: r.title || "", s: r.source || "", d: r.date || "", b: r.brief || "", c: autoCategorize(r.source || "", r.title || "", r.brief || "") };
   }
   function favToRow(f, userId) {
-    /* 不传 category，由数据库默认值 '行业趋势' 填充，避免列不存在时写入失败 */
-    return { url: f.u, title: f.t || "", source: f.s || "", date: f.d || "", brief: f.b || "", user_id: userId };
+    var cat = f.c || autoCategorize(f.s || "", f.t || "", f.b || "");
+    return { url: f.u, title: f.t || "", source: f.s || "", date: f.d || "", brief: f.b || "", category: cat, user_id: userId };
   }
 
   /* ── AI 自动分类 ── */
@@ -508,7 +509,14 @@
       card.className = "card";
       var h = document.createElement("h2");
       var a = document.createElement("a");
-      a.href = f.u; a.target = "_blank"; a.rel = "noopener";
+      /* summary:// 链接 → 点击弹窗展示完整内容，而非跳转空白页 */
+      if (/^summary:\/\//.test(f.u)) {
+        a.href = "javascript:void(0)";
+        a.style.cursor = "pointer";
+        a.onclick = function () { showSummaryModal(f.u.replace("summary://", ""), f.t); };
+      } else {
+        a.href = f.u; a.target = "_blank"; a.rel = "noopener";
+      }
       a.textContent = f.t;
       h.appendChild(a);
       var btn = document.createElement("button");
@@ -572,6 +580,70 @@
     a.download = "ai-daily-radar-favorites.json";
     a.click();
     URL.revokeObjectURL(a.href);
+  };
+
+  /* ── 今日总结弹窗 ── */
+  var _summariesCache = null;
+
+  async function _loadSummaries() {
+    if (_summariesCache) return _summariesCache;
+    try {
+      /* summaries.json 路径：收藏夹页在根目录用 summaries.json，归档页用 ../summaries.json */
+      var prefix = window.location.pathname.indexOf("/archive/") >= 0 ? "../" : "";
+      var res = await fetch(prefix + "summaries.json");
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      _summariesCache = await res.json();
+      return _summariesCache;
+    } catch (e) {
+      console.warn("load summaries failed:", e);
+      _summariesCache = {};
+      return _summariesCache;
+    }
+  }
+
+  window.showSummaryModal = async function (date, title) {
+    var summaries = await _loadSummaries();
+    var s = summaries[date];
+    /* 构造内容 HTML */
+    var html = '<div style="max-height:70vh;overflow-y:auto;padding:0 4px;line-height:1.8">';
+    if (!s) {
+      html += '<p style="color:#8a919c">该日总结内容暂未索引，请查看对应日报页面。</p>';
+      html += '<p style="font-size:13px"><a href="' + (window.location.pathname.indexOf("/archive/") >= 0 ? "../" : "") + 'archive/' + date + '.html" target="_blank" style="color:#1677ff">打开 ' + date + ' 日报 →</a></p>';
+    } else {
+      html += '<h4 style="color:#203a43;margin:0 0 8px">📋 今日总览</h4>';
+      html += '<p style="margin:0 0 16px">' + (s.overview || "") + '</p>';
+      if (s.conclusions && s.conclusions.length) {
+        html += '<h4 style="color:#203a43;margin:0 0 8px">🎯 核心结论</h4><ul style="margin:0 0 16px;padding-left:20px">';
+        s.conclusions.forEach(function (c) { html += '<li style="margin:4px 0">' + c + '</li>'; });
+        html += '</ul>';
+      }
+      if (s.top_picks && s.top_picks.length) {
+        html += '<h4 style="color:#203a43;margin:0 0 8px">⭐ 今日重点关注</h4>';
+        s.top_picks.forEach(function (p) {
+          html += '<div style="margin:0 0 8px"><b>' + (p.title || "") + '</b><br><span style="color:#555;font-size:14px">' + (p.reason || "") + '</span></div>';
+        });
+        html += '<div style="margin-bottom:16px"></div>';
+      }
+      if (s.industry_use) {
+        html += '<h4 style="color:#203a43;margin:0 0 8px">💡 对行业有什么用？</h4>';
+        html += '<p style="margin:0 0 16px">' + s.industry_use + '</p>';
+      }
+      if (s.risks) {
+        html += '<h4 style="color:#203a43;margin:0 0 8px">⚠️ 风险提示</h4>';
+        html += '<p style="margin:0">' + s.risks + '</p>';
+      }
+    }
+    html += '</div>';
+    /* 复用登录弹窗的 overlay 结构，创建临时弹窗 */
+    var overlay = document.createElement("div");
+    overlay.className = "adr-modal-overlay";
+    overlay.style.zIndex = "10001";
+    overlay.innerHTML = '<div class="adr-modal" style="position:relative;max-width:680px;width:90%">' +
+      '<button class="adr-modal-close" id="summary-modal-close">&times;</button>' +
+      '<h3>' + (title || "今日总结 · " + date) + '</h3>' + html + '</div>';
+    document.body.appendChild(overlay);
+    overlay.querySelector("#summary-modal-close").onclick = function () { overlay.remove(); };
+    overlay.onclick = function (e) { if (e.target === overlay) overlay.remove(); };
   };
 
   /* ── 初始化 ── */

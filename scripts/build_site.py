@@ -627,10 +627,33 @@ def sync_items_to_supabase():
         print(f"Supabase sync failed: {e}")
 
 
+def build_summaries():
+    """生成 summaries.json，供收藏夹展示今日总结收藏的完整内容"""
+    files = sorted(glob.glob(os.path.join(REPORTS_DIR, "*.json")), reverse=True)
+    summaries = {}
+    for f in files:
+        rep = json.load(open(f, encoding="utf-8"))
+        s = rep.get("summary")
+        if not s:
+            continue
+        summaries[rep["date"]] = {
+            "overview": s.get("overview", ""),
+            "conclusions": s.get("conclusions", []),
+            "top_picks": [{"title": p.get("title", ""), "reason": p.get("reason", "")}
+                          for p in s.get("top_picks", [])],
+            "industry_use": s.get("industry_use", ""),
+            "risks": s.get("risks", "")
+        }
+    with open(os.path.join(DOCS, "summaries.json"), "w", encoding="utf-8") as f:
+        json.dump(summaries, f, ensure_ascii=False, indent=2)
+    print(f"summaries.json: {len(summaries)} summaries")
+
+
 def main():
     dates = build_daily()
     build_digests()
     build_favorites()
+    build_summaries()
     # docs/fav.js 直接维护，不再从常量写入
     # 复制 export_pdf.js 到 docs/
     export_pdf_src = os.path.join(os.path.dirname(__file__), "export_pdf.js")
