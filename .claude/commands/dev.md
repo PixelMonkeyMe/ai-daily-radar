@@ -14,13 +14,14 @@
 3. 每次修改 JS 后运行语法校验
 4. 运行 `bash scripts/test.sh` 必须全部通过
 
-## 第三步：自测（不可跳过）
-1. 检查代码逻辑是否覆盖 PRD 所有验收标准
-2. 检查边界条件是否处理
-3. 涉及数据库改动时：通过 Supabase API 验证写入/读回
-4. **Console 自检**：用 Playwright 或 node 加载改动后的 JS，检查是否有 ReferenceError / TypeError / SyntaxError
-5. **函数名一致性检查**：所有跨作用域调用的函数（window.xxx = ...），调用方和定义方大小写必须完全一致
-6. **数据流 API 验证**：凡涉及云端写入的功能，改动后必须 `curl` Supabase API 确认数据实际落库（不能只看 UI）
+## 第三步：自测（Dev 的技术门控，QA 接手前必须完成）
+以下全部是 **Dev 自己的事**，不是 QA 的事：
+1. `bash scripts/test.sh` 必须全部通过（含 JS 语法、函数名一致性、构建）
+2. **Console 自检**：用 Playwright 加载页面，检查 Console 是否有 ERROR（ReferenceError / TypeError / SyntaxError 等），有则修好再提交
+3. **数据流 API 验证**：凡涉及云端写入的功能，`curl` Supabase API 确认数据实际落库（"UI 显示正确" ≠ "数据落库"）
+4. **状态切换自测**：登录 → 操作 → 登出 → 重登，确认数据不丢
+5. 检查代码逻辑是否覆盖 PRD 所有验收标准
+6. 检查边界条件是否处理
 
 ## 第四步：提交代码
 `git add` + `git commit`（暂不推送）
