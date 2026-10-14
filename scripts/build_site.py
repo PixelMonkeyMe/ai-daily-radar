@@ -123,6 +123,41 @@ CSS = """
     .wrap { max-width: 100%; padding: 0; }
     .card { box-shadow: none; border: 1px solid #ddd; page-break-inside: avoid; }
   }
+  /* ── 响应式布局 ── */
+  @media (max-width: 768px) {
+    .wrap { padding: 16px 12px 40px; }
+    .top-inner { padding: 0 4px; }
+    h1 { font-size: 22px; }
+    .nav { flex-wrap: wrap; gap: 6px; }
+    .nav a { margin-right: 10px; font-size: 13px; white-space: nowrap; }
+    .card { padding: 16px 16px 12px; margin: 12px 0; }
+    .card h2 { font-size: 16px; }
+    .story-group { padding: 14px 16px; }
+    .fav-bar a { font-size: 13.5px; padding: 10px 12px; }
+    .fav-search { min-width: 140px; font-size: 13px; }
+    .fav-date-filter { font-size: 12px; }
+    .range-analyzer { padding: 14px 16px; }
+    .adr-modal { padding: 24px 20px 18px; }
+    .adr-modal h3 { font-size: 18px; }
+  }
+  @media (max-width: 480px) {
+    header.top { padding: 24px 12px 20px; }
+    h1 { font-size: 19px; }
+    .meta { font-size: 12px; }
+    .badge { font-size: 11px; padding: 2px 8px; }
+    .nav a { font-size: 12px; margin-right: 8px; }
+    .adr-nav-auth { font-size: 12px; }
+    .card { padding: 12px 12px 10px; margin: 10px 0; border-radius: 10px; }
+    .card h2 { font-size: 15px; }
+    .brief, dt, dd, .trend, .item-line { font-size: 13px !important; }
+    .fav-btn { font-size: 14px; }
+    .fav-bar a { font-size: 12.5px; padding: 8px 10px; }
+    .fav-chip { font-size: 11px; padding: 0 7px; }
+    .archive a { font-size: 13px; margin-right: 10px; }
+    .adr-modal { width: 96%; padding: 20px 16px 14px; }
+    .summary-title { font-size: 17px !important; }
+    .export-pdf-btn { font-size: 13px; padding: 6px 14px; }
+  }
 """
 
 PAGE = """<!DOCTYPE html>

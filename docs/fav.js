@@ -604,46 +604,55 @@
   window.showSummaryModal = async function (date, title) {
     var summaries = await _loadSummaries();
     var s = summaries[date];
-    /* 构造内容 HTML */
-    var html = '<div style="max-height:70vh;overflow-y:auto;padding:0 4px;line-height:1.8">';
+    var html = '<div style="padding:0 2px;line-height:1.75;text-align:left">';
     if (!s) {
       html += '<p style="color:#8a919c">该日总结内容暂未索引，请查看对应日报页面。</p>';
       html += '<p style="font-size:13px"><a href="' + (window.location.pathname.indexOf("/archive/") >= 0 ? "../" : "") + 'archive/' + date + '.html" target="_blank" style="color:#1677ff">打开 ' + date + ' 日报 →</a></p>';
     } else {
-      html += '<h4 style="color:#203a43;margin:0 0 8px">📋 今日总览</h4>';
-      html += '<p style="margin:0 0 16px">' + (s.overview || "") + '</p>';
+      html += '<h4 style="color:#203a43;margin:0 0 6px"> 今日总览</h4>';
+      html += '<p style="margin:0 0 12px">' + (s.overview || "") + '</p>';
       if (s.conclusions && s.conclusions.length) {
-        html += '<h4 style="color:#203a43;margin:0 0 8px">🎯 核心结论</h4><ul style="margin:0 0 16px;padding-left:20px">';
-        s.conclusions.forEach(function (c) { html += '<li style="margin:4px 0">' + c + '</li>'; });
+        html += '<h4 style="color:#203a43;margin:0 0 6px">🎯 核心结论</h4><ul style="margin:0 0 12px;padding-left:20px">';
+        s.conclusions.forEach(function (c) { html += '<li style="margin:3px 0">' + c + '</li>'; });
         html += '</ul>';
       }
       if (s.top_picks && s.top_picks.length) {
-        html += '<h4 style="color:#203a43;margin:0 0 8px">⭐ 今日重点关注</h4>';
+        html += '<h4 style="color:#203a43;margin:0 0 6px">⭐ 今日重点关注</h4>';
         s.top_picks.forEach(function (p) {
-          html += '<div style="margin:0 0 8px"><b>' + (p.title || "") + '</b><br><span style="color:#555;font-size:14px">' + (p.reason || "") + '</span></div>';
+          html += '<div style="margin:0 0 6px"><b>' + (p.title || "") + '</b><br><span style="color:#555;font-size:13.5px">' + (p.reason || "") + '</span></div>';
         });
-        html += '<div style="margin-bottom:16px"></div>';
+        html += '<div style="margin-bottom:12px"></div>';
       }
       if (s.industry_use) {
-        html += '<h4 style="color:#203a43;margin:0 0 8px">💡 对行业有什么用？</h4>';
-        html += '<p style="margin:0 0 16px">' + s.industry_use + '</p>';
+        html += '<h4 style="color:#203a43;margin:0 0 6px">💡 对行业有什么用？</h4>';
+        html += '<p style="margin:0 0 12px">' + s.industry_use + '</p>';
       }
       if (s.risks) {
-        html += '<h4 style="color:#203a43;margin:0 0 8px">⚠️ 风险提示</h4>';
+        html += '<h4 style="color:#203a43;margin:0 0 6px">⚠️ 风险提示</h4>';
         html += '<p style="margin:0">' + s.risks + '</p>';
       }
     }
     html += '</div>';
-    /* 复用登录弹窗的 overlay 结构，创建临时弹窗 */
+    var _prevBodyOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
     var overlay = document.createElement("div");
     overlay.className = "adr-modal-overlay";
     overlay.style.cssText = "display:flex;z-index:10001";
-    overlay.innerHTML = '<div class="adr-modal" style="position:relative;max-width:680px;width:90%">' +
-      '<button class="adr-modal-close" id="summary-modal-close">&times;</button>' +
-      '<h3>' + (title || "今日总结 · " + date) + '</h3>' + html + '</div>';
+    var modal = document.createElement("div");
+    modal.className = "adr-modal";
+    modal.style.cssText = "position:relative;max-width:680px;width:92%;max-height:92vh;overflow-y:auto";
+    modal.innerHTML = '<button class="adr-modal-close" id="summary-modal-close">&times;</button>' +
+      '<h3>' + (title || "今日总结 · " + date) + '</h3>' + html;
+    overlay.appendChild(modal);
     document.body.appendChild(overlay);
-    overlay.querySelector("#summary-modal-close").onclick = function () { overlay.remove(); };
-    overlay.onclick = function (e) { if (e.target === overlay) overlay.remove(); };
+    function _closeModal() {
+      overlay.remove();
+      document.body.style.overflow = _prevBodyOverflow || "";
+    }
+    document.getElementById("summary-modal-close").onclick = _closeModal;
+    overlay.onclick = function (e) { if (e.target === overlay) _closeModal(); };
+    document.addEventListener("keydown", _closeModal);
+    modal.addEventListener("wheel", function (e) { e.stopPropagation(); }, { passive: true });
   };
 
   /* ── 初始化 ── */
