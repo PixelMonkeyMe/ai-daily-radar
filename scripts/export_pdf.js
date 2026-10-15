@@ -85,6 +85,91 @@ function _generatePDF(wrap, filename) {
   });
 }
 
+
+// Get today summary full content and inject into DOM
+function _injectSummaryContent() {
+  var summaryCards = document.querySelectorAll('#fav-list .card');
+  var promises = [];
+  
+  summaryCards.forEach(function(card) {
+    var title = card.querySelector('h2');
+    if (!title) return;
+    var titleText = title.textContent || '';
+    
+    if (titleText.indexOf('今日总结') !== -1) {
+      var dateMatch = titleText.match(/(\d{4}-\d{2}-\d{2})/);
+      if (dateMatch) {
+        var date = dateMatch[1];
+        var p = fetch('summaries.json').then(function(res) {
+          return res.json();
+        }).then(function(data) {
+          if (data[date]) {
+            var summary = data[date];
+            var contentDiv = document.createElement('div');
+            contentDiv.className = 'summary-full-content';
+            contentDiv.style.cssText = 'margin-top:12px;padding:12px;background:#f7fbfc;border-radius:8px;font-size:13px;';
+            
+            if (summary.overview) {
+              contentDiv.innerHTML += '<p><b>概述:</b> ' + summary.overview + '</p>';
+            }
+            if (summary.conclusions) {
+              contentDiv.innerHTML += '<p><b>结论:</b> ' + summary.conclusions.join('; ') + '</p>';
+            }
+            if (summary.top_picks) {
+              contentDiv.innerHTML += '<p><b>精选:</b> ' + summary.top_picks + '</p>';
+            }
+            if (summary.industry_use) {
+              contentDiv.innerHTML += '<p><b>行业应用:</b> ' + summary.industry_use + '</p>';
+            }
+            if (summary.risks) {
+              contentDiv.innerHTML += '<p><b>风险:</b> ' + summary.risks + '</p>';
+            }
+            
+            var existing = card.querySelector('.summary-full-content');
+            if (existing) existing.remove();
+            
+            var brief = card.querySelector('.brief');
+            if (brief) {
+              brief.parentNode.insertBefore(contentDiv, brief.nextSibling);
+            } else {
+              card.appendChild(contentDiv);
+            }
+          }
+        });
+        promises.push(p);
+      }
+    }
+  });
+  
+  return Promise.all(promises);
+}
+
+// Get current filter state
+function _getFilterState() {
+  return {
+    search: document.getElementById('fav-q') ? document.getElementById('fav-q').value : '',
+    dateFrom: document.getElementById('fav-date-from') ? document.getElementById('fav-date-from').value : '',
+    dateTo: document.getElementById('fav-date-to') ? document.getElementById('fav-date-to').value : '',
+    scrollTop: window.scrollY
+  };
+}
+
+// Restore filter state
+function _restoreFilterState(state) {
+  if (state.search && document.getElementById('fav-q')) {
+    document.getElementById('fav-q').value = state.search;
+  }
+  if (state.dateFrom && document.getElementById('fav-date-from')) {
+    document.getElementById('fav-date-from').value = state.dateFrom;
+  }
+  if (state.dateTo && document.getElementById('fav-date-to')) {
+    document.getElementById('fav-date-to').value = state.dateTo;
+  }
+  if (state.scrollTop) {
+    window.scrollTo(0, state.scrollTop);
+  }
+}
+
 function exportDailyPDF() {
   var btn = document.querySelector('.export-pdf-btn');
   var loading = document.getElementById('pdf-loading');

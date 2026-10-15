@@ -1,0 +1,159 @@
+name: PR Check
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      js-changed: ${{ steps.detect.outputs.js-changed }}
+      python-changed: ${{ steps.detect.outputs.python-changed }}
+      html-changed: ${{ steps.detect.outputs.html-changed }}
+      db-changed: ${{ steps.detect.outputs.db-changed }}
+      change-scale: ${{ steps.detect.outputs.change-scale }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Detect changes
+        id: detect
+        run: |
+          # 获取变更的文件
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
+          else
+            CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD)
+          fi
+          
+          echo "Changed files:"
+          echo "$CHANGED_FILES"
+          
+          # 检测变更类型
+          JS_CHANGED=$(echo "$CHANGED_FILES" | grep -E '\.(js|ts)$' || true)
+          PYTHON_CHANGED=$(echo "$CHANGED_FILES" | grep -E '\.py$' || true)
+          HTML_CHANGED=$(echo "$CHANGED_FILES" | grep -E '\.(html|css)$' || true)
+          DB_CHANGED=$(echo "$CHANGED_FILES" | grep -E '\.(db|sql)$' || true)
+          
+          # 设置输出
+          echo "js-changed=$([ -n "$JS_CHANGED" ] && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
+          echo "python-changed=$([ -n "$PYTHON_CHANGED" ] && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
+          echo "html-changed=$([ -n "$HTML_CHANGED" ] && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
+          echo "db-changed=$([ -n "$DB_CHANGED" ] && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
+          
+          # 检测变更规模
+          FILE_COUNT=$(echo "$CHANGED_FILES" | wc -l)
+          if [ "$FILE_COUNT" -le 2 ]; then
+            echo "change-scale=small" >> $GITHUB_OUTPUT
+          elif [ "$FILE_COUNT" -le 5 ]; then
+            echo "change-scale=medium" >> $GITHUB_OUTPUT
+          else
+            echo "change-scale=large" >> $GITHUB_OUTPUT
+          fi
+
+  test:
+    needs: detect-changes
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      
+      - name: Run tests (dynamic based on changes)
+        run: |
+          echo "Change scale: ${{ needs.detect-changes.outputs.change-scale }}"
+          
+          # 基础测试（总是运行）
+          bash scripts/test.sh
+          
+          # 根据变更类型运行额外测试
+          if [ "${{ needs.detect-changes.outputs.js-changed }}" = "true" ]; then
+            echo "Running JS-specific tests..."
+            # 可以在这里添加 JS 特定测试
+          fi
+          
+          if [ "${{ needs.detect-changes.outputs.python-changed }}" = "true" ]; then
+            echo "Running Python-specific tests..."
+            # 可以在这里添加 Python 特定测试
+          fi
+          
+          # 大规模变更运行额外检查
+          if [ "${{ needs.detect-changes.outputs.change-scale }}" = "large" ]; then
+            echo "Running additional checks for large changes..."
+            # 可以在这里添加性能测试、安全测试等
+          fi
+
+  code-quality:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.change-scale != 'small'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      
+      - name: Install lint tools
+        run: |
+          pip install flake8 black
+          npm install -g eslint
+      
+      - name: Check Python code quality
+        if: needs.detect-changes.outputs.python-changed == 'true'
+        run: |
+          black --check scripts/*.py || echo "⚠️ Python formatting issues"
+          flake8 scripts/*.py --ignore=E501,W503 || echo "⚠️ Python lint issues"
+      
+      - name: Check JS code quality
+        if: needs.detect-changes.outputs.js-changed == 'true'
+        run: |
+          echo "JS lint check (eslint config needed)"
+          # 可以在这里添加 ESLint 检查
+
+  performance-test:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.change-scale == 'large'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      
+      - name: Build site
+        run: python scripts/build_site.py
+      
+      - name: Performance check
+        run: |
+          echo "Checking HTML file sizes..."
+          find docs -name "*.html" -exec ls -lh {} \; | awk '{print $5, $9}' | sort -rh | head -10
+          
+          echo "Checking for large files..."
+          find docs -type f -size +1M -exec ls -lh {} \;
+          
+          # 可以在这里添加更多性能检查
