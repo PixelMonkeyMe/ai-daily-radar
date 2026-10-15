@@ -1,0 +1,531 @@
+- generic [active] [ref=f3e1]:
+  - generic [ref=f3e2]:
+    - generic [ref=f3e3]:
+      - link "Skip to content" [ref=f3e4] [cursor=pointer]:
+        - /url: "#start-of-content"
+      - banner [ref=f3e9]:
+        - heading "Navigation Menu" [level=2] [ref=f3e10]
+        - generic [ref=f3e11]:
+          - link "Homepage" [ref=f3e13] [cursor=pointer]:
+            - /url: /
+          - generic [ref=f3e16]:
+            - navigation "Global" [ref=f3e17]:
+              - list [ref=f3e18]:
+                - listitem [ref=f3e19]:
+                  - button "Platform" [ref=f3e21] [cursor=pointer]
+                - listitem [ref=f3e24]:
+                  - button "Solutions" [ref=f3e26] [cursor=pointer]
+                - listitem [ref=f3e29]:
+                  - button "Resources" [ref=f3e31] [cursor=pointer]
+                - listitem [ref=f3e34]:
+                  - button "Open Source" [ref=f3e36] [cursor=pointer]
+                - listitem [ref=f3e39]:
+                  - button "Enterprise" [ref=f3e41] [cursor=pointer]
+                - listitem [ref=f3e44]:
+                  - link "Pricing" [ref=f3e45] [cursor=pointer]:
+                    - /url: https://github.com/pricing
+            - generic [ref=f3e46]:
+              - button "Search or jump to, type / to search" [ref=f3e48] [cursor=pointer]
+              - link "Sign in" [ref=f3e55] [cursor=pointer]:
+                - /url: /login?return_to=https%3A%2F%2Fgithub.com%2FKKKKhazix%2FAIHOT
+              - link "Sign up" [ref=f3e58] [cursor=pointer]:
+                - /url: /signup?ref_cta=Sign+up&ref_loc=header+logged+out&ref_page=%2F%3Cuser-name%3E%2F%3Crepo-name%3E&source=header-repo&source_repo=KKKKhazix%2FAIHOT
+              - button "Appearance settings" [ref=f3e61] [cursor=pointer]
+    - main [ref=f3e68]:
+      - generic "Global navigation menu" [ref=f3e71]:
+        - navigation "Breadcrumbs" [ref=f3e74]:
+          - list [ref=f3e75]:
+            - listitem [ref=f3e76]:
+              - link "KKKKhazix" [ref=f3e77] [cursor=pointer]:
+                - /url: /KKKKhazix
+            - listitem [ref=f3e79]:
+              - link "AIHOT" [ref=f3e80] [cursor=pointer]:
+                - /url: /KKKKhazix/AIHOT
+        - heading "Repository navigation" [level=2] [ref=f3e83]
+        - navigation "Repository" [ref=f3e84]:
+          - list [ref=f3e85]:
+            - listitem [ref=f3e86]:
+              - link "Code" [ref=f3e87] [cursor=pointer]:
+                - /url: /KKKKhazix/AIHOT
+            - listitem [ref=f3e92]:
+              - link "Issues" [ref=f3e93] [cursor=pointer]:
+                - /url: /KKKKhazix/AIHOT/issues
+            - listitem [ref=f3e99]:
+              - link "Pull requests (2)" [ref=f3e100] [cursor=pointer]:
+                - /url: /KKKKhazix/AIHOT/pulls
+                - generic [ref=f3e104]: Pull requests
+                - generic [ref=f3e105]:
+                  - generic [aria-hidden] [ref=f3e106]: "2"
+                  - generic [ref=f3e107]: (2)
+            - listitem [ref=f3e108]:
+              - link "Discussions" [ref=f3e109] [cursor=pointer]:
+                - /url: /KKKKhazix/AIHOT/discussions
+            - listitem [ref=f3e114]:
+              - link "Actions" [ref=f3e115] [cursor=pointer]:
+                - /url: /KKKKhazix/AIHOT/actions
+            - listitem [ref=f3e120]:
+              - link "Security and quality (2)" [ref=f3e121] [cursor=pointer]:
+                - /url: /KKKKhazix/AIHOT/security
+                - generic [ref=f3e125]: Security and quality
+                - generic [ref=f3e126]:
+                  - generic [aria-hidden] [ref=f3e127]: "2"
+                  - generic [ref=f3e128]: (2)
+            - listitem [ref=f3e129]:
+              - link "Insights" [ref=f3e130] [cursor=pointer]:
+                - /url: /KKKKhazix/AIHOT/pulse
+      - generic [ref=f3e1410]:
+        - generic [ref=f3e1412]:
+          - generic [ref=f3e1415]:
+            - generic [ref=f3e1416]:
+              - generic [ref=f3e1417]:
+                - heading "Collapse file tree" [level=2] [ref=f3e1418]:
+                  - button "Collapse file tree" [expanded] [ref=f3e1419] [cursor=pointer]
+                - heading "Files" [level=2] [ref=f3e1423]
+              - generic [ref=f3e1424]:
+                - button "main branch" [ref=f3e1426] [cursor=pointer]:
+                  - generic [ref=f3e1427]: main
+                - button "Search this repository (forward slash)" [ref=f3e1432] [cursor=pointer]
+            - combobox "Go to file" [ref=f3e1440]
+            - navigation "File Tree Navigation" [ref=f3e1447]:
+              - tree "Files" [ref=f3e1449]:
+                - treeitem ".claude" [level=1] [ref=f3e1450]
+                - treeitem ".github" [level=1] [ref=f3e1462]
+                - treeitem "apps" [level=1] [ref=f3e1474]
+                - treeitem "assets" [level=1] [ref=f3e1486]
+                - treeitem "database" [level=1] [ref=f3e1498]
+                - treeitem "deploy" [level=1] [ref=f3e1510]
+                - treeitem "docs" [expanded] [level=1] [ref=f3e1522]:
+                  - group "docs" [ref=f3e1534]:
+                    - treeitem "assets" [level=2] [ref=f3e1535]
+                    - treeitem "examples" [level=2] [ref=f3e1550]
+                    - treeitem "architecture.md" [level=2] [ref=f3e1565]
+                    - treeitem "customize.md" [level=2] [ref=f3e1576]
+                    - treeitem "deploy.md" [level=2] [ref=f3e1587]
+                    - treeitem "grouping.md" [level=2] [ref=f3e1598]
+                    - treeitem "selection.md" [level=2] [ref=f3e1609]
+                    - treeitem "sources.md" [level=2] [ref=f3e1620]
+                    - treeitem "story-digest-evaluation.md" [level=2] [ref=f3e1631]
+                - treeitem "industry" [level=1] [ref=f3e1642]
+                - treeitem "modules" [level=1] [ref=f3e1654]
+                - treeitem "packages" [level=1] [ref=f3e1666]
+                - treeitem "scripts" [level=1] [ref=f3e1678]
+                - treeitem "site" [level=1] [ref=f3e1690]
+                - treeitem "tests" [level=1] [ref=f3e1702]
+                - treeitem ".dockerignore" [level=1] [ref=f3e1714]
+                - treeitem ".env.example" [level=1] [ref=f3e1722]
+                - treeitem ".gitignore" [level=1] [ref=f3e1730]
+                - treeitem "AGENTS.md" [level=1] [ref=f3e1738]
+                - treeitem "CLAUDE.md" [level=1] [ref=f3e1746]
+                - treeitem "CONTRIBUTING.md" [level=1] [ref=f3e1754]
+                - treeitem "Dockerfile" [level=1] [ref=f3e1762]
+                - treeitem "LICENSE" [level=1] [ref=f3e1770]
+                - treeitem "NOTICE" [level=1] [ref=f3e1778]
+                - treeitem "README.en.md" [level=1] [ref=f3e1786]
+                - treeitem "README.md" [level=1] [ref=f3e1794]
+                - treeitem "SECURITY.md" [level=1] [ref=f3e1802]
+                - treeitem "docker-compose.yml" [level=1] [ref=f3e1810]
+                - treeitem "package-lock.json" [level=1] [ref=f3e1818]
+                - treeitem "package.json" [level=1] [ref=f3e1826]
+                - treeitem "tsconfig.base.json" [level=1] [ref=f3e1834]
+          - slider "Draggable pane splitter" [ref=f3e1843]
+        - generic [ref=f3e1846]:
+          - generic [ref=f3e1850]:
+            - generic [ref=f3e1852]:
+              - navigation [ref=f3e1853]:
+                - heading "Breadcrumbs" [level=2] [ref=f3e1854]
+                - list [ref=f3e1855]:
+                  - listitem [ref=f3e1856]:
+                    - link "AIHOT" [ref=f3e1857] [cursor=pointer]:
+                      - /url: /KKKKhazix/AIHOT/tree/main
+                  - listitem [ref=f3e1858]:
+                    - text: /
+                    - link "docs" [ref=f3e1859] [cursor=pointer]:
+                      - /url: /KKKKhazix/AIHOT/tree/main/docs
+              - generic [ref=f3e1860]:
+                - text: /
+                - heading "selection.md" [level=1] [ref=f3e1861]
+              - button "Copy path" [ref=f3e1862] [cursor=pointer]
+            - button "More file actions" [ref=f3e1869] [cursor=pointer]
+          - generic [ref=f3e1872]:
+            - generic [ref=f3e1874]:
+              - heading "Latest commit" [level=2] [ref=f3e1875]
+              - generic [ref=f3e1876]:
+                - generic [ref=f3e1877]:
+                  - generic [ref=f3e1879]:
+                    - img "yesheng-oss" [ref=f3e1880]
+                    - img "KKKKhazix" [ref=f3e1881]
+                  - link "commits by yesheng-oss" [ref=f3e1883] [cursor=pointer]:
+                    - /url: /KKKKhazix/AIHOT/commits?author=yesheng-oss
+                    - text: yesheng-oss
+                  - generic [ref=f3e1884]: and
+                  - link "commits by KKKKhazix" [ref=f3e1886] [cursor=pointer]:
+                    - /url: /KKKKhazix/AIHOT/commits?author=KKKKhazix
+                    - text: KKKKhazix
+                - generic [ref=f3e1887]:
+                  - 'link "fix(selectbench): reject conflicting gold across models" [ref=f3e1890] [cursor=pointer]':
+                    - /url: /KKKKhazix/AIHOT/commit/e57da5a4f151892a217529744cd68803aec580df
+                  - button "Open commit details" [ref=f3e1891] [cursor=pointer]
+                  - button "success" [ref=f3e1894] [cursor=pointer]
+              - generic [ref=f3e1897]:
+                - generic [ref=f3e1899]:
+                  - link "Commit e57da5a" [ref=f3e1900] [cursor=pointer]:
+                    - /url: /KKKKhazix/AIHOT/commit/e57da5a4f151892a217529744cd68803aec580df
+                    - text: e57da5a
+                  - text: ·
+                  - generic "Oct 14, 2026, 14:06 GMT+8" [ref=f3e1901]: Oct 14, 2026yesterday
+                - generic [ref=f3e1902]:
+                  - heading "History" [level=2] [ref=f3e1903]
+                  - link "History" [ref=f3e1904] [cursor=pointer]:
+                    - /url: /KKKKhazix/AIHOT/commits/main/docs/selection.md
+            - generic [ref=f3e1908]:
+              - generic [ref=f3e1910]:
+                - heading "File metadata and controls" [level=2] [ref=f3e1911]
+                - generic [ref=f3e1912]:
+                  - list "File view" [ref=f3e1913]:
+                    - listitem [ref=f3e1914]:
+                      - button "Preview" [pressed] [ref=f3e1915] [cursor=pointer]
+                    - listitem [ref=f3e1918]:
+                      - button "Code" [ref=f3e1919] [cursor=pointer]
+                    - listitem [ref=f3e1922]:
+                      - button "Blame" [ref=f3e1923] [cursor=pointer]
+                  - generic "13 KB" [ref=f3e1928]: 95 lines (67 loc) · 13 KB
+                - generic [ref=f3e1929]:
+                  - generic [ref=f3e1930]:
+                    - generic [ref=f3e1931]:
+                      - link "Raw" [ref=f3e1933] [cursor=pointer]:
+                        - /url: https://github.com/KKKKhazix/AIHOT/raw/refs/heads/main/docs/selection.md
+                      - button "Copy raw file" [ref=f3e1937] [cursor=pointer]
+                      - button "Download raw file" [ref=f3e1942] [cursor=pointer]
+                    - generic [ref=f3e1946]:
+                      - button "You must be signed in to make or propose changes" [disabled] [ref=f3e1948]
+                      - button "More edit options" [ref=f3e1952] [cursor=pointer]
+                  - button "Outline" [ref=f3e1955] [cursor=pointer]
+              - region "selection.md" [ref=f3e1959]:
+                - article [ref=f3e1961]:
+                  - generic [ref=f3e1962]:
+                    - heading "精选与校准" [level=1] [ref=f3e1963]
+                    - 'link "Permalink: 精选与校准" [ref=f3e1964] [cursor=pointer]':
+                      - /url: "#精选与校准"
+                  - generic [ref=f3e1967]:
+                    - heading "一条资料怎么变成精选" [level=2] [ref=f3e1968]
+                    - 'link "Permalink: 一条资料怎么变成精选" [ref=f3e1969] [cursor=pointer]':
+                      - /url: "#一条资料怎么变成精选"
+                  - list [ref=f3e1972]:
+                    - listitem [ref=f3e1973]:
+                      - strong [ref=f3e1974]: 收进来
+                      - text: ：同一网址、同一内容只留一份。普通文章只有标题或摘要时，按信源规则补取正文；视频播放页使用已提供的文字材料，不把播放器页面当正文。没有可信发布时间的资料先不公开，读到原文日期后再判断新旧（见
+                      - link "信源" [ref=f3e1975] [cursor=pointer]:
+                        - /url: /KKKKhazix/AIHOT/blob/main/docs/sources.md#%E8%A7%84%E5%88%99%E6%97%A7%E6%96%87%E4%B8%8D%E5%88%B7%E5%B1%8F
+                      - text: 的“旧文不刷屏”）。
+                    - listitem [ref=f3e1976]:
+                      - strong [ref=f3e1977]: 预筛
+                      - text: （
+                      - code [ref=f3e1978]: prefilter.md
+                      - text: ）：这是不是本行业的事。宽进，只拦明显无关的：
+                      - code [ref=f3e1979]: BLOCK
+                      - text: 的资料不出现在任何公开页面；
+                      - code [ref=f3e1980]: PASS
+                      - text: 和拿不准的
+                      - code [ref=f3e1981]: UNKNOWN
+                      - text: 继续往下走。只有标题、没有正文、订阅摘要或帖子文字的普通文章先等待材料，不评分、不凭标题写文案，也不进入公开池；材料补齐产生新修订后再判断。可展示的空文字或纯链接原帖沿用原有评分与原样展示规则。
+                    - listitem [ref=f3e1982]:
+                      - strong [ref=f3e1983]: 评分
+                      - text: （
+                      - code [ref=f3e1984]: selection-score.md
+                      - text: ）：同一份评分标准独立打两次分（0–100）。
+                      - strong [ref=f3e1985]: 两次之和 ≥ 2 × 门槛
+                      - text: 就够分，门槛按信源分级不同；够分的还要过第 6 步的去重才进精选。页面上显示的分数是两次的平均（向下取整）。
+                    - listitem [ref=f3e1986]:
+                      - strong [ref=f3e1987]: 结构化
+                      - text: （
+                      - code [ref=f3e1988]: structure.md
+                      - text: ）：和评分同时进行。给出分类和标签（页面上显示的就是这一份）、主体公司，判断这篇是一条具体新闻、讲多件事的综合稿，还是材料不够、说不清；是具体新闻的，抽出它的事实（谁、做了什么、对什么、什么时候）和原文里的出处、前提条件。主题页、事件归组和日报都靠它。
+                    - listitem [ref=f3e1989]:
+                      - strong [ref=f3e1990]: 写标题摘要
+                      - text: ：等结构化完成再写。入选的和差一点入选的（平均分高于
+                      - code [ref=f3e1991]: understandFloor
+                      - text: ），按
+                      - code [ref=f3e1992]: content-understanding.md
+                      - text: 写中文标题、答案先行的摘要和推荐理由；其余的按
+                      - code [ref=f3e1993]: summarize-*.md
+                      - text: 写简短的标题摘要，进“全部动态”。X 帖子没有正文或只含链接时，保留原帖的链接、图片和引用，不调用写作或翻译模型，也不生成“请补充正文”的文案；已经取得实际正文的 X 长文照常处理。写好的文字用了
+                      - code [ref=f3e1994]: industry/wording.ts
+                      - text: 里列出的词时，再让模型只改这些词一次（
+                      - code [ref=f3e1995]: mend-wording.md
+                      - text: ）。
+                    - listitem [ref=f3e1996]:
+                      - strong [ref=f3e1997]: 归组与去重
+                      - text: （
+                      - code [ref=f3e1998]: group-*.md
+                      - text: ）：不同来源报道的同一件事归成一个事件，事件页有综述（
+                      - code [ref=f3e1999]: story-digest.md
+                      - text: ），“热门”按事件排。修改综述提示词前，可用
+                      - link "综述评测" [ref=f3e2000] [cursor=pointer]:
+                        - /url: /KKKKhazix/AIHOT/blob/main/docs/story-digest-evaluation.md
+                      - text: 在同一批事件上把现有提示词和候选提示词并排比较。分数够了的资料要等归组完成才进精选：模型同时判断它和精选里已有的报道是不是同一条新闻，以及它有没有精选还没给过的具体信息。
+                      - list [ref=f3e2001]:
+                        - listitem [ref=f3e2002]:
+                          - text: 同一条新闻的几篇报道都可以入选：网页上折成一个阅读组；API、RSS 和同步接口每条新闻只出一条，由代表报道出面：官方一手优先；其次是核实过的官方账号（填了
+                          - code [ref=f3e2003]: publisherRole
+                          - text: 和
+                          - code [ref=f3e2004]: owner_entity_id
+                          - text: 的
+                          - code [ref=f3e2005]: T1_5
+                          - text: 账号，新闻的主体正是这家公司，机构先于个人）；再往后是有全文的、分数高的、发得早的。
+                        - listitem [ref=f3e2006]: 不是同一条新闻、但没有新信息的（换个说法再介绍一遍已经披露的能力、只是上架到别的平台、只重复已选要点的汇总），不进精选，留在“全部动态”。讲多件事的综合稿不单独成事件，只挂到它提到的事件上，有精选没覆盖的重要内容才入选；材料不够、确认不了是哪条新闻的，不进精选。
+                        - listitem [ref=f3e2007]: 显式撤回的报道保留历史归属，但不再参与之后的归组召回、候选代表、事件起点或自动事件比较；同网址及 X 回复／引用也不能借它提供身份依据。同一事实仍有有效报道时使用有效稿，全撤回则暂不召回；恢复公开后可重新参与。只展示摘要或尚未发布的记录不等于撤回，保留原有资格。已有关系和判断不删除，不批量重新归组。
+                        - listitem [ref=f3e2008]: 确认之前资料只在“全部动态”里，等得再久也不会自动放行。模型调用失败或回答不合格式，这条资料就停在那里：等待超过 10 分钟会告警，后台“运行”页列出这些资料，可以在后台“内容诊断”里打开这条资料，点“重新归组”。所以归组用的模型要能稳定按格式回答。
+                    - listitem [ref=f3e2009]:
+                      - strong [ref=f3e2010]: 日报、周报、月报
+                      - text: ：
+                      - list [ref=f3e2011]:
+                        - listitem [ref=f3e2012]:
+                          - strong [ref=f3e2013]: 日报
+                          - text: 每天 08:00 出（日报、周报、月报的出刊时间在
+                          - code [ref=f3e2014]: site/site.ts
+                          - text: 的
+                          - code [ref=f3e2015]: EDITION_TIMES
+                          - text: ，下面按默认值写），覆盖前一天 08:00 到当天 08:00，按规则编排，不调用模型。一件事一条，取报道最多的那条新闻里最权威的一篇，同一事件当天的其他进展列在下面，讲多件事的综合稿挂到它提到的最重要那件事下面。最近 7 期报过的不再出现；报过的事件再有进展，只有当事方自己有新动作（教程、观点这类
+                          - code [ref=f3e2016]: commentary
+                          - text: 类别不算）、或这条进展有 4 家以上信源报道时才进正文，其余进快讯。没有报道入选、但有官方原帖并且已有 3 个以上独立参与方的事件也会补进来（只进日报，不进精选、不推送）。按重要性排序（入选报道的最高分、当天讨论它的独立参与方、有没有官方原帖，跟进的减分），前 12 条进正文，同一信源最多 2 条，再往后最多 10 条一行快讯。第一条是头条，导语就是它自己的标题和摘要；第 2–4 条是今日看点。
+                        - listitem [ref=f3e2017]:
+                          - strong [ref=f3e2018]: 周报
+                          - text: （每周一 10:00）和
+                          - strong [ref=f3e2019]: 月报
+                          - text: （每月 1 日 10:30）由这一周、这个月的日报汇编：同一事件跨天只算一件，按日报给它的位置（头条、看点、上了几天）、报道面和评分排序，周报取前 20 件、月报取前 30 件，按日报的分节分栏目。模型（
+                          - code [ref=f3e2020]: report-period.md
+                          - text: 、
+                          - code [ref=f3e2021]: report-period-sections.md
+                          - text: ）只写总述和三件以上栏目的一句导读，不增删条目；它写出了条目里没有的名字或数字（拉丁字母的名称、三位以上或带小数点、百分号的数字、词表里的公司），这段话就不用：总述换成按模板生成的一句，栏目不放导读。行业通用词（
+                          - code [ref=f3e2022]: taxonomy.ts
+                          - text: 的
+                          - code [ref=f3e2023]: PLAIN_TERMS
+                          - text: ）和站名不受这个限制。
+                        - listitem [ref=f3e2024]: 每条精选只进一期：按它的时间算，确认入选比它晚的按确认时间；截止以后才确认的进下一期。
+                        - listitem [ref=f3e2025]: 每半小时检查一次：到点的刊期出一次，已经出过的不重写；停机错过的、失败的，在之后的检查里补上。窗口里没有可收的条目时这一期不出，之后每半小时再试，到 10 点还没有当天的日报会告警。
+                  - paragraph [ref=f3e2026]:
+                    - text: 每一步的提示词都在
+                    - code [ref=f3e2027]: industry/prompts/
+                    - text: ，改提示词不用改代码。提示词的版本就是它内容的哈希：改了提示词，之后的新资料按新版判断，已经判过的不会重算。
+                  - generic [ref=f3e2028]:
+                    - heading [level=2] [ref=f3e2029]:
+                      - text: 门槛：
+                      - code [ref=f3e2030]: industry/selection.ts
+                    - 'link "Permalink: 门槛：industry/selection.ts" [ref=f3e2031] [cursor=pointer]':
+                      - /url: "#门槛industryselectionts"
+                  - generic [ref=f3e2034]:
+                    - generic [ref=f3e2035]: "export const SELECTION = { thresholds: { T1: 60, T1_5: 65, T2: 76 }, // 两次评分的平均至少要到这个数 understandFloor: 50, // 平均分高于它的未入选资料，也按入选的写法写 };"
+                    - button "Copy code to clipboard" [ref=f3e2037] [cursor=pointer]
+                  - paragraph [ref=f3e2041]:
+                    - text: 官方一手信源（T1）门槛低一些，媒体和个人（T2）门槛高一些：同样一件事，官方原文更值得先看。没有门槛的分级（
+                    - code [ref=f3e2042]: EXCLUDE_MP
+                    - text: ）不参与精选。
+                  - paragraph [ref=f3e2043]: 这组数是 AIHOT 在 AI 领域一直在用的门槛，偏严：宁可少选几条，也不让噪声进精选。换了行业、改了评分标准，一定要按下面的办法重新校准。
+                  - generic [ref=f3e2044]:
+                    - heading "校准" [level=2] [ref=f3e2045]
+                    - 'link "Permalink: 校准" [ref=f3e2046] [cursor=pointer]':
+                      - /url: "#校准"
+                  - generic [ref=f3e2049]:
+                    - heading "1. 准备样本集" [level=3] [ref=f3e2050]
+                    - 'link "Permalink: 1. 准备样本集" [ref=f3e2051] [cursor=pointer]':
+                      - /url: "#1-准备样本集"
+                  - paragraph [ref=f3e2054]:
+                    - text: 从你自己的信源里挑 100–200 条资料，一条一条标“该选 / 不该选”，存成
+                    - code [ref=f3e2055]: .data/gold.jsonl
+                    - text: （
+                    - code [ref=f3e2056]: .data/
+                    - text: 不进 Git）。每行一条：
+                  - generic [ref=f3e2057]:
+                    - generic [ref=f3e2058]:
+                      - text: "{\"caseId\":"
+                      - generic [ref=f3e2059]: "\"law-001\""
+                      - text: ",\"material\":{\"title\":"
+                      - generic [ref=f3e2060]: "\"原文标题\""
+                      - text: ",\"originalTitle\":null,\"publishedAt\":"
+                      - generic [ref=f3e2061]: "\"2026-10-01T09:00:00+08:00\""
+                      - text: ",\"sourceName\":"
+                      - generic [ref=f3e2062]: "\"信源名称\""
+                      - text: ",\"bodyZh\":null,\"bodyOriginal\":"
+                      - generic [ref=f3e2063]: "\"正文……\""
+                      - text: "},\"sourceFacts\":{\"sourceKind\":"
+                      - generic [ref=f3e2064]: "\"rss\""
+                      - text: ",\"sourceTier\":"
+                      - generic [ref=f3e2065]: "\"T1\""
+                      - text: ",\"firstParty\":true,\"language\":"
+                      - generic [ref=f3e2066]: "\"zh\""
+                      - text: "},\"samplingContext\":{\"benchmarkSplit\":"
+                      - generic [ref=f3e2067]: "\"development\""
+                      - text: ",\"samplingStratum\":"
+                      - generic [ref=f3e2068]: "\"regulation\""
+                      - text: "},\"gold\":{\"decision\":"
+                      - generic [ref=f3e2069]: "\"select\""
+                      - text: "}}"
+                    - button "Copy code to clipboard" [ref=f3e2071] [cursor=pointer]
+                  - table [ref=f3e2076]:
+                    - rowgroup [ref=f3e2077]:
+                      - row [ref=f3e2078]:
+                        - columnheader "字段" [ref=f3e2079]
+                        - columnheader "说明" [ref=f3e2080]
+                    - rowgroup [ref=f3e2081]:
+                      - row [ref=f3e2082]:
+                        - cell [ref=f3e2083]:
+                          - code [ref=f3e2084]: caseId
+                        - cell "唯一编号" [ref=f3e2085]
+                      - row [ref=f3e2086]:
+                        - cell [ref=f3e2087]:
+                          - code [ref=f3e2088]: material
+                        - cell [ref=f3e2089]:
+                          - text: 标题、原标题、发布时间、信源名、正文（中文正文放
+                          - code [ref=f3e2090]: bodyZh
+                          - text: ，原文放
+                          - code [ref=f3e2091]: bodyOriginal
+                          - text: ，有一个就行）
+                      - row [ref=f3e2092]:
+                        - cell [ref=f3e2093]:
+                          - code [ref=f3e2094]: sourceFacts
+                        - cell [ref=f3e2095]:
+                          - text: 信源类型、分级、是否一手（线上只有
+                          - code [ref=f3e2096]: T1
+                          - text: 算一手，标注时保持一致）、语言。分级决定用哪个门槛
+                      - row [ref=f3e2097]:
+                        - cell [ref=f3e2098]:
+                          - code [ref=f3e2099]: samplingContext
+                        - cell [ref=f3e2100]:
+                          - text: 可选。
+                          - code [ref=f3e2101]: benchmarkSplit
+                          - text: 分开发集和留出集，
+                          - code [ref=f3e2102]: samplingStratum
+                          - text: 是你自己的分组（比如“新规”“判决”“营销”），看错在哪一类
+                      - row [ref=f3e2103]:
+                        - cell [ref=f3e2104]:
+                          - code [ref=f3e2105]: gold.decision
+                        - cell [ref=f3e2106]:
+                          - code [ref=f3e2107]: select
+                          - text: 该选，
+                          - code [ref=f3e2108]: reject
+                          - text: 不该选，
+                          - code [ref=f3e2109]: either
+                          - text: 两可（不计入准确率）
+                  - paragraph [ref=f3e2110]:
+                    - code [ref=f3e2111]: industry/gold.example.jsonl
+                    - text: 有两条示例。
+                  - paragraph [ref=f3e2112]: 几条建议：
+                  - list [ref=f3e2113]:
+                    - listitem [ref=f3e2114]:
+                      - text: 多放
+                      - strong [ref=f3e2115]: 难例
+                      - text: ：差一点就该选、差一点就不该选的。一眼就能判断的放太多，准确率会虚高。
+                    - listitem [ref=f3e2116]:
+                      - text: 分出一部分做
+                      - strong [ref=f3e2117]: 留出集
+                      - text: （
+                      - code [ref=f3e2118]: "benchmarkSplit: \"holdout\""
+                      - text: ），调提示词只看开发集，最后再用留出集检查一遍，免得把提示词调成只会做这几道题。
+                    - listitem [ref=f3e2119]: 标注的人最好就是以后读这个站的人，或者和他们口味一致的人。
+                    - listitem [ref=f3e2120]: 评测只跑预筛和两次评分，不含第 6 步的去重：按这条资料本身该不该选来标，不要因为同一件事已经选过另一篇就标“不该选”。
+                  - generic [ref=f3e2121]:
+                    - heading "2. 跑评测" [level=3] [ref=f3e2122]
+                    - 'link "Permalink: 2. 跑评测" [ref=f3e2123] [cursor=pointer]':
+                      - /url: "#2-跑评测"
+                  - generic [ref=f3e2126]:
+                    - generic [ref=f3e2127]:
+                      - text: node --env-file=.env scripts/eval-selection.ts --gold .data/gold.jsonl --split development --label
+                      - generic [ref=f3e2128]: "\"第一版评分标准\""
+                    - button "Copy code to clipboard" [ref=f3e2130] [cursor=pointer]
+                  - paragraph [ref=f3e2134]: 对每条样本跑一遍预筛和两次评分，输出：
+                  - list [ref=f3e2135]:
+                    - listitem [ref=f3e2136]:
+                      - strong [ref=f3e2137]: 有效输出准确率、查准率、查全率和 F1
+                      - text: ：只看成功得到入选决定的非
+                      - code [ref=f3e2138]: either
+                      - text: 样本，用来判断模型答出来以后有多准；
+                    - listitem [ref=f3e2139]:
+                      - strong [ref=f3e2140]: 覆盖率
+                      - text: ：成功得到入选决定的样本占全部非
+                      - code [ref=f3e2141]: either
+                      - text: 金标样本的比例；
+                      - strong [ref=f3e2142]: 完整准确率
+                      - text: 则用全部非
+                      - code [ref=f3e2143]: either
+                      - text: 金标样本作分母，把模型失败或回答不合格式也算作没有正确完成；
+                    - listitem [ref=f3e2144]:
+                      - code [ref=f3e2145]: either
+                      - text: 始终不进入上述质量指标的分母；报告另外记录决定样本失败数与
+                      - code [ref=f3e2146]: either
+                      - text: 失败数。
+                      - code [ref=f3e2147]: goldSelectRate
+                      - text: 按全部非
+                      - code [ref=f3e2148]: either
+                      - text: 金标计算，因此同一批样本在不同模型间应保持一致；
+                    - listitem [ref=f3e2149]:
+                      - text: 门槛从 40 到 90 每隔 2 分（范围可以在下面说的
+                      - code [ref=f3e2150]: DEPLOYMENT.selectionGold
+                      - text: 里改），各自会得到什么结果；门槛扫描同样同时报告有效输出准确率、覆盖率和完整准确率；
+                    - listitem [ref=f3e2151]:
+                      - text: 判错的条目，完整报告写到
+                      - code [ref=f3e2152]: .data/eval/
+                      - text: ，同时导入后台 SelectBench（加
+                      - code [ref=f3e2153]: "--no-import"
+                      - text: 不导入）。
+                  - paragraph [ref=f3e2154]:
+                    - text: 不传
+                    - code [ref=f3e2155]: "--models"
+                    - text: 时，评测用“精选评分”这一步线上正在用的模型：后台“模型与评测”页切换过的优先，其次是环境变量
+                    - code [ref=f3e2156]: SCORE_MODEL
+                    - text: ，再其次是
+                    - code [ref=f3e2157]: site/models.ts
+                    - text: 的
+                    - code [ref=f3e2158]: DEFAULTS.score
+                    - text: ，都没有就用默认模型（
+                    - code [ref=f3e2159]: .env
+                    - text: 里的
+                    - code [ref=f3e2160]: LLM_*
+                    - text: ）。
+                    - code [ref=f3e2161]: "--models default,deepseek-flash"
+                    - text: 可以在同一批样本上比较几个模型。其他常用参数：
+                    - code [ref=f3e2162]: "--n 200"
+                    - text: 最多抽多少条，
+                    - code [ref=f3e2163]: "--split holdout"
+                    - text: 只跑留出集，
+                    - code [ref=f3e2164]: "--no-import"
+                    - text: 不导入 SelectBench。在
+                    - code [ref=f3e2165]: site/site.ts
+                    - text: 的
+                    - code [ref=f3e2166]: DEPLOYMENT.selectionGold
+                    - text: 里写好样本文件、抽样条数、只抽哪一份和门槛扫描范围，以后不带参数运行就用这一套。
+                  - paragraph [ref=f3e2167]: 同一次评测里，不同样本渲染出完全相同的评分输入时，只共享模型的评分结果，各样本仍按自己的预筛结果、信源分级门槛和标注独立计分；失败的结果也在这次运行里共享，这样第一次跑和用已有结果重跑覆盖的样本一样。重复运行会复用已有回执。报告里的 token 用量和平均耗时，按相关回执的全部请求尝试汇总，解析失败后的重试也算在内；用已有结果重跑时，显示的是这些回执累计的用量，不代表这次新增的费用。
+                  - generic [ref=f3e2168]:
+                    - heading "3. 看错例，改标准，再跑" [level=3] [ref=f3e2169]
+                    - 'link "Permalink: 3. 看错例，改标准，再跑" [ref=f3e2170] [cursor=pointer]':
+                      - /url: "#3-看错例改标准再跑"
+                  - paragraph [ref=f3e2173]: 在后台 SelectBench 里逐条看判错的资料和模型给的理由：
+                  - paragraph [ref=f3e2174]:
+                    - text: 上传多模型报告时，同一
+                    - code [ref=f3e2175]: caseId
+                    - text: 在各模型下须使用相同的
+                    - code [ref=f3e2176]: gold
+                    - text: 标注，模型的
+                    - code [ref=f3e2177]: decision
+                    - text: 可以不同。标注冲突的报告会在写入前被拒绝，避免同一条资料在并排比较时出现不同的人工答案；不提供逐例
+                    - code [ref=f3e2178]: cases
+                    - text: 的报告仍可导入。
+                  - list [ref=f3e2179]:
+                    - listitem [ref=f3e2180]:
+                      - text: 该选没选上，多半是评分标准里没说清它为什么重要：在
+                      - code [ref=f3e2181]: selection-score.md
+                      - text: 里把这类价值写进“必须正常评价”的部分，给出例子。
+                    - listitem [ref=f3e2182]: 不该选却选上了，多半是噪声没压住：写进“必须压住”的部分。
+                    - listitem [ref=f3e2183]:
+                      - text: 整体偏松或偏紧，而判错的条目分数都贴着门槛，再调
+                      - code [ref=f3e2184]: industry/selection.ts
+                      - text: 的门槛。
+                  - paragraph [ref=f3e2185]: 先改标准，再动门槛：门槛只能整体移动，解决不了“哪一类判错了”。每改一次跑一遍，SelectBench 里能看到每一版的对比。比较模型时不要只看有效输出 F1：如果覆盖率明显不同，还要一起看完整准确率；高分但经常无法完成结构化判断的模型，不应被失败样本从分母里“隐藏”掉。
+                  - generic [ref=f3e2186]:
+                    - heading "换模型" [level=2] [ref=f3e2187]
+                    - 'link "Permalink: 换模型" [ref=f3e2188] [cursor=pointer]':
+                      - /url: "#换模型"
+                  - paragraph [ref=f3e2191]:
+                    - text: 后台“模型与评测”页能看到每一步当前用哪个模型、近期的成功率、耗时和 token 用量，也能直接切换（只影响之后的新任务）。换评分模型之前，先用
+                    - code [ref=f3e2192]: "--models"
+                    - text: 在同一批样本上比一比。
+  - alert [ref=f3e1150]

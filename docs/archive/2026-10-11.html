@@ -99,6 +99,11 @@
   .range-analyzer .analyze-btn:hover { background: #0e5fcc; }
   .range-analyzer .analyze-btn:disabled { background: #ccc; cursor: not-allowed; }
   .range-analyzer #range-result { margin-top: 16px; }
+  .range-quick-btns { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+  .range-quick-btn { padding: 6px 14px; background: #fff; border: 1px solid #b3d7ff; border-radius: 16px; font-size: 13px; color: #1677ff; cursor: pointer; transition: all .15s; }
+  .range-quick-btn:hover { background: #e8f4ff; }
+  .range-quick-btn.active { background: #1677ff; color: #fff; border-color: #1677ff; }
+  .range-quick-btn:disabled { opacity: .5; cursor: not-allowed; }
   @media print {
     .export-pdf-btn, .pdf-loading, .fav-btn, .fav-bar, .nav, header.top .badge { display: none !important; }
     body { background: #fff; }

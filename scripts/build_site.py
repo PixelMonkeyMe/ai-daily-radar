@@ -117,6 +117,11 @@ CSS = """
   .range-analyzer .analyze-btn:hover { background: #0e5fcc; }
   .range-analyzer .analyze-btn:disabled { background: #ccc; cursor: not-allowed; }
   .range-analyzer #range-result { margin-top: 16px; }
+  .range-quick-btns { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+  .range-quick-btn { padding: 6px 14px; background: #fff; border: 1px solid #b3d7ff; border-radius: 16px; font-size: 13px; color: #1677ff; cursor: pointer; transition: all .15s; }
+  .range-quick-btn:hover { background: #e8f4ff; }
+  .range-quick-btn.active { background: #1677ff; color: #fff; border-color: #1677ff; }
+  .range-quick-btn:disabled { opacity: .5; cursor: not-allowed; }
   @media print {
     .export-pdf-btn, .pdf-loading, .fav-btn, .fav-bar, .nav, header.top .badge { display: none !important; }
     body { background: #fff; }
@@ -482,6 +487,12 @@ def build_daily():
     range_analyzer = '''<div class="range-analyzer">
   <h3>📊 时段 AI 分析</h3>
   <p style="font-size:13px;color:#8a919c;margin-bottom:12px">选择日期范围，AI 将分析该时段的所有内容并生成总结报告</p>
+  <div class="range-quick-btns">
+    <button class="range-quick-btn" data-range="week" onclick="adrSetQuickRange('week')">本周</button>
+    <button class="range-quick-btn" data-range="halfmonth" onclick="adrSetQuickRange('halfmonth')">半月</button>
+    <button class="range-quick-btn" data-range="month" onclick="adrSetQuickRange('month')">本月</button>
+    <button class="range-quick-btn" data-range="quarter" onclick="adrSetQuickRange('quarter')">本季度</button>
+  </div>
   <div class="range-inputs">
     <label>从 <input type="date" id="range-start"></label>
     <label>到 <input type="date" id="range-end"></label>
