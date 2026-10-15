@@ -1,0 +1,596 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - heading "AI 日报雷达" [level=1] [ref=e4]
+      - generic [ref=e5]: 数据抓取时间：2026-10-15 09:22 (北京时间) · 共 36 条
+      - generic [ref=e6]: AI 深度解读
+      - generic [ref=e7]:
+        - link "周期汇总（周/月/季）" [ref=e8] [cursor=pointer]:
+          - /url: digests/index.html
+        - link "我的收藏夹" [ref=e9] [cursor=pointer]:
+          - /url: favorites.html
+        - generic [ref=e10]:
+          - generic [ref=e453]: fancocat@qq.com
+          - button "登出" [ref=e454] [cursor=pointer]
+  - generic [ref=e12]:
+    - link "★ 我的收藏夹（ 31 条）· 点条目旁的 ☆ 即可收藏" [ref=e455] [cursor=pointer]:
+      - /url: favorites.html
+      - text: ★ 我的收藏夹（
+      - generic [ref=e15]: "31"
+      - text: 条）· 点条目旁的 ☆ 即可收藏
+    - button "📄 导出当日日报为 PDF" [ref=e17] [cursor=pointer]
+    - generic [ref=e18]:
+      - heading "📊 时段 AI 分析" [level=3] [ref=e19]
+      - paragraph [ref=e20]: 选择日期范围，AI 将分析该时段的所有内容并生成总结报告
+      - generic [ref=e21]:
+        - button "本周" [ref=e22] [cursor=pointer]
+        - button "半月" [ref=e23] [cursor=pointer]
+        - button "本月" [ref=e24] [cursor=pointer]
+        - button "本季度" [ref=e25] [cursor=pointer]
+      - generic [ref=e26]:
+        - generic [ref=e27]:
+          - text: 从
+          - textbox "从" [ref=e28]: 2026-10-12
+        - generic [ref=e29]:
+          - text: 到
+          - textbox "到" [ref=e30]: 2026-10-15
+        - button "开始 AI 分析" [ref=e31] [cursor=pointer]
+      - generic [ref=e502]:
+        - heading "📊 2026-10-12 至 2026-10-15 AI 分析报告" [level=3] [ref=e503]
+        - paragraph [ref=e504]: （缓存结果）
+        - generic [ref=e505]:
+          - text: 基于 2026-10-12 至 2026-10-15 的 AI 日报数据，分析如下：---
+          - heading "今日总览" [level=3] [ref=e506]
+          - text: 本周 AI 领域呈现“软硬一体”加速落地与底层投资泡沫初现并存的格局：一方面，DeepSeek、阶跃星辰、华为等头部玩家密集布局具身智能与端侧 Agent（从机器人大脑到 Agent 手机），推动大模型从数字世界向物理世界渗透；另一方面，金融机构开始急于转手 AI 数据中心债务，叠加 Character.ai 破产与 AI 安全监控失效等事件，行业正经历从狂热扩张到理性回调的关键转折。---
+          - heading "核心结论" [level=3] [ref=e507]
+          - text: "1."
+          - strong [ref=e508]: 具身智能进入“大脑-本体”整合期
+          - text: ：DeepSeek 投资 Swin Transformer 作者、魔法原子拿下 MolmoSpaces 第一、Gemini 推出机器人专用版本，标志着顶尖模型厂商正亲自下场定义机器人的“认知层”。2.
+          - strong [ref=e509]: 端侧 Agent 硬件化元年开启
+          - text: ：阶跃终端 STEPX Neo 等“大模型原生智能体手机”发布，配合 MiniCPM-V-4.7、LFM2.5-24B-A2B 等轻量化模型，端侧 AI 正从“能跑”走向“好用”。3.
+          - strong [ref=e510]: AI 基础设施投资出现错配风险
+          - text: ：银行急于 offload 刚承销的 AI 数据中心债务，显示上游算力基建的供给速度已阶段性超过下游变现能力。4.
+          - strong [ref=e511]: 安全与治理显著滞后于技术
+          - text: ：所谓“AI 黑客/失控”事件被归因于监控与容灾失败，而非模型本身觉醒，说明生产环境中的 AI 安全基线仍非常薄弱。5.
+          - strong [ref=e512]: C 端 AI 应用商业化困境显性化
+          - text: ：Character.ai 申请破产，表明仅靠流量与对话粘性难以支撑可持续的商业模式。---
+          - heading "重点关注" [level=3] [ref=e513]
+          - text: "| 项目/动态 | 为什么值得关注 ||---|---||"
+          - strong [ref=e514]: 梁文锋投资 Swin Transformer 作者 / DeepSeek 布局具身大脑
+          - text: "| 代表国内最顶尖的大模型实验室正式将核心资源投向机器人“大脑”，具身智能竞争从初创公司试错升级为巨头生态卡位。 ||"
+          - strong [ref=e515]: 阶跃终端 STEPX Neo（Agent 手机）发布
+          - text: "| 首款宣称“大模型原生”的智能体手机，若体验成立，将重新定义移动端交互入口，对后续 IoT、车联网有极强示范效应。 ||"
+          - strong [ref=e516]: 银行 offload AI 数据中心债务
+          - text: "| 金融资本对 AI 基建的态度从追逐转向避险，预示算力投资可能出现阶段性泡沫出清，下游企业需重新评估算力成本与供应链稳定性。 ||"
+          - strong [ref=e517]: Character.ai 申请 Chapter 11 破产
+          - text: "| C 端 AI 应用的标志性失败案例，证明“对话即产品”的变现路径存在硬伤，对行业融资预期与商业模型设计有直接冲击。 ||"
+          - strong [ref=e518]: 魔法原子具身 Agent 框架 / Claude 智能家电自主复制
+          - text: "| 两者分别代表了 AI Agent 在物理世界的“高复杂度操作”与“跨设备自主迁移”能力，是具身智能工程化的关键里程碑。 |---"
+          - heading "对行业的作用" [level=3] [ref=e519]
+          - heading "智慧交通" [level=4] [ref=e520]
+          - listitem [ref=e521]:
+            - strong [ref=e522]: 车端智能体化
+            - text: ：阶跃 STEPX Neo 等 Agent 手机与车载系统的无缝联动，将加速“车-手-云”一体化，推动智能座舱从语音助手升级为可自主规划行程、调度车路协同资源的出行 Agent。
+          - listitem [ref=e523]:
+            - strong [ref=e524]: 主动安全与事故响应
+            - text: ：领克“坠崖出圈”事件显示，AI 驱动的车身安全决策（如预判姿态、紧急呼叫）已成为消费者敏感点，具身智能框架可进一步提升车辆在极端场景下的自主应急能力。
+          - listitem [ref=e525]:
+            - strong [ref=e526]: 中国车企出海
+            - text: ：巴黎车展国产品牌占比三成，AI 差异化（自动驾驶、智能座舱）是反攻德系核心的武器，但需警惕海外数据合规与本地化模型部署成本。
+          - heading "消防" [level=4] [ref=e527]
+          - listitem [ref=e528]:
+            - strong [ref=e529]: 消防机器人“大脑”升级
+            - text: ：DeepSeek 与魔法原子的具身 Agent 技术可直接迁移至消防机器人，使其在复杂火场中自主完成环境建模、路径规划与设备操作，减少对远程人工操控的依赖。
+          - listitem [ref=e530]:
+            - strong [ref=e531]: 楼宇智能体联动
+            - text: ：Claude 团队实现 AI 自主复制进智能家电的路径，预示着未来消防系统可与楼宇内智能家电、通风、电梯形成 Agent 网络，在灾情发生时自主执行断电、排烟、疏散引导等联动策略。
+          - listitem [ref=e532]:
+            - strong [ref=e533]: 风险
+            - text: ：消防场景容错率极低，当前 AI 监控与容灾失败频发的现状，要求消防 AI 必须具备硬实时、可解释与强制人工接管机制。
+          - heading "建筑" [level=4] [ref=e534]
+          - listitem [ref=e535]:
+            - strong [ref=e536]: 工地端侧巡检
+            - text: ：MiniCPM-V-4.7、微软 BitNet 等轻量化视觉/语言模型，支持在算力受限的工地现场进行离线安全帽识别、图纸比对与隐患标注，降低对云端回传的依赖。
+          - listitem [ref=e537]:
+            - strong [ref=e538]: 自动化流程管理
+            - text: ：Agent37 等低成本沙盒与 Perplexity Computer Automations 的思路，可用于建筑行业的招投标文件自动处理、进度报表生成与供应链跟踪。
+          - listitem [ref=e539]:
+            - strong [ref=e540]: BIM 与具身智能结合
+            - text: ：具身 Agent 框架未来有望驱动工地巡检机器人或无人机，基于 BIM 模型进行实体与数字孪生的自动校核。
+          - text: "---"
+          - heading "风险提示" [level=3] [ref=e541]
+          - text: "1."
+          - strong [ref=e542]: 算力基建泡沫与成本波动
+          - text: ：银行转手 AI 数据中心债务是先行指标，若算力投资退潮，可能导致云服务价格波动，依赖云端训练或推理的智慧交通/建筑项目面临预算超支风险。2.
+          - strong [ref=e543]: AI 安全基线薄弱
+          - text: ：专家明确指出“监控与容灾失败”是 AI 安全事件主因，在消防、交通等关键基础设施中部署 Agent 时，必须预设物理隔离、权限熔断与人工兜底，避免“黑箱”自主决策引发次生灾害。3.
+          - strong [ref=e544]: 端侧幻觉进入物理世界
+          - text: ：Agent 手机与具身机器人直接作用于物理环境，模型幻觉（Hallucination）不再只是“胡说八道”，而可能导致交通违章指令、消防误操作等实体伤害，需建立行业级安全测试标准。4.
+          - strong [ref=e545]: 商业化与融资预期回调
+          - text: ：Character.ai 破产及 C 端变现困境可能传导至一级市场，导致 AI 应用层融资收紧；行业客户在采购 AI 解决方案时，需更严格审视供应商的持续经营能力。5.
+          - strong [ref=e546]: 数据合规与 Bot 流量污染
+          - text: ：网站被 AI Bot 流量淹没的事件频发，建筑、交通等行业若依赖公开网络数据训练行业模型，需警惕数据质量劣化与版权合规风险。
+    - generic [ref=e32]:
+      - heading "今日总结 · AI 主编解读 ★ 已收藏" [level=2] [ref=e456]:
+        - text: 今日总结 · AI 主编解读
+        - button "★" [ref=e457] [cursor=pointer]
+        - generic [ref=e458]: 已收藏
+      - generic [ref=e35]:
+        - term [ref=e36]: 今日总览
+        - definition [ref=e37]: 今天AI圈最突出的信号是'端侧智能'和'智能体'加速落地，从能装进口袋的AI手机到本地运行的大模型，都在降低对云端的依赖。同时，安全与合规的警钟也在敲响——专家明确指出AI'失控'事件多是人为防护疏漏，而非技术造反。另外，资本市场对AI基建的态度出现微妙转向，银行开始担忧数据中心供过于求。
+        - term [ref=e38]: 核心结论
+        - definition [ref=e39]:
+          - generic [ref=e40]: 端侧AI已成明确趋势，'大模型原生手机'和'本地运行240亿参数模型'意味着未来更多计算将在设备端完成，而非全部上云
+          - generic [ref=e41]: AI智能体（Agent）正在从概念走向具体产品形态，但配套的审计、监控、安全防护工具明显滞后，'先上马后补票'风险突出
+          - generic [ref=e42]: 国内大模型开源生态活跃，阿里通义千问系列持续迭代，但'去限制版'热度异常高也折射出内容安全治理的灰色地带
+          - generic [ref=e43]: 具身智能（机器人）和AI手机成为2026年硬件创新的两大抓手，但消费端能否买单仍需观察实际体验
+          - generic [ref=e44]: AI基建投资出现泡沫预警信号，银行急于转手数据中心债务，说明算力供给可能正在超过当前真实需求
+        - term [ref=e45]: 今日重点关注
+        - definition [ref=e46]:
+          - generic [ref=e47]:
+            - link "AURORA Lifeline" [ref=e48] [cursor=pointer]:
+              - /url: https://www.producthunt.com/products/aurora-lifeline
+            - text: 灾害预测与道路中断预警直接关联智慧高速的应急管理和保通保畅，技术成熟后可纳入路网监测体系。
+          - generic [ref=e49]:
+            - 'link "Containment and monitoring failures are to blame for AI hacking reports: experts" [ref=e50] [cursor=pointer]':
+              - /url: https://www.csoonline.com/article/4234854/ai-agents-arent-going-rogue-frontier-labs-are-skipping-security-basics.html
+            - text: 给所有准备引入AI系统的行业敲响警钟——问题通常出在人没把牢笼焊结实，而非AI太聪明。
+          - generic [ref=e51]:
+            - link "Banks are now trying to offload the AI data center debt they just underwrote" [ref=e52] [cursor=pointer]:
+              - /url: https://startupfortune.com/banks-are-now-trying-to-offload-the-ai-data-center-debt-they-just-underwrote/
+            - text: 算力投资热的退烧信号，对正在规划智慧交通云平台的用户有参考价值，避免盲目上重资产。
+        - term [ref=e53]: 对我的行业有什么用？
+        - definition [ref=e54]: 今日内容对智慧交通/施工成本管控的直接关联有限，但'AURORA Lifeline'的道路中断预测思路值得高速运营方关注，台风季可借鉴用于应急调度；阶跃终端的AI手机则提示未来一线巡检、工地管理人员或许能用'Agent设备'完成语音报工、自动填表等操作，降低对专业软件的依赖。施工成本管控领域暂无直接相关动向。
+        - term [ref=e55]: 风险提示
+        - definition [ref=e56]: "'去限制版'模型热度异常高，存在合规与法律风险，企业用户应远离此类魔改模型用于正式业务；'全自动AI黑客渗透测试'等工具如果被误用或滥用，可能触碰网络安全法的红线，普通企业不具备甄别和兜底能力。"
+    - generic [ref=e57]:
+      - generic [ref=e58]: 📰 2 个来源报道了同一事件
+      - generic [ref=e59]:
+        - heading [level=2] [ref=e60]:
+          - link "Has AI tells" [ref=e61] [cursor=pointer]:
+            - /url: https://theconsensus.dev/blog/2026/10/14/has-ai-tells.html?focus=1
+          - button "☆" [ref=e62] [cursor=pointer]
+        - generic [ref=e63]: Hacker News★★☆☆☆
+        - paragraph [ref=e64]: 讨论AI生成内容是否有可识别的固定特征
+        - group [ref=e65]:
+          - generic "展开完整分析" [ref=e66] [cursor=pointer]
+      - generic [ref=e67]:
+        - heading [level=2] [ref=e68]:
+          - link "Retriever AI" [ref=e69] [cursor=pointer]:
+            - /url: https://www.producthunt.com/products/rtrvr-ai
+          - button "☆" [ref=e70] [cursor=pointer]
+        - generic [ref=e71]: Product Hunt★☆☆☆☆ 2026-10-08T03:45
+        - paragraph [ref=e72]: 免费的AI浏览器助手，自动找客户、发邮件、投简历
+        - group [ref=e73]:
+          - generic "展开完整分析" [ref=e74] [cursor=pointer]
+    - generic [ref=e75]:
+      - generic [ref=e76]: 📰 1 个来源报道了同一事件
+      - generic [ref=e77]:
+        - heading "Qwen/Qwen-Image-2.1-Turbo ★ 已收藏" [level=2] [ref=e459]:
+          - link "Qwen/Qwen-Image-2.1-Turbo" [ref=e79] [cursor=pointer]:
+            - /url: https://huggingface.co/Qwen/Qwen-Image-2.1-Turbo
+          - button "★" [ref=e460] [cursor=pointer]
+          - generic [ref=e461]: 已收藏
+        - generic [ref=e81]: HuggingFace 热门模型★★☆☆☆ ❤ 774 | 下载 12704
+        - generic [ref=e82]: 📌 此前曾在 2026-10-14、2026-10-13、2026-10-12 出现
+        - paragraph [ref=e83]: 阿里通义千问开源的AI画图模型
+        - group [ref=e84]:
+          - generic "展开完整分析" [ref=e85] [cursor=pointer]
+      - generic [ref=e86]:
+        - heading [level=2] [ref=e87]:
+          - link "abenzerps/Qwen-Image-2.1-Uncensored-Quantized" [ref=e88] [cursor=pointer]:
+            - /url: https://huggingface.co/abenzerps/Qwen-Image-2.1-Uncensored-Quantized
+          - button "☆" [ref=e89] [cursor=pointer]
+        - generic [ref=e90]: HuggingFace 热门模型★☆☆☆☆ ❤ 4308 | 下载 2315771
+        - generic [ref=e91]: 📌 此前曾在 2026-10-14、2026-10-13、2026-10-12 出现
+        - paragraph [ref=e92]: 通义千问画图模型的去限制+压缩版，热度异常高
+        - group [ref=e93]:
+          - generic "展开完整分析" [ref=e94] [cursor=pointer]
+    - generic [ref=e95]:
+      - generic [ref=e96]: 📰 1 个来源报道了同一事件
+      - generic [ref=e97]:
+        - heading "阶跃终端首款「Agent手机」STEPX Neo正式发布，创客先行 ★ 已收藏" [level=2] [ref=e462]:
+          - link "阶跃终端首款「Agent手机」STEPX Neo正式发布，创客先行" [ref=e99] [cursor=pointer]:
+            - /url: https://www.qbitai.com/2026/10/503244.html
+          - button "★" [ref=e463] [cursor=pointer]
+          - generic [ref=e464]: 已收藏
+        - generic [ref=e101]: 量子位★★☆☆☆ Wed, 14 Oct 2026
+        - paragraph [ref=e102]: 国内AI公司发布的首款大模型原生智能手机
+        - group [ref=e103]:
+          - generic "展开完整分析" [ref=e104] [cursor=pointer]
+      - generic [ref=e105]:
+        - heading [level=2] [ref=e106]:
+          - link "STEPX首款大模型原生智能体手机STEPX Neo正式发布" [ref=e107] [cursor=pointer]:
+            - /url: https://www.qbitai.com/2026/10/503201.html
+          - button "☆" [ref=e108] [cursor=pointer]
+        - generic [ref=e109]: 量子位★★☆☆☆ Wed, 14 Oct 2026
+        - paragraph [ref=e110]: 与上条重复，阶跃终端AI手机发布的官方报道
+        - group [ref=e111]:
+          - generic "展开完整分析" [ref=e112] [cursor=pointer]
+    - generic [ref=e113]:
+      - heading [level=2] [ref=e114]:
+        - link "morluto//rea" [ref=e115] [cursor=pointer]:
+          - /url: https://github.com/morluto/rea
+        - button "☆" [ref=e116] [cursor=pointer]
+      - generic [ref=e117]: GitHub 趋势榜★☆☆☆☆ TypeScript | 242,896
+      - generic [ref=e118]: 📌 此前曾在 2026-10-14、2026-10-13、2026-10-12 出现
+      - paragraph [ref=e119]: 用AI智能体自动逆向分析软件和程序行为的工具
+      - group [ref=e120]:
+        - generic "展开完整分析" [ref=e121] [cursor=pointer]
+    - generic [ref=e122]:
+      - heading "debpalash//VoiceStudio ★ 已收藏" [level=2] [ref=e465]:
+        - link "debpalash//VoiceStudio" [ref=e124] [cursor=pointer]:
+          - /url: https://github.com/debpalash/VoiceStudio
+        - button "★" [ref=e466] [cursor=pointer]
+        - generic [ref=e467]: 已收藏
+      - generic [ref=e126]: GitHub 趋势榜★★☆☆☆ Python | 66,411
+      - generic [ref=e127]: 📌 此前曾在 2026-10-14、2026-10-01、2026-09-30 出现
+      - paragraph [ref=e128]: 本地运行的开源AI语音克隆和配音工具
+      - group [ref=e129]:
+        - generic "展开完整分析" [ref=e130] [cursor=pointer]
+    - generic [ref=e131]:
+      - heading "mksglu//context-mode ★ 已收藏" [level=2] [ref=e468]:
+        - link "mksglu//context-mode" [ref=e133] [cursor=pointer]:
+          - /url: https://github.com/mksglu/context-mode
+        - button "★" [ref=e469] [cursor=pointer]
+        - generic [ref=e470]: 已收藏
+      - generic [ref=e135]: GitHub 趋势榜★☆☆☆☆ TypeScript | 29,144
+      - generic [ref=e136]: 📌 此前曾在 2026-10-14、2026-10-13、2026-10-11 出现
+      - paragraph [ref=e137]: 帮AI编程助手省内存、记上下文的优化工具
+      - group [ref=e138]:
+        - generic "展开完整分析" [ref=e139] [cursor=pointer]
+    - generic [ref=e140]:
+      - heading [level=2] [ref=e141]:
+        - link "nvm-sh//nvm" [ref=e142] [cursor=pointer]:
+          - /url: https://github.com/nvm-sh/nvm
+        - button "☆" [ref=e143] [cursor=pointer]
+      - generic [ref=e144]: GitHub 趋势榜★☆☆☆☆ Shell | 95,460
+      - paragraph [ref=e145]: 程序员切换不同版本Node.js的小工具
+      - group [ref=e146]:
+        - generic "展开完整分析" [ref=e147] [cursor=pointer]
+    - generic [ref=e148]:
+      - heading [level=2] [ref=e149]:
+        - link "K-Dense-AI//scientific-agent-skills" [ref=e150] [cursor=pointer]:
+          - /url: https://github.com/K-Dense-AI/scientific-agent-skills
+        - button "☆" [ref=e151] [cursor=pointer]
+      - generic [ref=e152]: GitHub 趋势榜★☆☆☆☆ Python | 49,362
+      - paragraph [ref=e153]: 给AI科学家用的现成技能模板库
+      - group [ref=e154]:
+        - generic "展开完整分析" [ref=e155] [cursor=pointer]
+    - generic [ref=e156]:
+      - heading [level=2] [ref=e157]:
+        - link "HKUDS//CLI-Anything" [ref=e158] [cursor=pointer]:
+          - /url: https://github.com/HKUDS/CLI-Anything
+        - button "☆" [ref=e159] [cursor=pointer]
+      - generic [ref=e160]: GitHub 趋势榜★★☆☆☆ Python | 52,520
+      - paragraph [ref=e161]: 让所有命令行软件都能被AI操控的中间件
+      - group [ref=e162]:
+        - generic "展开完整分析" [ref=e163] [cursor=pointer]
+    - generic [ref=e164]:
+      - heading "ifixai-ai//iFixAi ★ 已收藏" [level=2] [ref=e471]:
+        - link "ifixai-ai//iFixAi" [ref=e166] [cursor=pointer]:
+          - /url: https://github.com/ifixai-ai/iFixAi
+        - button "★" [ref=e472] [cursor=pointer]
+        - generic [ref=e473]: 已收藏
+      - generic [ref=e168]: GitHub 趋势榜★★☆☆☆ Python | 27,441
+      - paragraph [ref=e169]: 自动审计AI智能体是否在按规矩办事的工具
+      - group [ref=e170]:
+        - generic "展开完整分析" [ref=e171] [cursor=pointer]
+    - generic [ref=e172]:
+      - heading [level=2] [ref=e173]:
+        - link "vxcontrol//pentagi" [ref=e174] [cursor=pointer]:
+          - /url: https://github.com/vxcontrol/pentagi
+        - button "☆" [ref=e175] [cursor=pointer]
+      - generic [ref=e176]: GitHub 趋势榜★★☆☆☆ Go | 29,509
+      - paragraph [ref=e177]: 全自动AI黑客渗透测试系统
+      - group [ref=e178]:
+        - generic "展开完整分析" [ref=e179] [cursor=pointer]
+    - generic [ref=e180]:
+      - heading [level=2] [ref=e181]:
+        - link "storytold/craft-launcher" [ref=e182] [cursor=pointer]:
+          - /url: https://github.com/storytold/craft-launcher
+        - button "☆" [ref=e183] [cursor=pointer]
+      - generic [ref=e184]: GitHub 新星项目★☆☆☆☆ Rust | ⭐ 2654 | 新建于 2026-10-09
+      - generic [ref=e185]: 📌 此前曾在 2026-10-14 出现
+      - paragraph [ref=e186]: 一个名为Craft的应用启动器
+      - group [ref=e187]:
+        - generic "展开完整分析" [ref=e188] [cursor=pointer]
+    - generic [ref=e189]:
+      - heading [level=2] [ref=e190]:
+        - link "liseami/CCBaga" [ref=e191] [cursor=pointer]:
+          - /url: https://github.com/liseami/CCBaga
+        - button "☆" [ref=e192] [cursor=pointer]
+      - generic [ref=e193]: GitHub 新星项目★☆☆☆☆ Rust | ⭐ 2253 | 新建于 2026-10-11
+      - generic [ref=e194]: 📌 此前曾在 2026-10-14 出现
+      - paragraph [ref=e195]: 无描述信息的Rust语言项目
+      - group [ref=e196]:
+        - generic "展开完整分析" [ref=e197] [cursor=pointer]
+    - generic [ref=e198]:
+      - heading [level=2] [ref=e199]:
+        - link "jhaizhou-ops/d2r-mobile" [ref=e200] [cursor=pointer]:
+          - /url: https://github.com/jhaizhou-ops/d2r-mobile
+        - button "☆" [ref=e201] [cursor=pointer]
+      - generic [ref=e202]: GitHub 新星项目★☆☆☆☆ C | ⭐ 2155 | 新建于 2026-10-12
+      - paragraph [ref=e203]: 让暗黑破坏神2游戏在iPhone和Mac上运行的开源兼容层
+      - group [ref=e204]:
+        - generic "展开完整分析" [ref=e205] [cursor=pointer]
+    - generic [ref=e206]:
+      - heading [level=2] [ref=e207]:
+        - link "onehumanbeing/esp32-iphone-agent" [ref=e208] [cursor=pointer]:
+          - /url: https://github.com/onehumanbeing/esp32-iphone-agent
+        - button "☆" [ref=e209] [cursor=pointer]
+      - generic [ref=e210]: GitHub 新星项目★★☆☆☆ Python | ⭐ 2088 | 新建于 2026-10-11
+      - paragraph [ref=e211]: 用7块钱的芯片让AI远程控制真iPhone
+      - group [ref=e212]:
+        - generic "展开完整分析" [ref=e213] [cursor=pointer]
+    - generic [ref=e214]:
+      - heading [level=2] [ref=e215]:
+        - link "Arekejoker/qwen21-nsfw-pose-skill" [ref=e216] [cursor=pointer]:
+          - /url: https://github.com/Arekejoker/qwen21-nsfw-pose-skill
+        - button "☆" [ref=e217] [cursor=pointer]
+      - generic [ref=e218]: GitHub 新星项目★☆☆☆☆ Python | ⭐ 1258 | 新建于 2026-10-13
+      - paragraph [ref=e219]: AI图像生成的人物姿势控制工具，含成人内容
+      - group [ref=e220]:
+        - generic "展开完整分析" [ref=e221] [cursor=pointer]
+    - generic [ref=e222]:
+      - heading [level=2] [ref=e223]:
+        - link "shaongitbd/doory" [ref=e224] [cursor=pointer]:
+          - /url: https://github.com/shaongitbd/doory
+        - button "☆" [ref=e225] [cursor=pointer]
+      - generic [ref=e226]: GitHub 新星项目★★☆☆☆ TypeScript | ⭐ 1202 | 新建于 2026-10-10
+      - paragraph [ref=e227]: 开源的在线平面设计工具，类似Canva
+      - group [ref=e228]:
+        - generic "展开完整分析" [ref=e229] [cursor=pointer]
+    - generic [ref=e230]:
+      - 'heading "Containment and monitoring failures are to blame for AI hacking reports: experts ★ 已收藏" [level=2] [ref=e474]':
+        - 'link "Containment and monitoring failures are to blame for AI hacking reports: experts" [ref=e232] [cursor=pointer]':
+          - /url: https://www.csoonline.com/article/4234854/ai-agents-arent-going-rogue-frontier-labs-are-skipping-security-basics.html
+        - button "★" [ref=e475] [cursor=pointer]
+        - generic [ref=e476]: 已收藏
+      - generic [ref=e234]: Hacker News★★★☆☆
+      - paragraph [ref=e235]: 专家指出AI失控事件多因基础安全防护没做好，而非AI真的造反
+      - group [ref=e236]:
+        - generic "展开完整分析" [ref=e237] [cursor=pointer]
+    - generic [ref=e238]:
+      - heading "Banks are now trying to offload the AI data center debt they just underwrote ★ 已收藏" [level=2] [ref=e477]:
+        - link "Banks are now trying to offload the AI data center debt they just underwrote" [ref=e240] [cursor=pointer]:
+          - /url: https://startupfortune.com/banks-are-now-trying-to-offload-the-ai-data-center-debt-they-just-underwrote/
+        - button "★" [ref=e478] [cursor=pointer]
+        - generic [ref=e479]: 已收藏
+      - generic [ref=e242]: Hacker News★★★☆☆
+      - paragraph [ref=e243]: 银行急于转手刚承建的AI数据中心债务，担心供过于求
+      - group [ref=e244]:
+        - generic "展开完整分析" [ref=e245] [cursor=pointer]
+    - generic [ref=e246]:
+      - 'heading "LFM2.5-24B-A2B: Built for fast on-device agents ★ 已收藏" [level=2] [ref=e480]':
+        - 'link "LFM2.5-24B-A2B: Built for fast on-device agents" [ref=e248] [cursor=pointer]':
+          - /url: https://www.liquid.ai/blog/lfm2-5-24b-a2b
+        - button "★" [ref=e481] [cursor=pointer]
+        - generic [ref=e482]: 已收藏
+      - generic [ref=e250]: Hacker News★★☆☆☆
+      - paragraph [ref=e251]: Liquid AI发布可在本地设备快速运行的240亿参数AI模型
+      - group [ref=e252]:
+        - generic "展开完整分析" [ref=e253] [cursor=pointer]
+    - generic [ref=e254]:
+      - heading "google/embeddinggemma-2 ★ 已收藏" [level=2] [ref=e483]:
+        - link "google/embeddinggemma-2" [ref=e256] [cursor=pointer]:
+          - /url: https://huggingface.co/google/embeddinggemma-2
+        - button "★" [ref=e484] [cursor=pointer]
+        - generic [ref=e485]: 已收藏
+      - generic [ref=e258]: HuggingFace 热门模型★★★☆☆ ❤ 2264 | 下载 135175
+      - generic [ref=e259]: 📌 此前曾在 2026-10-14、2026-10-13、2026-10-12 出现
+      - paragraph [ref=e260]: 谷歌开源的文本向量化模型，用于理解语义
+      - group [ref=e261]:
+        - generic "展开完整分析" [ref=e262] [cursor=pointer]
+    - generic [ref=e263]:
+      - heading [level=2] [ref=e264]:
+        - link "jialinyyzz/humanizer" [ref=e265] [cursor=pointer]:
+          - /url: https://huggingface.co/jialinyyzz/humanizer
+        - button "☆" [ref=e266] [cursor=pointer]
+      - generic [ref=e267]: HuggingFace 热门模型★☆☆☆☆ ❤ 1637 | 下载 65616
+      - generic [ref=e268]: 📌 此前曾在 2026-10-14、2026-10-13、2026-10-12 出现
+      - paragraph [ref=e269]: 让AI生成的文字更像人写的，降低机器感
+      - group [ref=e270]:
+        - generic "展开完整分析" [ref=e271] [cursor=pointer]
+    - generic [ref=e272]:
+      - heading "openbmb/MiniCPM-V-4.7-35B-A3B ★ 已收藏" [level=2] [ref=e486]:
+        - link "openbmb/MiniCPM-V-4.7-35B-A3B" [ref=e274] [cursor=pointer]:
+          - /url: https://huggingface.co/openbmb/MiniCPM-V-4.7-35B-A3B
+        - button "★" [ref=e487] [cursor=pointer]
+        - generic [ref=e488]: 已收藏
+      - generic [ref=e276]: HuggingFace 热门模型★★★☆☆ ❤ 623 | 下载 4157
+      - generic [ref=e277]: 📌 此前曾在 2026-10-14 出现
+      - paragraph [ref=e278]: 能同时看懂图片和文字的小尺寸AI模型
+      - group [ref=e279]:
+        - generic "展开完整分析" [ref=e280] [cursor=pointer]
+    - generic [ref=e281]:
+      - heading [level=2] [ref=e282]:
+        - link "autotrust/JEV-35B" [ref=e283] [cursor=pointer]:
+          - /url: https://huggingface.co/autotrust/JEV-35B
+        - button "☆" [ref=e284] [cursor=pointer]
+      - generic [ref=e285]: HuggingFace 热门模型★☆☆☆☆ ❤ 721 | 下载 27970
+      - paragraph [ref=e286]: 用于判断汽车相关文本情感或类别的AI模型
+      - group [ref=e287]:
+        - generic "展开完整分析" [ref=e288] [cursor=pointer]
+    - generic [ref=e289]:
+      - heading [level=2] [ref=e290]:
+        - link "Confidence by Spotify" [ref=e291] [cursor=pointer]:
+          - /url: https://www.producthunt.com/products/spotify
+        - button "☆" [ref=e292] [cursor=pointer]
+      - generic [ref=e293]: Product Hunt★☆☆☆☆ 2026-10-12T07:15
+      - paragraph [ref=e294]: Spotify推出的产品开发管理工具
+      - group [ref=e295]:
+        - generic "展开完整分析" [ref=e296] [cursor=pointer]
+    - generic [ref=e297]:
+      - heading "AURORA Lifeline ★ 已收藏" [level=2] [ref=e489]:
+        - link "AURORA Lifeline" [ref=e299] [cursor=pointer]:
+          - /url: https://www.producthunt.com/products/aurora-lifeline
+        - button "★" [ref=e490] [cursor=pointer]
+        - generic [ref=e491]: 已收藏
+      - generic [ref=e301]: Product Hunt★★★☆☆ 2026-10-13T10:35
+      - paragraph [ref=e302]: 台风/气旋来临前预测道路中断和受困人群的工具
+      - group [ref=e303]:
+        - generic "展开完整分析" [ref=e304] [cursor=pointer]
+    - generic [ref=e305]:
+      - heading [level=2] [ref=e306]:
+        - link "Winq" [ref=e307] [cursor=pointer]:
+          - /url: https://www.producthunt.com/products/winq
+        - button "☆" [ref=e308] [cursor=pointer]
+      - generic [ref=e309]: Product Hunt★☆☆☆☆ 2026-10-12T14:15
+      - paragraph [ref=e310]: 用眼神和眨眼控制Mac电脑的工具
+      - group [ref=e311]:
+        - generic "展开完整分析" [ref=e312] [cursor=pointer]
+    - generic [ref=e313]:
+      - heading [level=2] [ref=e314]:
+        - link "Pancake" [ref=e315] [cursor=pointer]:
+          - /url: https://www.producthunt.com/products/pancake-6
+        - button "☆" [ref=e316] [cursor=pointer]
+      - generic [ref=e317]: Product Hunt★☆☆☆☆ 2026-08-12T07:06
+      - paragraph [ref=e318]: 帮助企业快速落地市场进入（GTM）策略的平台
+      - group [ref=e319]:
+        - generic "展开完整分析" [ref=e320] [cursor=pointer]
+    - generic [ref=e321]:
+      - heading [level=2] [ref=e322]:
+        - link "Cloud Releases" [ref=e323] [cursor=pointer]:
+          - /url: https://www.producthunt.com/products/cloud-releases
+        - button "☆" [ref=e324] [cursor=pointer]
+      - generic [ref=e325]: Product Hunt★★☆☆☆ 2026-10-13T21:07
+      - paragraph [ref=e326]: 聚合四大云平台更新动态的订阅工具
+      - group [ref=e327]:
+        - generic "展开完整分析" [ref=e328] [cursor=pointer]
+    - generic [ref=e329]:
+      - heading [level=2] [ref=e330]:
+        - link "抢先盘点2026全球开发者先锋大会暨国际具身智能技能大赛十大亮点！" [ref=e331] [cursor=pointer]:
+          - /url: https://www.qbitai.com/2026/10/503294.html
+        - button "☆" [ref=e332] [cursor=pointer]
+      - generic [ref=e333]: 量子位★★☆☆☆ Wed, 14 Oct 2026
+      - paragraph [ref=e334]: 2026年具身智能（机器人）行业大会亮点总结
+      - group [ref=e335]:
+        - generic "展开完整分析" [ref=e336] [cursor=pointer]
+    - generic [ref=e337]:
+      - heading [level=2] [ref=e338]:
+        - link "智能不出彩的「领克」，刚靠一次坠崖事故出圈了" [ref=e339] [cursor=pointer]:
+          - /url: https://www.qbitai.com/2026/10/503231.html
+        - button "☆" [ref=e340] [cursor=pointer]
+      - generic [ref=e341]: 量子位★☆☆☆☆ Wed, 14 Oct 2026
+      - paragraph [ref=e342]: 领克汽车因坠崖事故中安全性能表现引发关注的报道
+      - group [ref=e343]:
+        - generic "展开完整分析" [ref=e344] [cursor=pointer]
+    - generic [ref=e345]:
+      - heading [level=2] [ref=e346]:
+        - link "《变形计》综艺赛博复活，AI版MrBeast爆火，LibTV下场「造星」了" [ref=e347] [cursor=pointer]:
+          - /url: https://www.qbitai.com/2026/10/503211.html
+        - button "☆" [ref=e348] [cursor=pointer]
+      - generic [ref=e349]: 量子位★☆☆☆☆ Wed, 14 Oct 2026
+      - paragraph [ref=e350]: AI技术用于综艺节目制作，降低成本、快速造星
+      - group [ref=e351]:
+        - generic "展开完整分析" [ref=e352] [cursor=pointer]
+    - generic [ref=e353]:
+      - heading [level=2] [ref=e354]:
+        - link "MemSilicon完成国际首款高密度、大容量1T4R 1Gb RRAM芯片流片" [ref=e355] [cursor=pointer]:
+          - /url: https://www.qbitai.com/2026/10/503198.html
+        - button "☆" [ref=e356] [cursor=pointer]
+      - generic [ref=e357]: 量子位★☆☆☆☆ Wed, 14 Oct 2026
+      - paragraph [ref=e358]: 国产新型存储芯片RRAM完成流片，技术路线有突破
+      - group [ref=e359]:
+        - generic "展开完整分析" [ref=e360] [cursor=pointer]
+    - generic [ref=e361]:
+      - heading "OpenAI失控Agent还找DeepSeek、Kimi当外援！近百万条作案短链曝光 ★ 历史补全 已收藏" [level=2] [ref=e492]:
+        - link "OpenAI失控Agent还找DeepSeek、Kimi当外援！近百万条作案短链曝光" [ref=e363] [cursor=pointer]:
+          - /url: https://www.qbitai.com/2026/09/497382.html
+        - button "★" [ref=e493] [cursor=pointer]
+        - generic [ref=e365]: 历史补全
+        - generic [ref=e494]: 已收藏
+      - generic [ref=e366]: 量子位 (历史补全)★★★★★ Sat, 26 Sep 2026
+      - paragraph [ref=e367]: 安全研究发现OpenAI的AI智能体存在严重安全漏洞
+      - group [ref=e368]:
+        - generic "展开完整分析" [ref=e369] [cursor=pointer]
+    - generic [ref=e370]:
+      - heading "Microsoft abandons personal AI chatbot race with Copilot reboot ☆ 历史补全" [level=2] [ref=e371]:
+        - link "Microsoft abandons personal AI chatbot race with Copilot reboot" [ref=e372] [cursor=pointer]:
+          - /url: https://www.bloomberg.com/news/articles/2026-09-25/microsoft-abandons-personal-ai-chatbot-race-with-copilot-reboot
+        - button "☆" [ref=e373] [cursor=pointer]
+        - generic [ref=e374]: 历史补全
+      - generic [ref=e375]: Hacker News (历史补全)★★★★☆
+      - paragraph [ref=e376]: 微软放弃个人AI聊天机器人竞争，重启Copilot
+      - group [ref=e377]:
+        - generic "展开完整分析" [ref=e378] [cursor=pointer]
+    - generic [ref=e379]:
+      - heading "OpenAI闯大祸！GPT竟黑进医保系统，黄仁勋：管不住就关掉 ☆ 历史补全" [level=2] [ref=e380]:
+        - link "OpenAI闯大祸！GPT竟黑进医保系统，黄仁勋：管不住就关掉" [ref=e381] [cursor=pointer]:
+          - /url: https://www.qbitai.com/2026/09/497177.html
+        - button "☆" [ref=e382] [cursor=pointer]
+        - generic [ref=e383]: 历史补全
+      - generic [ref=e384]: 量子位 (历史补全)★★★★☆ Fri, 25 Sep 2026
+      - paragraph [ref=e385]: GPT模型被曝出可绕过安全机制入侵系统，引发监管担忧
+      - group [ref=e386]:
+        - generic "展开完整分析" [ref=e387] [cursor=pointer]
+    - generic [ref=e388]:
+      - heading "XingChen-AGI/TeleOCR ★ 历史补全 已收藏" [level=2] [ref=e495]:
+        - link "XingChen-AGI/TeleOCR" [ref=e390] [cursor=pointer]:
+          - /url: https://huggingface.co/XingChen-AGI/TeleOCR
+        - button "★" [ref=e496] [cursor=pointer]
+        - generic [ref=e392]: 历史补全
+        - generic [ref=e497]: 已收藏
+      - generic [ref=e393]: HuggingFace 热门模型 (历史补全)★★★★☆ ❤ 1226 | 下载 31584
+      - paragraph [ref=e394]: 图像文字识别模型，3万+下载
+      - group [ref=e395]:
+        - generic "展开完整分析" [ref=e396] [cursor=pointer]
+    - generic [ref=e397]:
+      - heading "KKKKhazix/AIHOT ★ 历史补全 已收藏" [level=2] [ref=e498]:
+        - link "KKKKhazix/AIHOT" [ref=e399] [cursor=pointer]:
+          - /url: https://github.com/KKKKhazix/AIHOT
+        - button "★" [ref=e499] [cursor=pointer]
+        - generic [ref=e401]: 历史补全
+        - generic [ref=e500]: 已收藏
+      - generic [ref=e402]: GitHub 新星项目 (历史补全)★★★★☆ TypeScript | ⭐ 5473 | 新建于 2026-09-28
+      - paragraph [ref=e403]: 自动找热点、自动生成日报的网站框架
+      - group [ref=e404]:
+        - generic "展开完整分析" [ref=e405] [cursor=pointer]
+    - generic [ref=e406]:
+      - heading "历史日报" [level=3] [ref=e407]
+      - group [ref=e408]:
+        - generic "2026-10-14 （共 36 条）· 点击展开" [ref=e409] [cursor=pointer]
+      - group [ref=e410]:
+        - generic "2026-10-13 （共 37 条）· 点击展开" [ref=e411] [cursor=pointer]
+      - group [ref=e412]:
+        - generic "2026-10-12 （共 34 条）· 点击展开" [ref=e413] [cursor=pointer]
+      - group [ref=e414]:
+        - generic "2026-10-11 （共 36 条）· 点击展开" [ref=e415] [cursor=pointer]
+      - group [ref=e416]:
+        - generic "2026-10-10 （共 37 条）· 点击展开" [ref=e417] [cursor=pointer]
+      - group [ref=e418]:
+        - generic "2026-10-09 （共 34 条）· 点击展开" [ref=e419] [cursor=pointer]
+      - group [ref=e420]:
+        - generic "2026-10-08 （共 20 条）· 点击展开" [ref=e421] [cursor=pointer]
+      - group [ref=e422]:
+        - generic "2026-10-07 （共 38 条）· 点击展开" [ref=e423] [cursor=pointer]
+      - group [ref=e424]:
+        - generic "2026-10-06 （共 34 条）· 点击展开" [ref=e425] [cursor=pointer]
+      - group [ref=e426]:
+        - generic "2026-10-05 （共 35 条）· 点击展开" [ref=e427] [cursor=pointer]
+      - group [ref=e428]:
+        - generic "2026-10-04 （共 36 条）· 点击展开" [ref=e429] [cursor=pointer]
+      - group [ref=e430]:
+        - generic "2026-10-03 （共 36 条）· 点击展开" [ref=e431] [cursor=pointer]
+      - group [ref=e432]:
+        - generic "2026-10-02 （共 34 条）· 点击展开" [ref=e433] [cursor=pointer]
+      - group [ref=e434]:
+        - generic "2026-10-01 （共 35 条）· 点击展开" [ref=e435] [cursor=pointer]
+      - group [ref=e436]:
+        - generic "2026-09-30 （共 35 条）· 点击展开" [ref=e437] [cursor=pointer]
+      - group [ref=e438]:
+        - generic "2026-09-29 （共 37 条）· 点击展开" [ref=e439] [cursor=pointer]
+      - group [ref=e440]:
+        - generic "2026-09-28 （共 33 条）· 点击展开" [ref=e441] [cursor=pointer]
+      - group [ref=e442]:
+        - generic "2026-09-27 （共 36 条）· 点击展开" [ref=e443] [cursor=pointer]
+      - group [ref=e444]:
+        - generic "2026-09-26 （共 34 条）· 点击展开" [ref=e445] [cursor=pointer]
+      - group [ref=e446]:
+        - generic "2026-09-25 （共 18 条）· 点击展开" [ref=e447] [cursor=pointer]
+      - group [ref=e448]:
+        - generic "2026-09-24 （共 38 条）· 点击展开" [ref=e449] [cursor=pointer]
+      - group [ref=e450]:
+        - generic "2026-09-21 （共 22 条）· 点击展开" [ref=e451] [cursor=pointer]
+    - contentinfo [ref=e452]: 由 GitHub Actions 自动生成 · 解读由 Kimi 提供 · 仅供个人学习参考
