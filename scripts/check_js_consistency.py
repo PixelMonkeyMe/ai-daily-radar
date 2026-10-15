@@ -23,14 +23,25 @@ def check(js_file):
                     f"function '{func}' called as '{match}' (case mismatch)"
                 )
 
-    # 3. 找所有 window.xxx = function 定义，检查 HTML 中是否有引用
+    # 3. 找所有 window.xxx = function 定义，检查 HTML/其他 JS 中是否有引用
     window_funcs = set(re.findall(r'window\.([A-Za-z_]\w*)\s*=', text))
     html_dir = os.path.dirname(js_file)
-    html_text = ""
+    root_dir = os.path.dirname(html_dir)
+    # 搜索范围：同目录 HTML + 同目录其他 JS + scripts/ 目录 JS
+    # （构建前 docs/export_pdf.js 可能是旧版本，需要同时检查 scripts/export_pdf.js）
+    search_text = ""
     for hf in glob.glob(os.path.join(html_dir, "*.html")):
-        html_text += open(hf, encoding='utf-8').read()
+        search_text += open(hf, encoding='utf-8').read()
+    for jf in glob.glob(os.path.join(html_dir, "*.js")):
+        if os.path.basename(jf) != os.path.basename(js_file):
+            search_text += open(jf, encoding='utf-8').read()
+    # 也搜索 scripts/ 目录（源码位置，构建前可能更新）
+    scripts_dir = os.path.join(root_dir, "scripts")
+    if os.path.isdir(scripts_dir):
+        for jf in glob.glob(os.path.join(scripts_dir, "*.js")):
+            search_text += open(jf, encoding='utf-8').read()
     for func in sorted(window_funcs):
-        if func not in html_text:
+        if func not in search_text:
             # 也在 JS 内搜索（排除定义行本身）
             js_no_def = re.sub(r'window\.' + func + r'\s*=', '', text)
             if func not in js_no_def:

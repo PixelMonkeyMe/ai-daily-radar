@@ -100,7 +100,8 @@ function _injectSummaryContent() {
       var dateMatch = titleText.match(/(\d{4}-\d{2}-\d{2})/);
       if (dateMatch) {
         var date = dateMatch[1];
-        var p = fetch('summaries.json').then(function(res) {
+        var prefix = window.location.pathname.indexOf('/archive/') >= 0 ? '../' : '';
+        var p = fetch(prefix + 'summaries.json').then(function(res) {
           return res.json();
         }).then(function(data) {
           if (data[date]) {
@@ -116,7 +117,9 @@ function _injectSummaryContent() {
               contentDiv.innerHTML += '<p><b>结论:</b> ' + summary.conclusions.join('; ') + '</p>';
             }
             if (summary.top_picks) {
-              contentDiv.innerHTML += '<p><b>精选:</b> ' + summary.top_picks + '</p>';
+            var picks = summary.top_picks;
+            if (Array.isArray(picks)) picks = picks.map(function(p) { return p.title || ''; }).join('、');
+            contentDiv.innerHTML += '<p><b>精选:</b> ' + picks + '</p>';
             }
             if (summary.industry_use) {
               contentDiv.innerHTML += '<p><b>行业应用:</b> ' + summary.industry_use + '</p>';
@@ -146,6 +149,7 @@ function _injectSummaryContent() {
 
 // Get current filter state
 function _getFilterState() {
+  if (typeof window.adrGetFilterState === 'function') return window.adrGetFilterState();
   return {
     search: document.getElementById('fav-q') ? document.getElementById('fav-q').value : '',
     dateFrom: document.getElementById('fav-date-from') ? document.getElementById('fav-date-from').value : '',
@@ -156,18 +160,11 @@ function _getFilterState() {
 
 // Restore filter state
 function _restoreFilterState(state) {
-  if (state.search && document.getElementById('fav-q')) {
-    document.getElementById('fav-q').value = state.search;
-  }
-  if (state.dateFrom && document.getElementById('fav-date-from')) {
-    document.getElementById('fav-date-from').value = state.dateFrom;
-  }
-  if (state.dateTo && document.getElementById('fav-date-to')) {
-    document.getElementById('fav-date-to').value = state.dateTo;
-  }
-  if (state.scrollTop) {
-    window.scrollTo(0, state.scrollTop);
-  }
+  if (typeof window.adrSetFilterState === 'function') { window.adrSetFilterState(state); return; }
+  if (state.search && document.getElementById('fav-q')) document.getElementById('fav-q').value = state.search;
+  if (state.dateFrom && document.getElementById('fav-date-from')) document.getElementById('fav-date-from').value = state.dateFrom;
+  if (state.dateTo && document.getElementById('fav-date-to')) document.getElementById('fav-date-to').value = state.dateTo;
+  if (state.scrollTop) window.scrollTo(0, state.scrollTop);
 }
 
 function exportDailyPDF() {
@@ -218,31 +215,43 @@ function exportFavoritesPDF() {
   btn.textContent = '⏳ 正在生成...';
   loading.style.display = 'block';
 
+  // 1. Save filter state
+  var filterState = _getFilterState();
+
+  // 2. Hide UI elements (complete selectors: add cat tabs, date filter, count)
   var hidden = _hideEls([
     '.export-pdf-btn', '.pdf-loading', '.fav-btn',
-    '.fav-toolbar', '.fav-link-box', '.copy-btn'
+    '.fav-toolbar', '.fav-link-box', '.copy-btn',
+    '.fav-cat-tab', '.fav-date-filter', '#fav-count'
   ]);
-
   var detailsSaved = _expandDetails();
 
-  var wrap = document.querySelector('.wrap');
-  var filename = 'AI日报雷达_收藏夹.pdf';
+  // 3. Clear all filters to show ALL favorites
+  if (typeof window.adrSetFilterState === 'function') {
+    window.adrSetFilterState({ category: '', date: '', from: '', to: '', search: '', sortDesc: true });
+  }
 
-  _generatePDF(wrap, filename).then(function() {
-    _restoreDetails(detailsSaved);
-    _restoreEls(hidden);
-    btn.disabled = false;
-    btn.textContent = '📄 导出收藏夹为 PDF';
-    loading.style.display = 'none';
-  }).catch(function(err) {
-    console.error('PDF export failed:', err);
-    _restoreDetails(detailsSaved);
-    _restoreEls(hidden);
-    btn.disabled = false;
-    btn.textContent = '❌ 导出失败，请重试';
-    loading.style.display = 'none';
-    setTimeout(function() {
-      btn.textContent = '📄 导出收藏夹为 PDF';
-    }, 2000);
-  });
+  // 4. Wait for DOM update -> inject summary content -> generate PDF
+  setTimeout(function() {
+    _injectSummaryContent().then(function() {
+      var wrap = document.querySelector('.wrap');
+      var filename = 'AI日报雷达_收藏夹.pdf';
+      _generatePDF(wrap, filename).then(function() {
+        // 5. Restore state
+        _restoreDetails(detailsSaved); _restoreEls(hidden); _restoreFilterState(filterState);
+        btn.disabled = false;
+        btn.textContent = '📄 导出收藏夹为 PDF';
+        loading.style.display = 'none';
+      }).catch(function(err) {
+        console.error('PDF export failed:', err);
+        _restoreDetails(detailsSaved); _restoreEls(hidden); _restoreFilterState(filterState);
+        btn.disabled = false;
+        btn.textContent = '❌ 导出失败，请重试';
+        loading.style.display = 'none';
+        setTimeout(function() {
+          btn.textContent = '📄 导出收藏夹为 PDF';
+        }, 2000);
+      });
+    });
+  }, 300);
 }

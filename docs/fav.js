@@ -463,7 +463,33 @@
     renderFavPage();
   };
 
-  /* ── 收藏夹页面渲染 ── */
+  /* ── 筛选状态读写（供 PDF 导出等外部功能使用） ── */
+  window.adrGetFilterState = function () {
+    return {
+      category: filterCategory,
+      date: filterDate,
+      from: filterFrom,
+      to: filterTo,
+      search: document.getElementById("fav-q") ? document.getElementById("fav-q").value : "",
+      sortDesc: sortDesc
+    };
+  };
+
+  window.adrSetFilterState = function (state) {
+    if (!state) return;
+    filterCategory = state.category || "";
+    filterDate = state.date || "";
+    filterFrom = state.from || "";
+    filterTo = state.to || "";
+    sortDesc = state.sortDesc !== undefined ? state.sortDesc : true;
+    if (document.getElementById("fav-q")) document.getElementById("fav-q").value = state.search || "";
+    if (document.getElementById("fav-date")) document.getElementById("fav-date").value = state.date || "";
+    if (document.getElementById("fav-date-from")) document.getElementById("fav-date-from").value = state.from || "";
+    if (document.getElementById("fav-date-to")) document.getElementById("fav-date-to").value = state.to || "";
+    renderFavPage();
+  };
+
+  /* ─ 收藏夹页面渲染 ── */
   function renderFavPage() {
     var list = document.getElementById("fav-list");
     if (!list) return;
