@@ -12,7 +12,7 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { start_date, end_date } = await req.json()
+    const { start_date, end_date, model } = await req.json()
 
     if (!start_date || !end_date) {
       throw new Error('start_date and end_date are required')
@@ -20,12 +20,16 @@ Deno.serve(async (req) => {
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
-    const kimiApiKey = Deno.env.get('kimi_api_key')!
+    const kimiApiKey = Deno.env.get('kimi_api_key') || ''
+    const qwenApiKey = Deno.env.get('qwen_api_key') || ''
+
+    // 模型选择：默认 kimi，支持 qwen
+    const useModel = model || 'kimi'
 
     const supabase = createClient(supabaseUrl, supabaseKey)
 
-    // Check cache first
-    const cacheKey = `${start_date}_${end_date}`
+    // Check cache first (cache_key 包含模型标识，避免模型切换后命中旧缓存)
+    const cacheKey = `${useModel}_${start_date}_${end_date}`
     const { data: cached } = await supabase
       .from('analysis_cache')
       .select('*')
@@ -86,27 +90,48 @@ ${JSON.stringify(itemsSummary, null, 2)}
 
 请用中文回答，格式清晰，重点突出。`
 
-    // Call Kimi API
-    const kimiResponse = await fetch('https://api.moonshot.cn/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${kimiApiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'kimi-k2.6',
-        messages: [{ role: 'user', content: prompt }],
-        temperature: 1,
-      }),
-    })
-
-    if (!kimiResponse.ok) {
-      const errText = await kimiResponse.text()
-      throw new Error(`Kimi API error: ${kimiResponse.status} - ${errText}`)
+    // Call AI API (Kimi or Qwen)
+    let apiResponse: Response
+    if (useModel === 'qwen') {
+      if (!qwenApiKey) throw new Error('qwen_api_key not configured')
+      apiResponse = await fetch('https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${qwenApiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'qwen-plus',
+          messages: [{ role: 'user', content: prompt }],
+          max_tokens: 2000,
+        }),
+      })
+      if (!apiResponse.ok) {
+        const errText = await apiResponse.text()
+        throw new Error(`Qwen API error: ${apiResponse.status} - ${errText}`)
+      }
+    } else {
+      if (!kimiApiKey) throw new Error('kimi_api_key not configured')
+      apiResponse = await fetch('https://api.moonshot.cn/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${kimiApiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'kimi-k2.6',
+          messages: [{ role: 'user', content: prompt }],
+          temperature: 1,
+        }),
+      })
+      if (!apiResponse.ok) {
+        const errText = await apiResponse.text()
+        throw new Error(`Kimi API error: ${apiResponse.status} - ${errText}`)
+      }
     }
 
-    const kimiData = await kimiResponse.json()
-    const analysis = kimiData.choices[0].message.content
+    const apiData = await apiResponse.json()
+    const analysis = apiData.choices[0].message.content
 
     // Cache the result (24 hours)
     const expiresAt = new Date()
