@@ -12,9 +12,10 @@ GitHub Pages (静态托管)
 
 GitHub Actions (CI/CD · 每天 UTC 01:00 触发)
 ├── fetch_sources.py → 抓取信息源
-├── summarize.py → Kimi 生成解读
+├── summarize.py → 方案C: Qwen 摘要 + Kimi 评分 + 今日总结
 ├── build_site.py → 生成网页 + 同步 Supabase
-└── send_email.py → 邮件推送
+├── send_email.py → 邮件推送
+└── check_phase3_readiness.py → Phase 3 就绪度检测
 
 Supabase (后端)
 ├── PostgreSQL: items / favorites / analysis_cache
@@ -151,4 +152,5 @@ QA **不做**：代码审查、Console 检查、API 调用验证（那是 Dev �
 1. 运行 `python scripts/check_phase3_readiness.py`
 2. 如果输出 `Status: READY`，主动提醒用户："Phase 3 就绪度已达标，可以推进双路评分开发"
 3. 如果输出 `Status: NOT READY`，显示差距但**不主动打扰**（用户问起时才报告）
-4. 检测逻辑：连续 3 天字段完整率 ≥98% 且中段评分占比 ≥60%
+4. 检测逻辑：只统计 `pipeline=split`（方案C）的报告，连续 3 天字段完整率 ≥98% 且中段评分占比 ≥60%
+5. 旧 pipeline（`kimi_full`/无 `pipeline` 字段）的报告会被跳过，不计入就绪度

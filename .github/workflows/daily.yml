@@ -43,10 +43,13 @@ jobs:
           MAIL_TO: fancocat@qq.com
         run: python scripts/send_email.py
 
+      - name: Phase 3 就绪度检测
+        run: python scripts/check_phase3_readiness.py
+
       - name: 提交当天报告 + SQLite 数据库
         run: |
           git config user.name "ai-daily-radar-bot"
           git config user.email "bot@users.noreply.github.com"
-          git add data/reports data/radar.db docs
+          git add data/reports data/radar.db data/phase3_readiness.json docs
           git commit -m "日报 $(date +%F)" || echo "无新内容，跳过提交"
           git push

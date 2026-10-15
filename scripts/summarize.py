@@ -282,16 +282,26 @@ def main():
     date_str = raw["fetched_at"][:10]
     os.makedirs(OUT_DIR, exist_ok=True)
 
+    # pipeline 版本标记：用于 Phase 3 就绪度检测区分不同评分架构的数据
+    if has_qwen and analyzed:
+        pipeline_ver = "split"      # 方案C: Qwen摘要 + Kimi评分
+    elif has_kimi and analyzed:
+        pipeline_ver = "kimi_full"  # 旧架构: Kimi 全量解读
+    else:
+        pipeline_ver = "none"       # 无 AI
+
     if analyzed:
         extra_map = {i["title"]: i for i in raw["items"]}
         for a in analyzed:
             src = extra_map.get(a.get("title"), {})
             a.setdefault("extra", src.get("extra", ""))
         report = {"date": date_str, "fetched_at": raw["fetched_at"],
-                  "ai_enabled": True, "summary": summary, "items": analyzed}
+                  "ai_enabled": True, "pipeline": pipeline_ver,
+                  "summary": summary, "items": analyzed}
     else:
         report = {"date": date_str, "fetched_at": raw["fetched_at"],
-                  "ai_enabled": False, "summary": summary, "items": raw["items"]}
+                  "ai_enabled": False, "pipeline": pipeline_ver,
+                  "summary": summary, "items": raw["items"]}
 
     path = os.path.join(OUT_DIR, f"{date_str}.json")
     with open(path, "w", encoding="utf-8") as f:
