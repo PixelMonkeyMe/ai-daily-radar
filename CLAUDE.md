@@ -1,7 +1,7 @@
 # AI 日报雷达 — 项目规范
 
 ## 项目简介
-自动抓取 AI 领域信息源（GitHub Trending、HuggingFace、Product Hunt、知乎、V2EX），生成日报，支持邮箱登录收藏、AI 时段分析。
+自动抓取 AI 领域信息源（GitHub Trending、HuggingFace、Product Hunt、知乎、V2EX），通过 Qwen 生成解读 + Kimi 评分，生成日报，支持邮箱登录收藏、AI 时段分析。
 
 ## 技术架构
 ```
@@ -39,8 +39,10 @@ Supabase (后端)
 ## 环境信息
 - Supabase URL: `https://bvhzexdluniqdwmsxaxw.supabase.co`
 - Supabase Anon Key: `sb_publishable_ZkAEga1YBOmfUrFba7yFYQ_5gt4kkMj`
-- Kimi API 模型：`kimi-k2.6`，temperature 必须为 `1`
-- Supabase secrets 名称必须小写（如 `kimi_api_key`）
+- Kimi API 模型：`kimi-k2.6`，仅用于 importance 评分 + 今日总结合成
+- Qwen API 模型：`qwen-plus`，通过 DashScope 兼容接口，用于摘要生成
+- DashScope 端点：`https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions`
+- Supabase secrets 名称必须小写（如 `kimi_api_key`、`qwen_api_key`）
 - GitHub Pages 部署后 CDN 缓存 10 分钟，测试时注意强制刷新
 
 ## 已知坑点（踩过的不能再踩）

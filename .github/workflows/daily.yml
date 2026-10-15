@@ -25,9 +25,10 @@ jobs:
       - name: 抓取信息源
         run: python scripts/fetch_sources.py
 
-      - name: Kimi 生成解读
+      - name: AI 解读（Qwen 摘要 + Kimi 评分）
         env:
           MOONSHOT_API_KEY: ${{ secrets.MOONSHOT_API_KEY }}
+          QWEN_API_KEY: ${{ secrets.QWEN_API_KEY }}
         run: python scripts/summarize.py
 
       - name: 生成网页（含故事分组 + Top5 补全 + SQLite 持久化）
