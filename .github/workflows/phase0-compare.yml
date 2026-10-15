@@ -1,0 +1,33 @@
+name: Phase 0 - Qwen vs Kimi Compare
+
+on:
+  workflow_dispatch:
+
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install deps
+        run: pip install requests
+
+      - name: Run comparison
+        run: python scripts/test_qwen_compare.py
+        env:
+          MOONSHOT_API_KEY: ${{ secrets.MOONSHOT_API_KEY }}
+          KIMI_MODEL: kimi-k2.6
+          QWEN_API_KEY: ${{ secrets.QWEN_API_KEY }}
+
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qwen-compare-report
+          path: data/eval/
+          if-no-files-found: ignore
