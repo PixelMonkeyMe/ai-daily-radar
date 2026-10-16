@@ -1,10 +1,28 @@
 {
   "ready": false,
-  "reason": "方案C 数据不足",
-  "days_analyzed": 0,
-  "split_days": 0,
+  "days_analyzed": 1,
+  "split_days": 1,
+  "reports": [
+    {
+      "date": "2026-10-16",
+      "pipeline": "split",
+      "items": 35,
+      "complete_rate": 1.0,
+      "importance_dist": {
+        "1": 10,
+        "2": 16,
+        "3": 6,
+        "4": 3,
+        "5": 0
+      },
+      "mid_range_rate": 0.714,
+      "avg_importance": 2.06
+    }
+  ],
+  "avg_complete_rate": 1.0,
+  "avg_mid_range_rate": 0.714,
   "skipped": {
-    "no_pipeline_field": 10,
+    "no_pipeline_field": 9,
     "old_pipeline": 0,
     "no_items": 0
   },
@@ -13,5 +31,6 @@
     "complete_rate": 0.98,
     "mid_range_rate": 0.6,
     "min_days": 3
-  }
+  },
+  "checked_at": "2026-10-16T01:24:33.981784"
 }
