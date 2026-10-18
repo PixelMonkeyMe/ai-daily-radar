@@ -1,8 +1,23 @@
 {
-  "ready": false,
-  "days_analyzed": 2,
-  "split_days": 2,
+  "ready": true,
+  "days_analyzed": 3,
+  "split_days": 3,
   "reports": [
+    {
+      "date": "2026-10-18",
+      "pipeline": "split",
+      "items": 35,
+      "complete_rate": 1.0,
+      "importance_dist": {
+        "1": 11,
+        "2": 10,
+        "3": 10,
+        "4": 4,
+        "5": 0
+      },
+      "mid_range_rate": 0.686,
+      "avg_importance": 2.2
+    },
     {
       "date": "2026-10-17",
       "pipeline": "split",
@@ -35,9 +50,9 @@
     }
   ],
   "avg_complete_rate": 1.0,
-  "avg_mid_range_rate": 0.726,
+  "avg_mid_range_rate": 0.712,
   "skipped": {
-    "no_pipeline_field": 8,
+    "no_pipeline_field": 7,
     "old_pipeline": 0,
     "no_items": 0
   },
@@ -47,5 +62,5 @@
     "mid_range_rate": 0.6,
     "min_days": 3
   },
-  "checked_at": "2026-10-17T01:26:17.451938"
+  "checked_at": "2026-10-18T01:26:05.227566"
 }
