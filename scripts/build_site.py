@@ -253,16 +253,58 @@ def fav_bar(prefix):
             f'· 点条目旁的 ☆ 即可收藏</a></div>')
 
 
+def _lookup_url(title, url_by_title, all_titles):
+    """根据标题查找 URL：精确匹配 → 子串匹配 → 字符重叠度匹配 → 返回 None
+
+    AI 合成的 top_pick 标题经常是原始标题的缩写或改写，
+    例如合成"领克坠崖事故出圈"，原始标题"智能不出彩的「领克」，刚靠一次坠崖事故出圈了"。
+    子串匹配失败时用字符重叠度兜底。
+    """
+    if not title:
+        return None
+    if title in url_by_title:
+        return url_by_title[title]
+    # 子串匹配
+    for orig_title, url in url_by_title.items():
+        if title in orig_title or orig_title in title:
+            return url
+    # 字符重叠度匹配（短标题的字符有多少比例出现在原标题中）
+    best_url, best_ratio = None, 0.0
+    for orig_title, url in url_by_title.items():
+        chars = set(title)
+        if not chars:
+            continue
+        matched = sum(1 for c in chars if c in orig_title)
+        ratio = matched / len(chars)
+        if ratio > best_ratio:
+            best_ratio = ratio
+            best_url = url
+    if best_ratio >= 0.5:
+        return best_url
+    return None
+
+
+def _render_pick(title, reason, url):
+    """渲染 top_pick 条目：有 URL 则生成链接，否则只显示粗体文字"""
+    title_esc = esc(title)
+    reason_esc = esc(reason)
+    if url:
+        return (f'<div class="trend"><a href="{esc(url)}" '
+                f'target="_blank" rel="noopener"><b>{title_esc}</b></a>'
+                f'<br>{reason_esc}</div>')
+    return f'<div class="trend"><b>{title_esc}</b><br>{reason_esc}</div>'
+
+
 def render_summary(rep, date=""):
     s = rep.get("summary")
     if not s:
         return ""
     url_by_title = {i.get("title"): i.get("url") for i in rep["items"]}
+    all_titles = list(url_by_title.keys())
     conclusions = "".join(f'<div class="trend">{esc(c)}</div>' for c in s.get("conclusions", []))
     picks = "".join(
-        f'<div class="trend"><a href="{esc(url_by_title.get(p.get("title"), "#"))}" '
-        f'target="_blank" rel="noopener"><b>{esc(p.get("title"))}</b></a>'
-        f'<br>{esc(p.get("reason"))}</div>'
+        _render_pick(p.get("title", ""), p.get("reason", ""),
+                     _lookup_url(p.get("title", ""), url_by_title, all_titles))
         for p in s.get("top_picks", []))
     overview_brief = esc((s.get("overview") or "")[:100])
     summary_btn = ""
@@ -535,10 +577,11 @@ def render_digest(d):
 
     a = d.get("analysis")
     if d.get("ai_enabled") and a:
+        all_titles = list(url_by_title.keys())
         picks = "".join(
-            f'<div class="trend"><a href="{esc(url_by_title.get(p.get("title"), "#"))}" '
-            f'target="_blank" rel="noopener"><b>{esc(p.get("title"))}</b></a>'
-            f'<br>{esc(p.get("reason"))}</div>')
+            _render_pick(p.get("title", ""), p.get("reason", ""),
+                         _lookup_url(p.get("title", ""), url_by_title, all_titles))
+            for p in a.get("top_picks", []))
         trends = "".join(f'<div class="trend">{esc(t)}</div>' for t in a.get("trends", []))
         parts.append(f"""<div class="card"><dl>
 <dt>本期总览</dt><dd>{esc(a.get("overview"))}</dd>
