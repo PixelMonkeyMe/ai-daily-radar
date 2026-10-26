@@ -1,8 +1,13 @@
 __pycache__/
 *.pyc
-.claude/*
-!.claude/commands/
+.claude/
 .env
 *.log
 node_modules/
 package-lock.json
+
+# 隐私保护：以下文件/目录不进 git
+.playwright-mcp/
+docs/changes/
+supabase/.temp/
+CLAUDE.md

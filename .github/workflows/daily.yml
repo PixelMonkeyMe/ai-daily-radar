@@ -39,8 +39,9 @@ jobs:
       - name: 邮件推送日报
         env:
           SMTP_AUTH_CODE: ${{ secrets.SMTP_AUTH_CODE }}
-          SMTP_USER: fancocat@qq.com
-          MAIL_TO: fancocat@qq.com
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          MAIL_TO: ${{ secrets.MAIL_TO }}
+          SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
         run: python scripts/send_email.py
 
       - name: Phase 3 就绪度检测

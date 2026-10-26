@@ -1,9 +1,11 @@
-"""邮件推送：读取最新 report.json，生成 HTML 邮件，通过 QQ 邮箱 SMTP 发送。
+"""邮件推送：读取最新 report.json，生成 HTML 邮件，通过 SMTP 发送。
 
 环境变量：
-  SMTP_AUTH_CODE: QQ 邮箱 SMTP 授权码（在 QQ 邮箱 → 设置 → 账户 → POP3/SMTP 中获取）
-  SMTP_USER: 发件人邮箱（默认 fancocat@qq.com）
-  MAIL_TO: 收件人邮箱（默认 fancocat@qq.com）
+  SMTP_AUTH_CODE: SMTP 授权码
+  SMTP_USER: 发件人邮箱
+  MAIL_TO: 收件人邮箱
+  SMTP_SERVER: SMTP 服务器地址
+  SMTP_PORT: SMTP 端口（默认 465）
 """
 import json
 import os
@@ -17,9 +19,8 @@ from email.header import Header
 BASE = os.path.join(os.path.dirname(__file__), "..")
 REPORTS_DIR = os.path.join(BASE, "data", "reports")
 
-SMTP_SERVER = "smtp.qq.com"
-SMTP_PORT = 465  # SSL
-DEFAULT_EMAIL = "fancocat@qq.com"
+SMTP_SERVER = os.environ.get("SMTP_SERVER", "")
+SMTP_PORT = int(os.environ.get("SMTP_PORT", "465"))
 
 
 def build_email_html(report):
@@ -111,14 +112,17 @@ def build_email_html(report):
 
 
 def send_email(report):
-    """通过 QQ 邮箱 SMTP 发送邮件"""
+    """通过 SMTP 发送邮件"""
     auth_code = os.environ.get("SMTP_AUTH_CODE", "").strip()
     if not auth_code:
         print("未设置 SMTP_AUTH_CODE，跳过邮件推送")
         return False
 
-    from_addr = os.environ.get("SMTP_USER", DEFAULT_EMAIL).strip()
-    to_addr = os.environ.get("MAIL_TO", DEFAULT_EMAIL).strip()
+    from_addr = os.environ.get("SMTP_USER", "").strip()
+    to_addr = os.environ.get("MAIL_TO", "").strip()
+    if not from_addr or not to_addr or not SMTP_SERVER:
+        print("未设置 SMTP_USER / MAIL_TO / SMTP_SERVER，跳过邮件推送")
+        return False
     subject = f"AI 日报雷达 | {report['date']} | {len(report['items'])} 条资讯"
     html_content = build_email_html(report)
 
