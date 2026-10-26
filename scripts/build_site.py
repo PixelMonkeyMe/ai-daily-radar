@@ -72,7 +72,8 @@ CSS = """
   .fav-link-box .lnk { color: #1677ff; }
   .copy-btn { display: inline-block; margin-top: 8px; background: #1677ff; color: #fff; border: none; border-radius: 8px; padding: 6px 16px; font-size: 13px; cursor: pointer; }
   .fav-toolbar { margin: 14px 0; display: flex; gap: 10px; flex-wrap: wrap; }
-  .fav-search { flex: 1; min-width: 200px; padding: 8px 12px; border: 1px solid #d9dde3; border-radius: 8px; font-size: 14px; }
+  .fav-search { flex: 1; min-width: 200px; max-width: 420px; padding: 8px 12px; border: 1px solid #d9dde3; border-radius: 8px; font-size: 14px; }
+  .fav-search-label { font-size: 14px; color: #3c434c; font-weight: 600; white-space: nowrap; display: flex; align-items: center; gap: 4px; }
   .sort-btn { padding: 8px 14px; border: 1px solid #d9dde3; background: #fff; border-radius: 8px; font-size: 13px; cursor: pointer; }
   .fav-date-filter { margin: 10px 0; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; font-size: 13px; color: #3c434c; }
   .fav-date-filter label { display: flex; align-items: center; gap: 4px; white-space: nowrap; }
@@ -143,7 +144,7 @@ CSS = """
     .card h2 { font-size: 16px; }
     .story-group { padding: 14px 16px; }
     .fav-bar a { font-size: 13.5px; padding: 10px 12px; }
-    .fav-search { min-width: 140px; font-size: 13px; }
+    .fav-search { min-width: 140px; max-width: 280px; font-size: 13px; }
     .fav-date-filter { font-size: 12px; }
     .range-analyzer { padding: 14px 16px; }
     .adr-modal { padding: 24px 20px 18px; }
@@ -675,7 +676,8 @@ def build_favorites():
   <button class="copy-btn" id="fav-copy" onclick="adrExport()">📥 导出收藏为 JSON 备份</button>
 </div>
 <div class="fav-toolbar">
-  <input class="fav-search" id="fav-q" placeholder="输入关键词模糊查询（标题 / 简介 / 来源）">
+  <span class="fav-search-label">🔍 搜索</span>
+  <input class="fav-search" id="fav-q" placeholder="输入关键词模糊查询（标题 / 简介 / 来源）" autocomplete="off">
   <button class="sort-btn" id="fav-sort" onclick="adrToggleSort()"></button>
 </div>
 <div class="fav-date-filter">
