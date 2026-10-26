@@ -159,6 +159,7 @@
   <div class="nav" style="display:flex;align-items:center"><a href="digests/index.html">周期汇总（周/月/季）</a><a href="favorites.html">我的收藏夹</a><div class="adr-nav-auth"><span class="adr-user-email" id="adr-user-info"></span><button class="adr-login-btn" id="adr-login-btn" onclick="document.getElementById('adr-login-modal').style.display='flex'">登录</button><button class="adr-logout-btn" id="adr-logout-btn" onclick="adrLogout()">登出</button></div></div>
 </div></header>
 <div class="wrap">
+<script>sessionStorage.setItem("adr_report","index.html")</script>
 <div class="fav-bar"><a href="favorites.html">★ 我的收藏夹（<span class="fav-chip" id="fav-chip">0</span>条）· 点条目旁的 ☆ 即可收藏</a></div><div><button class="export-pdf-btn" onclick="exportDailyPDF()">📄 导出当日日报为 PDF</button><div class="pdf-loading" id="pdf-loading">⏳ 正在生成 PDF，请稍候...</div></div><div class="range-analyzer">
   <h3>📊 时段 AI 分析</h3>
   <p style="font-size:13px;color:#8a919c;margin-bottom:12px">选择日期范围，AI 将分析该时段的所有内容并生成总结报告</p>

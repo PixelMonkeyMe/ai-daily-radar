@@ -513,7 +513,8 @@ def build_daily():
             nav='<a href="../index.html">最新日报</a><a href="../digests/index.html">周期汇总（周/月/季）</a><a href="../favorites.html">我的收藏夹</a>',
             favjs="../fav.js",
             pdfjs="../export_pdf.js",
-            body=fav_bar("../") + render_summary(rep, rep["date"]) + cards + f'<div class="archive"><b>历史日报：</b>{links}</div>')
+            body=f'<script>sessionStorage.setItem("adr_report","archive/{rep["date"]}.html")</script>'
+                 + fav_bar("../") + render_summary(rep, rep["date"]) + cards + f'<div class="archive"><b>历史日报：</b>{links}</div>')
         with open(os.path.join(ARCHIVE, f"{rep['date']}.html"), "w", encoding="utf-8") as fo:
             fo.write(page)
 
@@ -565,7 +566,8 @@ def build_daily():
 </div>'''
 
     index_body = (
-        fav_bar("")
+        '<script>sessionStorage.setItem("adr_report","index.html")</script>'
+        + fav_bar("")
         + '<div><button class="export-pdf-btn" onclick="exportDailyPDF()">📄 导出当日日报为 PDF</button>'
         + '<div class="pdf-loading" id="pdf-loading">⏳ 正在生成 PDF，请稍候...</div></div>'
         + range_analyzer
@@ -690,7 +692,7 @@ def build_favorites():
         title="我的收藏夹", css=CSS, heading="我的收藏夹",
         meta="登录后跨设备实时同步 · 邮箱 Magic Link 免密码",
         mode="收藏夹",
-        nav='<a href="index.html">日报首页</a><a href="digests/index.html">周期汇总（周/月/季）</a>',
+        nav='<a href="index.html" id="adr-home-link">日报首页</a><a href="digests/index.html">周期汇总（周/月/季）</a>',
         favjs="fav.js",
         pdfjs="export_pdf.js",
         body=body + '<div><button class="export-pdf-btn" onclick="exportFavoritesPDF()">📄 导出收藏夹为 PDF</button>'

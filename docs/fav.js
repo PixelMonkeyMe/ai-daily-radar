@@ -793,6 +793,17 @@
     modal.addEventListener("wheel", function (e) { e.stopPropagation(); }, { passive: true });
   };
 
+  /* ── "日报首页"链接修正：从归档页进入收藏夹时，返回该归档页而非当天日报 ── */
+  (function () {
+    var homeLink = document.getElementById("adr-home-link");
+    if (homeLink) {
+      var lastReport = sessionStorage.getItem("adr_report");
+      if (lastReport) {
+        homeLink.href = lastReport;
+      }
+    }
+  })();
+
   /* ── 初始化 ── */
   document.addEventListener("DOMContentLoaded", async function () {
     /* 检查登录状态 */
