@@ -79,8 +79,12 @@
   .adr-modal { background:#fff; border-radius:16px; padding:32px 28px 24px; max-width:400px; width:90%; box-shadow:0 8px 30px rgba(0,0,0,.15); text-align:center; }
   .adr-modal h3 { font-size:20px; color:#203a43; margin-bottom:8px; }
   .adr-modal p { font-size:14px; color:#8a919c; margin-bottom:18px; }
-  .adr-modal input[type="email"] { width:100%; padding:10px 14px; border:1px solid #d9dde3; border-radius:10px; font-size:15px; margin-bottom:12px; box-sizing:border-box; }
-  .adr-modal input[type="email"]:focus { outline:none; border-color:#1677ff; }
+  .adr-modal input[type="email"], .adr-modal input[type="password"] { width:100%; padding:10px 14px; border:1px solid #d9dde3; border-radius:10px; font-size:15px; margin-bottom:12px; box-sizing:border-box; }
+  .adr-modal input[type="email"]:focus, .adr-modal input[type="password"]:focus { outline:none; border-color:#1677ff; }
+  .adr-auth-tabs { display:flex; gap:0; margin-bottom:16px; border-bottom:2px solid #e5e8ec; }
+  .adr-auth-tab { flex:1; padding:10px 0; text-align:center; font-size:14px; color:#8a919c; cursor:pointer; background:none; border:none; border-bottom:2px solid transparent; margin-bottom:-2px; transition:all .15s; }
+  .adr-auth-tab.active { color:#1677ff; border-bottom-color:#1677ff; font-weight:600; }
+  .adr-forgot-link { display:inline-block; margin-top:8px; font-size:13px; color:#1677ff; cursor:pointer; background:none; border:none; padding:0; }
   .adr-modal-btn { width:100%; padding:10px; background:#1677ff; color:#fff; border:none; border-radius:10px; font-size:15px; cursor:pointer; font-weight:600; }
   .adr-modal-btn:hover { background:#0e5fcc; }
   .adr-modal-btn:disabled { background:#ccc; cursor:not-allowed; }
@@ -193,22 +197,39 @@
 <div class='card'><h2><a href="https://www.producthunt.com/products/river-writer" target="_blank" rel="noopener">River Writer</a><button class="fav-btn" title="收藏" data-t="River Writer" data-u="https://www.producthunt.com/products/river-writer" data-s="Product Hunt" data-d="2026-10-25" data-b="一款专注写作的Mac桌面软件，主打安静无干扰。">☆</button></h2><div class="tags"><span class="tag-src">Product Hunt</span><span class="tag-star">★☆☆☆☆</span> 2026-10-22T10:23</div><p class="brief">一款专注写作的Mac桌面软件，主打安静无干扰。</p><details><summary>展开完整分析</summary><dl><dt>这是什么？</dt><dd>这是个本地运行的文字编辑器，专为编剧、小说家优化界面和体验。</dd><dt>对我的行业有什么用？</dt><dd>对施工成本管控或智慧交通项目无用途，不支持工程文档模板、审批流嵌入或数据联动。</dd><dt>这能干什么？</dt><dd>仅提升纯文本写作体验，无法处理计量报表、合同条款比对、变更台账等业务文档。</dd><dt>评估与判断</dt><dd>小众生产力工具，成熟稳定但场景狭窄，与工程管理数字化无交集。</dd><dt>风险与应用场景</dt><dd>零风险但零价值，无需评估或引入。</dd></dl></details></div>
 <div class='card'><h2><a href="https://www.producthunt.com/products/sideos-ai" target="_blank" rel="noopener">sideOS.ai</a><button class="fav-btn" title="收藏" data-t="sideOS.ai" data-u="https://www.producthunt.com/products/sideos-ai" data-s="Product Hunt" data-d="2026-10-25" data-b="一个能在电脑本地运行、不联网的AI语音助手。">☆</button></h2><div class="tags"><span class="tag-src">Product Hunt</span><span class="tag-star">★★☆☆☆</span> 2026-10-23T06:28</div><p class="brief">一个能在电脑本地运行、不联网的AI语音助手。</p><details><summary>展开完整分析</summary><dl><dt>这是什么？</dt><dd>它把语音识别、会议记录、待办提醒等功能全放在用户自己的设备上运行，保护隐私。</dd><dt>对我的行业有什么用？</dt><dd>对智慧消防或高速运营单位有边缘价值：如本地化处理消防演练语音纪要、养护巡检口述日志转文字。</dd><dt>这能干什么？</dt><dd>可离线完成语音转写、重点提取、摘要生成，避免敏感施工数据上传云端。</dd><dt>评估与判断</dt><dd>理念符合信创与数据安全要求，但功能较基础，尚未见政务/工程领域落地案例。</dd><dt>风险与应用场景</dt><dd>仅支持英文为主，中文语音识别准确率未公开；需Mac或特定硬件，Windows/国产系统适配未知。</dd></dl></details></div>
 <div class='card'><h2><a href="https://www.producthunt.com/products/byter" target="_blank" rel="noopener">Byter</a><button class="fav-btn" title="收藏" data-t="Byter" data-u="https://www.producthunt.com/products/byter" data-s="Product Hunt" data-d="2026-10-25" data-b="一个能精确统计手机每张SIM卡上网流量的工具。">☆</button></h2><div class="tags"><span class="tag-src">Product Hunt</span><span class="tag-star">★☆☆☆☆</span> 2026-10-21T09:47</div><p class="brief">一个能精确统计手机每张SIM卡上网流量的工具。</p><details><summary>展开完整分析</summary><dl><dt>这是什么？</dt><dd>它像一个流量管家，实时显示不同网络下App用了多少数据。</dd><dt>对我的行业有什么用？</dt><dd>与施工成本、智慧交通、消防系统无任何关联，属个人移动终端管理工具。</dd><dt>这能干什么？</dt><dd>无法用于工地物联网设备流量监控、视频监控带宽调度等专业场景。</dd><dt>评估与判断</dt><dd>功能单一明确，属成熟小工具，但技术含量低，行业适配为零。</dd><dt>风险与应用场景</dt><dd>无风险，也无价值，业务方无需关注。</dd></dl></details></div>
-<div class='card'><h2><a href="https://www.qbitai.com/2026/10/504901.html" target="_blank" rel="noopener">百度世界2026前瞻：10+重磅分论坛，全面解码AI时代的智能组织进化路径</a><button class="fav-btn" title="收藏" data-t="百度世界2026前瞻：10+重磅分论坛，全面解码AI时代的智能组织进化路径" data-u="https://www.qbitai.com/2026/10/504901.html" data-s="量子位" data-d="2026-10-25" data-b="百度宣布2026年大会将聚焦AI如何改变企业组织运作。">☆</button></h2><div class="tags"><span class="tag-src">量子位</span><span class="tag-star">★★★★☆</span> Fri, 23 Oct 2026</div><p class="brief">百度宣布2026年大会将聚焦AI如何改变企业组织运作。</p><details><summary>展开完整分析</summary><dl><dt>这是什么？</dt><dd>这是百度年度AI盛会预告，透露将讨论AI在管理决策、流程重塑、岗位协同等方面的应用趋势。</dd><dt>对我的行业有什么用？</dt><dd>有一定参考价值：可了解头部厂商对‘AI+工程项目管理’的思考方向，如智能调度、成本预测等概念雏形。</dd><dt>这能干什么？</dt><dd>帮助业务管理者预判技术演进节奏，但具体方案仍需等待后续发布，当前无实操内容。</dd><dt>评估与判断</dt><dd>属行业风向标资讯，权威性强，但议程未公布细节，实际含金量待观察。</dd><dt>风险与应用场景</dt><dd>概念大于落地，易产生‘AI万能’误解；需结合自身系统现状理性判断，避免盲目对标。</dd></dl></details></div><div class="archive"><b>历史日报：</b><a href="2026-10-25.html">2026-10-25</a><a href="2026-10-24.html">2026-10-24</a><a href="2026-10-23.html">2026-10-23</a><a href="2026-10-22.html">2026-10-22</a><a href="2026-10-21.html">2026-10-21</a><a href="2026-10-20.html">2026-10-20</a><a href="2026-10-19.html">2026-10-19</a><a href="2026-10-18.html">2026-10-18</a><a href="2026-10-17.html">2026-10-17</a><a href="2026-10-16.html">2026-10-16</a><a href="2026-10-15.html">2026-10-15</a><a href="2026-10-14.html">2026-10-14</a><a href="2026-10-13.html">2026-10-13</a><a href="2026-10-12.html">2026-10-12</a><a href="2026-10-11.html">2026-10-11</a><a href="2026-10-10.html">2026-10-10</a><a href="2026-10-09.html">2026-10-09</a><a href="2026-10-08.html">2026-10-08</a><a href="2026-10-07.html">2026-10-07</a><a href="2026-10-06.html">2026-10-06</a><a href="2026-10-05.html">2026-10-05</a><a href="2026-10-04.html">2026-10-04</a><a href="2026-10-03.html">2026-10-03</a><a href="2026-10-02.html">2026-10-02</a><a href="2026-10-01.html">2026-10-01</a><a href="2026-09-30.html">2026-09-30</a><a href="2026-09-29.html">2026-09-29</a><a href="2026-09-28.html">2026-09-28</a><a href="2026-09-27.html">2026-09-27</a><a href="2026-09-26.html">2026-09-26</a><a href="2026-09-25.html">2026-09-25</a><a href="2026-09-24.html">2026-09-24</a><a href="2026-09-21.html">2026-09-21</a></div>
+<div class='card'><h2><a href="https://www.qbitai.com/2026/10/504901.html" target="_blank" rel="noopener">百度世界2026前瞻：10+重磅分论坛，全面解码AI时代的智能组织进化路径</a><button class="fav-btn" title="收藏" data-t="百度世界2026前瞻：10+重磅分论坛，全面解码AI时代的智能组织进化路径" data-u="https://www.qbitai.com/2026/10/504901.html" data-s="量子位" data-d="2026-10-25" data-b="百度宣布2026年大会将聚焦AI如何改变企业组织运作。">☆</button></h2><div class="tags"><span class="tag-src">量子位</span><span class="tag-star">★★★★☆</span> Fri, 23 Oct 2026</div><p class="brief">百度宣布2026年大会将聚焦AI如何改变企业组织运作。</p><details><summary>展开完整分析</summary><dl><dt>这是什么？</dt><dd>这是百度年度AI盛会预告，透露将讨论AI在管理决策、流程重塑、岗位协同等方面的应用趋势。</dd><dt>对我的行业有什么用？</dt><dd>有一定参考价值：可了解头部厂商对‘AI+工程项目管理’的思考方向，如智能调度、成本预测等概念雏形。</dd><dt>这能干什么？</dt><dd>帮助业务管理者预判技术演进节奏，但具体方案仍需等待后续发布，当前无实操内容。</dd><dt>评估与判断</dt><dd>属行业风向标资讯，权威性强，但议程未公布细节，实际含金量待观察。</dd><dt>风险与应用场景</dt><dd>概念大于落地，易产生‘AI万能’误解；需结合自身系统现状理性判断，避免盲目对标。</dd></dl></details></div><div class="archive"><b>历史日报：</b><a href="2026-10-26.html">2026-10-26</a><a href="2026-10-25.html">2026-10-25</a><a href="2026-10-24.html">2026-10-24</a><a href="2026-10-23.html">2026-10-23</a><a href="2026-10-22.html">2026-10-22</a><a href="2026-10-21.html">2026-10-21</a><a href="2026-10-20.html">2026-10-20</a><a href="2026-10-19.html">2026-10-19</a><a href="2026-10-18.html">2026-10-18</a><a href="2026-10-17.html">2026-10-17</a><a href="2026-10-16.html">2026-10-16</a><a href="2026-10-15.html">2026-10-15</a><a href="2026-10-14.html">2026-10-14</a><a href="2026-10-13.html">2026-10-13</a><a href="2026-10-12.html">2026-10-12</a><a href="2026-10-11.html">2026-10-11</a><a href="2026-10-10.html">2026-10-10</a><a href="2026-10-09.html">2026-10-09</a><a href="2026-10-08.html">2026-10-08</a><a href="2026-10-07.html">2026-10-07</a><a href="2026-10-06.html">2026-10-06</a><a href="2026-10-05.html">2026-10-05</a><a href="2026-10-04.html">2026-10-04</a><a href="2026-10-03.html">2026-10-03</a><a href="2026-10-02.html">2026-10-02</a><a href="2026-10-01.html">2026-10-01</a><a href="2026-09-30.html">2026-09-30</a><a href="2026-09-29.html">2026-09-29</a><a href="2026-09-28.html">2026-09-28</a><a href="2026-09-27.html">2026-09-27</a><a href="2026-09-26.html">2026-09-26</a><a href="2026-09-25.html">2026-09-25</a><a href="2026-09-24.html">2026-09-24</a><a href="2026-09-21.html">2026-09-21</a></div>
 <footer>由 GitHub Actions 自动生成 · 解读由 Kimi 提供 · 仅供个人学习参考</footer>
 </div>
 <div class="adr-modal-overlay" id="adr-login-modal">
   <div class="adr-modal" style="position:relative">
     <button class="adr-modal-close" onclick="document.getElementById('adr-login-modal').style.display='none'">&times;</button>
-    <h3>📬 邮箱登录</h3>
-    <p>输入邮箱，收取验证码即可登录<br>无需注册，无需密码</p>
-    <div id="adr-login-step1">
-      <input type="email" id="adr-login-email" placeholder="your@email.com" onkeydown="if(event.key==='Enter')adrSendCode()">
-      <button class="adr-modal-btn" id="adr-login-submit" onclick="adrSendCode()">发送验证码</button>
+    <h3>🔑 登录</h3>
+    <div class="adr-auth-tabs">
+      <button class="adr-auth-tab active" id="adr-tab-password" onclick="adrSwitchTab('password')">密码登录</button>
+      <button class="adr-auth-tab" id="adr-tab-otp" onclick="adrSwitchTab('otp')">验证码登录</button>
     </div>
-    <div id="adr-login-step2" style="display:none">
-      <input type="text" id="adr-login-code" placeholder="输入验证码" maxlength="10" style="letter-spacing:4px;text-align:center;font-size:20px" onkeydown="if(event.key==='Enter')adrVerifyCode()">
-      <button class="adr-modal-btn" id="adr-login-verify" onclick="adrVerifyCode()">确认登录</button>
-      <div style="margin-top:8px;font-size:13px"><a href="#" onclick="adrResendCode();return false" style="color:#1677ff">没收到？重新发送</a></div>
+    <div id="adr-login-password-tab">
+      <input type="email" id="adr-login-email-pw" placeholder="your@email.com" onkeydown="if(event.key==='Enter')document.getElementById('adr-login-password').focus()">
+      <input type="password" id="adr-login-password" placeholder="密码" onkeydown="if(event.key==='Enter')adrLoginWithPassword()">
+      <button class="adr-modal-btn" id="adr-login-pw-btn" onclick="adrLoginWithPassword()">登录</button>
+      <button class="adr-forgot-link" onclick="adrShowForgotPassword()">忘记密码？</button>
+    </div>
+    <div id="adr-login-otp-tab" style="display:none">
+      <div id="adr-login-step1">
+        <input type="email" id="adr-login-email" placeholder="your@email.com" onkeydown="if(event.key==='Enter')adrSendCode()">
+        <button class="adr-modal-btn" id="adr-login-submit" onclick="adrSendCode()">发送验证码</button>
+      </div>
+      <div id="adr-login-step2" style="display:none">
+        <input type="text" id="adr-login-code" placeholder="输入验证码" maxlength="10" style="letter-spacing:4px;text-align:center;font-size:20px" onkeydown="if(event.key==='Enter')adrVerifyCode()">
+        <button class="adr-modal-btn" id="adr-login-verify" onclick="adrVerifyCode()">确认登录</button>
+        <div style="margin-top:8px;font-size:13px"><a href="#" onclick="adrResendCode();return false" style="color:#1677ff">没收到？重新发送</a></div>
+      </div>
+    </div>
+    <div id="adr-forgot-section" style="display:none">
+      <p style="font-size:13px;color:#8a919c;margin-bottom:12px">输入邮箱，我们将发送密码重置链接</p>
+      <input type="email" id="adr-forgot-email" placeholder="your@email.com" onkeydown="if(event.key==='Enter')adrSendPasswordReset()">
+      <button class="adr-modal-btn" id="adr-forgot-btn" onclick="adrSendPasswordReset()">发送重置链接</button>
+      <button class="adr-forgot-link" onclick="adrBackToLogin()" style="margin-top:12px">← 返回登录</button>
     </div>
     <div class="adr-modal-msg" id="adr-login-msg"></div>
   </div>
