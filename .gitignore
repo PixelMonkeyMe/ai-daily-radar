@@ -11,3 +11,4 @@ package-lock.json
 docs/changes/
 supabase/.temp/
 CLAUDE.md
+scripts/set_password.py

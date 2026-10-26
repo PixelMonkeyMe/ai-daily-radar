@@ -12,7 +12,7 @@
     }
   } catch (e) {
     console.warn("Supabase init failed, favorites will work in local-only mode:", e);
-    sb = { auth: { getSession: _noop, signInWithOtp: _noop, verifyOtp: _noop, signOut: _noop, refreshSession: _noop, onAuthStateChange: function () { return { data: { subscription: { unsubscribe: _noop } } }; } }, from: function () { return { select: _noop, upsert: _noop, delete: function () { return { eq: _noop }; } }; } };
+    sb = { auth: { getSession: _noop, signInWithOtp: _noop, signInWithPassword: _noop, verifyOtp: _noop, signOut: _noop, refreshSession: _noop, resetPasswordForEmail: _noop, onAuthStateChange: function () { return { data: { subscription: { unsubscribe: _noop } } }; } }, from: function () { return { select: _noop, upsert: _noop, delete: function () { return { eq: _noop }; } }; } };
   }
 
   var KEY = "adr_favs";       // localStorage 缓存键
@@ -135,13 +135,27 @@
     var step1 = document.getElementById("adr-login-step1");
     var step2 = document.getElementById("adr-login-step2");
     var emailInput = document.getElementById("adr-login-email");
+    var emailPwInput = document.getElementById("adr-login-email-pw");
+    var pwInput = document.getElementById("adr-login-password");
     var codeInput = document.getElementById("adr-login-code");
     var msg = document.getElementById("adr-login-msg");
+    var forgotSection = document.getElementById("adr-forgot-section");
+    var pwTab = document.getElementById("adr-login-password-tab");
+    var otpTab = document.getElementById("adr-login-otp-tab");
+    var tabPw = document.getElementById("adr-tab-password");
+    var tabOtp = document.getElementById("adr-tab-otp");
     if (step1) step1.style.display = "block";
     if (step2) step2.style.display = "none";
     if (emailInput) emailInput.value = "";
+    if (emailPwInput) emailPwInput.value = "";
+    if (pwInput) pwInput.value = "";
     if (codeInput) codeInput.value = "";
     if (msg) { msg.textContent = ""; msg.style.color = "#e63946"; }
+    if (forgotSection) forgotSection.style.display = "none";
+    if (pwTab) pwTab.style.display = "block";
+    if (otpTab) otpTab.style.display = "none";
+    if (tabPw) tabPw.className = "adr-auth-tab active";
+    if (tabOtp) tabOtp.className = "adr-auth-tab";
   }
 
   /* 发送验证码 */
@@ -215,6 +229,104 @@
       if (msg) { msg.style.color = "#e63946"; msg.textContent = "发送失败：" + res.error.message; }
     } else {
       if (msg) { msg.style.color = "#1677ff"; msg.textContent = "新验证码已发送，请查收"; }
+    }
+  };
+
+  /* 切换登录 tab */
+  window.adrSwitchTab = function (tab) {
+    var pwTabBtn = document.getElementById("adr-tab-password");
+    var otpTabBtn = document.getElementById("adr-tab-otp");
+    var pwSection = document.getElementById("adr-login-password-tab");
+    var otpSection = document.getElementById("adr-login-otp-tab");
+    var forgotSection = document.getElementById("adr-forgot-section");
+    var msg = document.getElementById("adr-login-msg");
+    if (msg) msg.textContent = "";
+    if (forgotSection) forgotSection.style.display = "none";
+    if (tab === "password") {
+      if (pwTabBtn) pwTabBtn.className = "adr-auth-tab active";
+      if (otpTabBtn) otpTabBtn.className = "adr-auth-tab";
+      if (pwSection) pwSection.style.display = "block";
+      if (otpSection) otpSection.style.display = "none";
+    } else {
+      if (otpTabBtn) otpTabBtn.className = "adr-auth-tab active";
+      if (pwTabBtn) pwTabBtn.className = "adr-auth-tab";
+      if (otpSection) otpSection.style.display = "block";
+      if (pwSection) pwSection.style.display = "none";
+    }
+  };
+
+  /* 密码登录 */
+  window.adrLoginWithPassword = async function () {
+    var emailInput = document.getElementById("adr-login-email-pw");
+    var pwInput = document.getElementById("adr-login-password");
+    var msg = document.getElementById("adr-login-msg");
+    var btn = document.getElementById("adr-login-pw-btn");
+    var email = (emailInput ? emailInput.value : "").trim();
+    var password = pwInput ? pwInput.value : "";
+    if (!email || email.indexOf("@") < 0) {
+      if (msg) msg.textContent = "请输入有效的邮箱地址";
+      return;
+    }
+    if (!password) {
+      if (msg) msg.textContent = "请输入密码";
+      return;
+    }
+    if (btn) { btn.disabled = true; btn.textContent = "登录中..."; }
+    if (msg) msg.textContent = "";
+
+    var res = await sb.auth.signInWithPassword({ email: email, password: password });
+
+    if (btn) { btn.disabled = false; btn.textContent = "登录"; }
+
+    if (res.error) {
+      if (msg) { msg.style.color = "#e63946"; msg.textContent = "登录失败：" + res.error.message; }
+    }
+    /* 成功时 onAuthStateChange 会自动处理 */
+  };
+
+  /* 忘记密码 — 显示重置区 */
+  window.adrShowForgotPassword = function () {
+    var pwTab = document.getElementById("adr-login-password-tab");
+    var otpTab = document.getElementById("adr-login-otp-tab");
+    var forgotSection = document.getElementById("adr-forgot-section");
+    var msg = document.getElementById("adr-login-msg");
+    if (pwTab) pwTab.style.display = "none";
+    if (otpTab) otpTab.style.display = "none";
+    if (forgotSection) forgotSection.style.display = "block";
+    if (msg) msg.textContent = "";
+  };
+
+  /* 忘记密码 — 返回登录 */
+  window.adrBackToLogin = function () {
+    var pwTab = document.getElementById("adr-login-password-tab");
+    var forgotSection = document.getElementById("adr-forgot-section");
+    var msg = document.getElementById("adr-login-msg");
+    if (pwTab) pwTab.style.display = "block";
+    if (forgotSection) forgotSection.style.display = "none";
+    if (msg) msg.textContent = "";
+  };
+
+  /* 忘记密码 — 发送重置链接 */
+  window.adrSendPasswordReset = async function () {
+    var emailInput = document.getElementById("adr-forgot-email");
+    var msg = document.getElementById("adr-login-msg");
+    var btn = document.getElementById("adr-forgot-btn");
+    var email = (emailInput ? emailInput.value : "").trim();
+    if (!email || email.indexOf("@") < 0) {
+      if (msg) msg.textContent = "请输入有效的邮箱地址";
+      return;
+    }
+    if (btn) { btn.disabled = true; btn.textContent = "发送中..."; }
+    if (msg) msg.textContent = "";
+
+    var res = await sb.auth.resetPasswordForEmail(email);
+
+    if (btn) { btn.disabled = false; btn.textContent = "发送重置链接"; }
+
+    if (res.error) {
+      if (msg) { msg.style.color = "#e63946"; msg.textContent = "发送失败：" + res.error.message; }
+    } else {
+      if (msg) { msg.style.color = "#1677ff"; msg.textContent = "重置链接已发送至 " + email + "，请查收邮件"; }
     }
   };
 
