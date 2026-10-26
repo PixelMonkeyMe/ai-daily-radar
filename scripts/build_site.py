@@ -677,7 +677,7 @@ def build_favorites():
 </div>
 <div class="fav-toolbar">
   <span class="fav-search-label">🔍 搜索</span>
-  <input class="fav-search" id="fav-q" placeholder="输入关键词模糊查询（标题 / 简介 / 来源）" autocomplete="off">
+  <input class="fav-search" id="fav-q" name="q" type="search" placeholder="输入关键词模糊查询（标题 / 简介 / 来源）" autocomplete="off" readonly>
   <button class="sort-btn" id="fav-sort" onclick="adrToggleSort()"></button>
 </div>
 <div class="fav-date-filter">

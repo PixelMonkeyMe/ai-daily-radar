@@ -813,7 +813,11 @@
     renderFavPage();
     markAlreadyFav();
     var q = document.getElementById("fav-q");
-    if (q) q.addEventListener("input", renderFavPage);
+    if (q) {
+      /* 搜索框初始 readonly 防浏览器自动填充，2 秒后解除 */
+      setTimeout(function () { q.removeAttribute("readonly"); }, 2000);
+      q.addEventListener("input", renderFavPage);
+    }
 
     /* 已登录则加载云端数据 */
     if (isLoggedIn()) {
