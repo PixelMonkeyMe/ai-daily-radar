@@ -30,11 +30,11 @@
   }
   function rowToFav(r) {
     /* 始终用 autoCategorize 计算分类，不依赖数据库默认值（旧数据全是 '行业趋势'） */
-    return { u: r.url, t: r.title || "", s: r.source || "", d: r.date || "", b: r.brief || "", c: autoCategorize(r.source || "", r.title || "", r.brief || "") };
+    return { u: r.url, t: r.title || "", s: r.source || "", d: r.date || "", b: r.brief || "", c: autoCategorize(r.source || "", r.title || "", r.brief || ""), m: r.maturity || "" };
   }
   function favToRow(f, userId) {
     var cat = f.c || autoCategorize(f.s || "", f.t || "", f.b || "");
-    return { url: f.u, title: f.t || "", source: f.s || "", date: f.d || "", brief: f.b || "", category: cat, user_id: userId };
+    return { url: f.u, title: f.t || "", source: f.s || "", date: f.d || "", brief: f.b || "", category: cat, maturity: f.m || "", user_id: userId };
   }
 
   /* ── AI 自动分类 ── */
@@ -672,6 +672,16 @@
       catTag.style.cssText = "background:#f0f7ff;color:#1677ff;border-radius:6px;padding:1px 8px;margin-right:8px;font-size:12px";
       catTag.textContent = catInfo.icon + " " + catInfo.name;
       meta.appendChild(catTag);
+      /* 成熟度标签 */
+      var mat = f.m || "";
+      if (mat) {
+        var matTag = document.createElement("span");
+        var matColor = mat === "S" ? "#52c41a" : mat === "A" ? "#1677ff" : "#8a919c";
+        var matText = mat === "S" ? "已落地" : mat === "A" ? "有POC" : "仅demo";
+        matTag.style.cssText = "background:" + matColor + "22;color:" + matColor + ";border-radius:6px;padding:1px 8px;margin-right:8px;font-size:12px;font-weight:600";
+        matTag.textContent = matText;
+        meta.appendChild(matTag);
+      }
       var src = document.createElement("span");
       src.className = "tag-src"; src.textContent = f.s || "";
       meta.appendChild(src);

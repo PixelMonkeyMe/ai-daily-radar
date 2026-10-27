@@ -50,24 +50,30 @@ QWEN_SUMMARY_PROMPT = """你是一位资深的 AI 与开源技术分析师，服
 - 所有解读用简体中文，语气中立，不吹不黑
 - 评估要有依据，不确定就说不确定"""
 
-# Kimi importance 评分提示词（轻量，只输出分数）
+# Kimi importance + maturity 评分提示词
 KIMI_SCORE_PROMPT = """你是一位资深的 AI 与开源技术分析师。
 【用户背景】行业：中国智慧交通（含智慧高速）、智慧消防、施工成本管控。身份：业务/管理人员，非技术人员。
 
 【任务】
-对以下每条资讯，只输出一个 JSON 数组，每个元素只有两个字段：
-{"title": "条目标题（保持原样）", "importance": 1到5的整数}
+对以下每条资讯，输出一个 JSON 数组，每个元素包含：
+{"title": "条目标题（保持原样）", "importance": 1到5的整数, "maturity": "S/A/B之一"}
 
 importance 评分标准：
-5 = 与用户行业直接相关，强烈建议关注
-4 = 与用户行业有较强关联，值得关注
+5 = 与用户行业直接相关 + 已有落地案例/POC，强烈建议关注
+4 = 与用户行业有较强关联 + 技术成熟可落地，值得关注
 3 = 与用户行业有一定关联，可以留意
 2 = 与用户行业关联较弱，但技术趋势值得了解
 1 = 与用户行业基本无关
 
+maturity 成熟度标准：
+S = 已规模化应用（有公开生产案例、商业部署）
+A = 有 POC/试点（技术验证通过，有实际测试）
+B = 有 demo/开源可用（未验证落地，仅技术展示）
+
 【要求】
 - 只输出 JSON 数组，不要其他文字，不要 markdown 代码块
-- 必须为每条资讯给出评分，不要遗漏"""
+- 必须为每条资讯给出评分，不要遗漏
+- maturity 判断依据：GitHub stars、文档完整度、是否有案例研究、是否提到生产部署"""
 
 SYNTHESIS_PROMPT = """你是一位资深的 AI 与开源技术分析师，服务对象是一位【完全不懂编程】的用户。
 
@@ -233,8 +239,8 @@ def main():
             analyzed = qwen_results if qwen_results else None
 
         if has_kimi and analyzed:
-            # Step 2: Kimi 只给 importance 评分
-            print("Step 2: Kimi 评分 importance...")
+            # Step 2: Kimi 评分 importance + maturity
+            print("Step 2: Kimi 评分 importance + maturity...")
             score_items = [{"title": a["title"], "url": a.get("url", ""),
                             "source": a.get("source", ""),
                             "brief": a.get("brief", ""),
@@ -243,13 +249,16 @@ def main():
             scores = call_kimi_score(score_items)
             if scores:
                 score_map = {s["title"]: s.get("importance", 3) for s in scores}
+                maturity_map = {s["title"]: s.get("maturity", "B") for s in scores}
                 for a in analyzed:
                     a["importance"] = score_map.get(a["title"], 3)
+                    a["maturity"] = maturity_map.get(a["title"], "B")
                 print(f"  Kimi 完成 {len(scores)} 条评分")
             else:
-                print("  Kimi 评分失败，使用默认 importance=3")
+                print("  Kimi 评分失败，使用默认 importance=3, maturity=B")
                 for a in analyzed:
                     a.setdefault("importance", 3)
+                    a.setdefault("maturity", "B")
         elif has_kimi and not analyzed:
             # 无 Qwen 时，Kimi 做全量解读（兼容旧逻辑）
             print("Step 1 (fallback): Kimi 全量解读...")
