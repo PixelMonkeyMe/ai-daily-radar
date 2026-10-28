@@ -512,7 +512,7 @@ def build_daily():
             meta=f'数据抓取时间：{esc(rep["fetched_at"])} · 共 {len(rep["items"])} 条',
             mode="AI 深度解读" if rep.get("ai_enabled") else "原始榜单（未配置 API 密钥）",
             nav='<a href="../index.html">最新日报</a><a href="../digests/index.html">周期汇总（周/月/季）</a><a href="../favorites.html">我的收藏夹</a>',
-            favjs="../fav.js",
+            favjs="../fav.js?v=3.3a",
             pdfjs="../export_pdf.js",
             body=f'<script>sessionStorage.setItem("adr_report","archive/{rep["date"]}.html")</script>'
                  + fav_bar("../") + render_summary(rep, rep["date"]) + cards + f'<div class="archive"><b>历史日报：</b>{links}</div>')
@@ -582,7 +582,7 @@ def build_daily():
         meta=f'数据抓取时间：{esc(latest["fetched_at"])} · 共 {len(latest["items"])} 条',
         mode="AI 深度解读" if latest.get("ai_enabled") else "原始榜单（未配置 API 密钥）",
         nav='<a href="digests/index.html">周期汇总（周/月/季）</a><a href="favorites.html">我的收藏夹</a>',
-        favjs="fav.js",
+        favjs="fav.js?v=3.3a",
         pdfjs="export_pdf.js",
         body=index_body)
     with open(os.path.join(DOCS, "index.html"), "w", encoding="utf-8") as fo:
@@ -640,7 +640,7 @@ def build_digests():
             meta=f'生成时间：{esc(d["generated_at"])}',
             mode="AI 趋势分析" if d.get("ai_enabled") else "统计版汇总",
             nav='<a href="../index.html">日报首页</a><a href="index.html">全部汇总</a><a href="../favorites.html">我的收藏夹</a>',
-            favjs="../fav.js",
+            favjs="../fav.js?v=3.3a",
             pdfjs="../export_pdf.js",
             body=render_digest(d))
         with open(os.path.join(DIGESTS_OUT, f"{d['label']}.html"), "w", encoding="utf-8") as fo:
@@ -659,7 +659,7 @@ def build_digests():
         meta="周报每周一生成 · 月报每月 1 号生成 · 季报每季度首月 1 号生成",
         mode="周 / 月 / 季 / 自定义",
         nav='<a href="../index.html">日报首页</a><a href="../favorites.html">我的收藏夹</a>',
-        favjs="../fav.js",
+        favjs="../fav.js?v=3.3a",
         pdfjs="../export_pdf.js",
         body=body or '<div class="card"><p>还没有汇总。周报/月报/季报会按时间自动生成。</p></div>')
     with open(os.path.join(DIGESTS_OUT, "index.html"), "w", encoding="utf-8") as fo:
@@ -695,7 +695,7 @@ def build_favorites():
         meta="登录后跨设备实时同步 · 邮箱 Magic Link 免密码",
         mode="收藏夹",
         nav='<a href="index.html" id="adr-home-link">日报首页</a><a href="digests/index.html">周期汇总（周/月/季）</a>',
-        favjs="fav.js",
+        favjs="fav.js?v=3.3a",
         pdfjs="export_pdf.js",
         body=body + '<div><button class="export-pdf-btn" onclick="exportFavoritesPDF()">📄 导出收藏夹为 PDF</button>'
               + '<div class="pdf-loading" id="pdf-loading">⏳ 正在生成 PDF，请稍候...</div></div>')

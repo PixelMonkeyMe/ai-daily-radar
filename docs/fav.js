@@ -30,11 +30,11 @@
   }
   function rowToFav(r) {
     /* 始终用 autoCategorize 计算分类，不依赖数据库默认值（旧数据全是 '行业趋势'） */
-    return { u: r.url, t: r.title || "", s: r.source || "", d: r.date || "", b: r.brief || "", c: autoCategorize(r.source || "", r.title || "", r.brief || ""), m: r.maturity || "" };
+    return { u: r.url, t: r.title || "", s: r.source || "", d: r.date || "", b: r.brief || "", c: autoCategorize(r.source || "", r.title || "", r.brief || ""), m: r.maturity || "", context_tags: r.context_tags || "", context_note: r.context_note || "" };
   }
   function favToRow(f, userId) {
     var cat = f.c || autoCategorize(f.s || "", f.t || "", f.b || "");
-    return { url: f.u, title: f.t || "", source: f.s || "", date: f.d || "", brief: f.b || "", category: cat, maturity: f.m || "", user_id: userId };
+    return { url: f.u, title: f.t || "", source: f.s || "", date: f.d || "", brief: f.b || "", category: cat, maturity: f.m || "", context_tags: f.context_tags || "", context_note: f.context_note || "", user_id: userId };
   }
 
   /* ── AI 自动分类 ── */
@@ -682,6 +682,16 @@
         matTag.textContent = matText;
         meta.appendChild(matTag);
       }
+      /* 上下文标签 */
+      if (f.context_tags) {
+        var tags = f.context_tags.split(',').filter(function(t) { return t.trim(); });
+        tags.forEach(function(tag) {
+          var tagEl = document.createElement('span');
+          tagEl.style.cssText = "background:#f0f0f0;color:#666;border-radius:4px;padding:2px 8px;margin-right:6px;font-size:12px";
+          tagEl.textContent = '#' + tag.trim();
+          meta.appendChild(tagEl);
+        });
+      }
       var src = document.createElement("span");
       src.className = "tag-src"; src.textContent = f.s || "";
       meta.appendChild(src);
@@ -692,6 +702,20 @@
         br.className = "brief"; br.textContent = f.b;
         card.appendChild(br);
       }
+      /* 收藏备注 */
+      if (f.context_note) {
+        var noteEl = document.createElement("div");
+        noteEl.style.cssText = "background:#fffbe6;border-left:3px solid #faad14;padding:8px 12px;margin-top:8px;font-size:13px;color:#555;border-radius:4px";
+        noteEl.textContent = '📝 ' + f.context_note;
+        card.appendChild(noteEl);
+      }
+      /* 编辑上下文按钮 */
+      var editBtn = document.createElement("button");
+      editBtn.className = "context-edit-btn";
+      editBtn.textContent = "✏️ 编辑上下文";
+      editBtn.style.cssText = "background:none;border:1px solid #d9d9d9;border-radius:4px;padding:4px 12px;font-size:12px;color:#666;cursor:pointer;margin-top:8px";
+      editBtn.onclick = function() { showContextEditDialog(f); };
+      card.appendChild(editBtn);
       list.appendChild(card);
     });
   }
@@ -988,4 +1012,92 @@
       .split('\n\n').join('<br><br>')
       .split('\n').join('<br>');
   }
+
+  /* ── 上下文编辑对话框 ── */
+  var CONTEXT_TAGS = ["技术选型", "趋势判断", "风险评估", "预算申请"];
+
+  function showContextEditDialog(fav) {
+    // 创建遮罩层
+    var overlay = document.createElement("div");
+    overlay.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:1000;display:flex;align-items:center;justify-content:center";
+    overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
+
+    // 创建对话框
+    var dialog = document.createElement("div");
+    dialog.style.cssText = "background:#fff;border-radius:8px;padding:24px;max-width:500px;width:90%;max-height:80vh;overflow-y:auto;box-shadow:0 4px 12px rgba(0,0,0,0.15)";
+
+    var html = '<h3 style="margin:0 0 16px;font-size:18px;color:#203a43">✏️ 编辑收藏上下文</h3>';
+    html += '<p style="color:#8a919c;font-size:12px;margin-bottom:16px">💡 上下文用于后续生成会议弹药包，仅自己可见</p>';
+
+    // 标签选择
+    html += '<div style="margin-bottom:16px">';
+    html += '<label style="display:block;font-size:14px;font-weight:600;margin-bottom:8px">场景标签（可多选）</label>';
+    html += '<div style="display:flex;flex-wrap:wrap;gap:8px">';
+    var currentTags = fav.context_tags ? fav.context_tags.split(',').filter(function(t) { return t.trim(); }) : [];
+    CONTEXT_TAGS.forEach(function(tag) {
+      var checked = currentTags.indexOf(tag) >= 0 ? 'checked' : '';
+      html += '<label style="display:flex;align-items:center;gap:4px;background:#f5f5f5;padding:6px 12px;border-radius:4px;cursor:pointer;font-size:13px">';
+      html += '<input type="checkbox" value="' + tag + '" ' + checked + ' style="margin:0"> ' + tag + '</label>';
+    });
+    html += '</div></div>';
+
+    // 备注输入
+    html += '<div style="margin-bottom:16px">';
+    html += '<label style="display:block;font-size:14px;font-weight:600;margin-bottom:8px">备注</label>';
+    var noteValue = fav.context_note || "";
+    html += '<textarea id="ctx-note-input" style="width:100%;min-height:80px;padding:8px;border:1px solid #d9d9d9;border-radius:4px;font-size:13px;resize:vertical" placeholder="为什么收藏？计划用在什么场景？">' + noteValue.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</textarea>';
+    html += '</div>';
+
+    // 按钮
+    html += '<div style="display:flex;gap:8px;justify-content:flex-end">';
+    html += '<button id="ctx-cancel-btn" style="background:#fff;border:1px solid #d9d9d9;border-radius:4px;padding:8px 16px;font-size:14px;cursor:pointer">取消</button>';
+    html += '<button id="ctx-save-btn" style="background:#1677ff;color:#fff;border:none;border-radius:4px;padding:8px 16px;font-size:14px;cursor:pointer">保存</button>';
+    html += '</div>';
+
+    dialog.innerHTML = html;
+    overlay.appendChild(dialog);
+    document.body.appendChild(overlay);
+
+    // 绑定事件
+    document.getElementById("ctx-cancel-btn").onclick = function() { overlay.remove(); };
+    document.getElementById("ctx-save-btn").onclick = function() {
+      // 收集选中的标签
+      var checkboxes = dialog.querySelectorAll('input[type="checkbox"]');
+      var selectedTags = [];
+      checkboxes.forEach(function(cb) { if (cb.checked) selectedTags.push(cb.value); });
+      // 获取备注
+      var note = document.getElementById("ctx-note-input").value.trim();
+      // 更新收藏
+      updateFavoriteContext(fav, selectedTags.join(','), note, function() {
+        overlay.remove();
+        renderFavPage(); // 重新渲染
+      });
+    };
+  }
+
+  function updateFavoriteContext(fav, tags, note, callback) {
+    // 更新本地缓存
+    var favs = localLoad();
+    favs.forEach(function(f) {
+      if (f.t === fav.t && f.u === fav.u) {
+        f.context_tags = tags;
+        f.context_note = note;
+      }
+    });
+    localSave(favs);
+
+    // 同步到云端
+    if (isLoggedIn() && currentUser) {
+      var row = favToRow({ u: fav.u, t: fav.t, s: fav.s, d: fav.d, b: fav.b, c: fav.c, m: fav.m, context_tags: tags, context_note: note }, currentUser.id);
+      sb.from("favorites").upsert(row).then(function(res) {
+        if (res.error) console.warn("同步上下文失败:", res.error);
+        if (callback) callback();
+      });
+    } else {
+      if (callback) callback();
+    }
+  }
+
+  /* ── 初始化：版本号防缓存 ── */
+  console.log("fav.js v3.3a loaded");
 })();
