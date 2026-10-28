@@ -2,8 +2,9 @@ name: AI 日报雷达
 
 on:
   schedule:
-    # 每天北京时间 09:00（UTC 01:00）自动运行
-    - cron: "0 1 * * *"
+    # 每天北京时间 08:00（UTC 00:00）自动运行
+    # 避开 UTC 01:00 的全球高峰，减少 GitHub Actions 调度延迟
+    - cron: "0 0 * * *"
   workflow_dispatch:   # 允许手动点按钮随时运行
 
 permissions:
