@@ -705,15 +705,17 @@
       /* 收藏备注 */
       if (f.context_note) {
         var noteEl = document.createElement("div");
-        noteEl.style.cssText = "background:#fffbe6;border-left:3px solid #faad14;padding:8px 12px;margin-top:8px;font-size:13px;color:#555;border-radius:4px";
-        noteEl.textContent = '📝 ' + f.context_note;
+        noteEl.className = "context-note-display";
+        noteEl.style.cssText = "background:#fffbe6;border-left:3px solid #faad14;padding:8px 12px;margin-top:8px;font-size:13px;color:#555;border-radius:4px;line-height:1.5";
+        noteEl.innerHTML = '<strong style="color:#8a7d00"> 我的备注：</strong>' + f.context_note.replace(/</g, '&lt;').replace(/>/g, '&gt;');
         card.appendChild(noteEl);
       }
-      /* 编辑上下文按钮 */
+      /* 编辑上下文按钮 - 根据是否有备注显示不同状态 */
       var editBtn = document.createElement("button");
       editBtn.className = "context-edit-btn";
-      editBtn.textContent = "✏️ 编辑上下文";
-      editBtn.style.cssText = "background:none;border:1px solid #d9d9d9;border-radius:4px;padding:4px 12px;font-size:12px;color:#666;cursor:pointer;margin-top:8px";
+      var hasNote = f.context_note || f.context_tags;
+      editBtn.textContent = hasNote ? "️ 编辑上下文（已填写）" : "✏️ 添加上下文";
+      editBtn.style.cssText = "background:" + (hasNote ? "#f0f7ff" : "#fff") + ";border:1px solid " + (hasNote ? "#1677ff" : "#d9d9d9") + ";border-radius:4px;padding:4px 12px;font-size:12px;color:" + (hasNote ? "#1677ff" : "#666") + ";cursor:pointer;margin-top:8px";
       editBtn.onclick = function() { showContextEditDialog(f); };
       card.appendChild(editBtn);
       list.appendChild(card);
@@ -1090,12 +1092,39 @@
     if (isLoggedIn() && currentUser) {
       var row = favToRow({ u: fav.u, t: fav.t, s: fav.s, d: fav.d, b: fav.b, c: fav.c, m: fav.m, context_tags: tags, context_note: note }, currentUser.id);
       sb.from("favorites").upsert(row).then(function(res) {
-        if (res.error) console.warn("同步上下文失败:", res.error);
+        if (res.error) {
+          console.warn("同步上下文失败:", res.error);
+          showContextToast("❌ 保存失败：" + res.error.message);
+        } else {
+          showContextToast("✅ 备注已保存");
+        }
         if (callback) callback();
       });
     } else {
+      showContextToast("✅ 备注已保存（本地）");
       if (callback) callback();
     }
+  }
+
+  // Toast 提示函数
+  function showContextToast(message) {
+    // 移除已有的 toast
+    var existing = document.getElementById("context-toast");
+    if (existing) existing.remove();
+
+    // 创建新 toast
+    var toast = document.createElement("div");
+    toast.id = "context-toast";
+    toast.textContent = message;
+    toast.style.cssText = "position:fixed;top:20px;right:20px;background:#333;color:#fff;padding:12px 20px;border-radius:8px;font-size:14px;z-index:10000;box-shadow:0 4px 12px rgba(0,0,0,0.15);animation:slideIn 0.3s ease";
+    document.body.appendChild(toast);
+
+    // 3 秒后自动消失
+    setTimeout(function() {
+      toast.style.opacity = "0";
+      toast.style.transition = "opacity 0.3s";
+      setTimeout(function() { toast.remove(); }, 300);
+    }, 3000);
   }
 
   /* ── 初始化：版本号防缓存 ── */
