@@ -9,14 +9,14 @@
       "items": 36,
       "complete_rate": 1.0,
       "importance_dist": {
-        "1": 9,
-        "2": 12,
-        "3": 13,
-        "4": 2,
+        "1": 8,
+        "2": 13,
+        "3": 10,
+        "4": 5,
         "5": 0
       },
-      "mid_range_rate": 0.75,
-      "avg_importance": 2.22
+      "mid_range_rate": 0.778,
+      "avg_importance": 2.33
     },
     {
       "date": "2026-10-29",
@@ -155,7 +155,7 @@
     }
   ],
   "avg_complete_rate": 1.0,
-  "avg_mid_range_rate": 0.697,
+  "avg_mid_range_rate": 0.7,
   "skipped": {
     "no_pipeline_field": 0,
     "old_pipeline": 0,
@@ -167,5 +167,5 @@
     "mid_range_rate": 0.6,
     "min_days": 3
   },
-  "checked_at": "2026-10-30T03:40:01.493112"
+  "checked_at": "2026-10-30T05:28:07.640027"
 }
