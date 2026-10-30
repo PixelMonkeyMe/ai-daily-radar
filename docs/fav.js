@@ -558,9 +558,21 @@
         _d = b.getAttribute("data-d"), _b = b.getAttribute("data-b");
     var _c = autoCategorize(_s || "", _t || "", _b || "");
 
+    /* Phase 3.3c: 读取完整 AI 分析字段 */
+    var _what = b.getAttribute("data-what") || "";
+    var _industry_use = b.getAttribute("data-industry-use") || "";
+    var _capability = b.getAttribute("data-capability") || "";
+    var _assessment = b.getAttribute("data-assessment") || "";
+    var _risk = b.getAttribute("data-risk") || "";
+    var _importance = parseInt(b.getAttribute("data-importance")) || 3;
+
     /* 未登录 → 一律弹登录弹窗 */
     if (!isLoggedIn()) {
-      pendingFav = { t: _t, u: u, s: _s, d: _d, b: _b, c: _c };
+      pendingFav = {
+        t: _t, u: u, s: _s, d: _d, b: _b, c: _c,
+        what: _what, industry_use: _industry_use, capability: _capability,
+        assessment: _assessment, risk: _risk, importance: _importance
+      };
       showLoginModal();
       return;
     }
@@ -573,7 +585,11 @@
       cloudRemove(u);
     } else {
       /* 收藏 */
-      var fav = { t: _t, u: u, s: _s, d: _d, b: _b, c: _c };
+      var fav = {
+        t: _t, u: u, s: _s, d: _d, b: _b, c: _c,
+        what: _what, industry_use: _industry_use, capability: _capability,
+        assessment: _assessment, risk: _risk, importance: _importance
+      };
       cache.push(fav);
       localSave(cache);
       refreshAll();
@@ -1210,5 +1226,5 @@
   }
 
   /* ── 初始化：版本号防缓存 ── */
-  console.log("fav.js v3.3c loaded");
+  console.log("fav.js v3.3c-1 loaded");
 })();
