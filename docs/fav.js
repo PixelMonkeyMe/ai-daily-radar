@@ -1091,7 +1091,8 @@
     // 同步到云端
     if (isLoggedIn() && currentUser) {
       var row = favToRow({ u: fav.u, t: fav.t, s: fav.s, d: fav.d, b: fav.b, c: fav.c, m: fav.m, context_tags: tags, context_note: note }, currentUser.id);
-      sb.from("favorites").upsert(row).then(function(res) {
+      // 使用 onConflict 指定唯一约束列，避免 duplicate key 错误
+      sb.from("favorites").upsert(row, { onConflict: 'url' }).then(function(res) {
         if (res.error) {
           console.warn("同步上下文失败:", res.error);
           showContextToast("❌ 保存失败：" + res.error.message);
@@ -1128,5 +1129,5 @@
   }
 
   /* ── 初始化：版本号防缓存 ── */
-  console.log("fav.js v3.3a loaded");
+  console.log("fav.js v3.3a-1 loaded");
 })();
