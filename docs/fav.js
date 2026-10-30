@@ -1078,15 +1078,15 @@
   }
 
   function updateFavoriteContext(fav, tags, note, callback) {
-    // 更新本地缓存
-    var favs = localLoad();
-    favs.forEach(function(f) {
+    // 更新内存缓存（关键！renderFavPage 使用的是 cache 变量）
+    cache.forEach(function(f) {
       if (f.t === fav.t && f.u === fav.u) {
         f.context_tags = tags;
         f.context_note = note;
       }
     });
-    localSave(favs);
+    // 同步更新 localStorage
+    localSave(cache);
 
     // 同步到云端
     if (isLoggedIn() && currentUser) {
@@ -1095,7 +1095,7 @@
       sb.from("favorites").upsert(row, { onConflict: 'url' }).then(function(res) {
         if (res.error) {
           console.warn("同步上下文失败:", res.error);
-          showContextToast("❌ 保存失败：" + res.error.message);
+          showContextToast("❌ 同步失败：" + res.error.message);
         } else {
           showContextToast("✅ 备注已保存");
         }
@@ -1129,5 +1129,5 @@
   }
 
   /* ── 初始化：版本号防缓存 ── */
-  console.log("fav.js v3.3a-1 loaded");
+  console.log("fav.js v3.3a-2 loaded");
 })();
