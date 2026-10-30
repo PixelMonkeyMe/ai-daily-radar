@@ -620,7 +620,19 @@
     renderCategoryTabs(favs);
     var q = (document.getElementById("fav-q").value || "").toLowerCase();
     var items = favs.filter(function (f) {
-      if (q && ((f.t || "") + " " + (f.b || "") + " " + (f.s || "")).toLowerCase().indexOf(q) < 0) return false;
+      // 扩大搜索范围：标题 + 摘要 + 来源 + 分类 + 成熟度 + 场景标签 + 备注
+      if (q) {
+        var searchText = [
+          f.t || "",           // 标题
+          f.b || "",           // 摘要
+          f.s || "",           // 来源
+          f.c || "",           // 分类
+          f.m || "",           // 成熟度
+          f.context_tags || "", // 场景标签
+          f.context_note || ""  // 备注
+        ].join(" ").toLowerCase();
+        if (searchText.indexOf(q) < 0) return false;
+      }
       var d = f.d || "";
       if (filterDate && d !== filterDate) return false;
       if (filterFrom && d < filterFrom) return false;
@@ -1019,13 +1031,15 @@
   var CONTEXT_TAGS = ["技术选型", "趋势判断", "风险评估", "预算申请"];
 
   function showContextEditDialog(fav) {
-    // 创建遮罩层
+    // 创建遮罩层 - 添加 autocomplete="off" 防止浏览器弹出密码保存
     var overlay = document.createElement("div");
+    overlay.setAttribute("autocomplete", "off");
     overlay.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:1000;display:flex;align-items:center;justify-content:center";
     overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
 
-    // 创建对话框
+    // 创建对话框 - 添加 autocomplete="off" 防止浏览器弹出密码保存
     var dialog = document.createElement("div");
+    dialog.setAttribute("autocomplete", "off");
     dialog.style.cssText = "background:#fff;border-radius:8px;padding:24px;max-width:500px;width:90%;max-height:80vh;overflow-y:auto;box-shadow:0 4px 12px rgba(0,0,0,0.15)";
 
     var html = '<h3 style="margin:0 0 16px;font-size:18px;color:#203a43">✏️ 编辑收藏上下文</h3>';
@@ -1039,7 +1053,7 @@
     CONTEXT_TAGS.forEach(function(tag) {
       var checked = currentTags.indexOf(tag) >= 0 ? 'checked' : '';
       html += '<label style="display:flex;align-items:center;gap:4px;background:#f5f5f5;padding:6px 12px;border-radius:4px;cursor:pointer;font-size:13px">';
-      html += '<input type="checkbox" value="' + tag + '" ' + checked + ' style="margin:0"> ' + tag + '</label>';
+      html += '<input type="checkbox" value="' + tag + '" ' + checked + ' style="margin:0" autocomplete="off"> ' + tag + '</label>';
     });
     html += '</div></div>';
 
@@ -1047,13 +1061,13 @@
     html += '<div style="margin-bottom:16px">';
     html += '<label style="display:block;font-size:14px;font-weight:600;margin-bottom:8px">备注</label>';
     var noteValue = fav.context_note || "";
-    html += '<textarea id="ctx-note-input" style="width:100%;min-height:80px;padding:8px;border:1px solid #d9d9d9;border-radius:4px;font-size:13px;resize:vertical" placeholder="为什么收藏？计划用在什么场景？">' + noteValue.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</textarea>';
+    html += '<textarea id="ctx-note-input" style="width:100%;min-height:80px;padding:8px;border:1px solid #d9d9d9;border-radius:4px;font-size:13px;resize:vertical" placeholder="为什么收藏？计划用在什么场景？" autocomplete="off">' + noteValue.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</textarea>';
     html += '</div>';
 
     // 按钮
     html += '<div style="display:flex;gap:8px;justify-content:flex-end">';
-    html += '<button id="ctx-cancel-btn" style="background:#fff;border:1px solid #d9d9d9;border-radius:4px;padding:8px 16px;font-size:14px;cursor:pointer">取消</button>';
-    html += '<button id="ctx-save-btn" style="background:#1677ff;color:#fff;border:none;border-radius:4px;padding:8px 16px;font-size:14px;cursor:pointer">保存</button>';
+    html += '<button id="ctx-cancel-btn" type="button" autocomplete="off" style="background:#fff;border:1px solid #d9d9d9;border-radius:4px;padding:8px 16px;font-size:14px;cursor:pointer">取消</button>';
+    html += '<button id="ctx-save-btn" type="button" autocomplete="off" style="background:#1677ff;color:#fff;border:none;border-radius:4px;padding:8px 16px;font-size:14px;cursor:pointer">保存</button>';
     html += '</div>';
 
     dialog.innerHTML = html;
@@ -1129,5 +1143,5 @@
   }
 
   /* ── 初始化：版本号防缓存 ── */
-  console.log("fav.js v3.3a-2 loaded");
+  console.log("fav.js v3.3b loaded");
 })();
