@@ -30,11 +30,46 @@
   }
   function rowToFav(r) {
     /* 始终用 autoCategorize 计算分类，不依赖数据库默认值（旧数据全是 '行业趋势'） */
-    return { u: r.url, t: r.title || "", s: r.source || "", d: r.date || "", b: r.brief || "", c: autoCategorize(r.source || "", r.title || "", r.brief || ""), m: r.maturity || "", context_tags: r.context_tags || "", context_note: r.context_note || "" };
+    return {
+      u: r.url,
+      t: r.title || "",
+      s: r.source || "",
+      d: r.date || "",
+      b: r.brief || "",
+      c: autoCategorize(r.source || "", r.title || "", r.brief || ""),
+      m: r.maturity || "",
+      context_tags: r.context_tags || "",
+      context_note: r.context_note || "",
+      /* Phase 3.3c: 完整 AI 分析字段 */
+      what: r.what || "",
+      industry_use: r.industry_use || "",
+      capability: r.capability || "",
+      assessment: r.assessment || "",
+      risk: r.risk || "",
+      importance: r.importance || 3
+    };
   }
   function favToRow(f, userId) {
     var cat = f.c || autoCategorize(f.s || "", f.t || "", f.b || "");
-    return { url: f.u, title: f.t || "", source: f.s || "", date: f.d || "", brief: f.b || "", category: cat, maturity: f.m || "", context_tags: f.context_tags || "", context_note: f.context_note || "", user_id: userId };
+    return {
+      url: f.u,
+      title: f.t || "",
+      source: f.s || "",
+      date: f.d || "",
+      brief: f.b || "",
+      category: cat,
+      maturity: f.m || "",
+      context_tags: f.context_tags || "",
+      context_note: f.context_note || "",
+      /* Phase 3.3c: 完整 AI 分析字段 */
+      what: f.what || "",
+      industry_use: f.industry_use || "",
+      capability: f.capability || "",
+      assessment: f.assessment || "",
+      risk: f.risk || "",
+      importance: f.importance || 3,
+      user_id: userId
+    };
   }
 
   /* ── AI 自动分类 ── */
@@ -620,7 +655,7 @@
     renderCategoryTabs(favs);
     var q = (document.getElementById("fav-q").value || "").toLowerCase();
     var items = favs.filter(function (f) {
-      // 扩大搜索范围：标题 + 总结 + 来源 + 分类 + 成熟度 + 场景标签 + 备注
+      // 扩大搜索范围：标题 + 总结 + 来源 + 分类 + 成熟度 + 场景标签 + 备注 + AI分析
       if (q) {
         var searchText = [
           f.t || "",           // 标题
@@ -629,7 +664,12 @@
           f.c || "",           // 分类
           f.m || "",           // 成熟度
           f.context_tags || "", // 场景标签
-          f.context_note || ""  // 备注
+          f.context_note || "", // 备注
+          f.what || "",        // AI分析：这是什么
+          f.industry_use || "", // AI分析：对行业有什么用
+          f.capability || "",  // AI分析：能干什么
+          f.assessment || "",  // AI分析：评估判断
+          f.risk || ""         // AI分析：风险提示
         ].join(" ").toLowerCase();
         if (searchText.indexOf(q) < 0) return false;
       }
@@ -713,6 +753,33 @@
         var br = document.createElement("p");
         br.className = "brief"; br.textContent = f.b;
         card.appendChild(br);
+      }
+      /* Phase 3.3c: 显示完整 AI 分析（非 summary:// 类型） */
+      if (f.what || f.industry_use || f.capability || f.assessment || f.risk) {
+        var analysisDiv = document.createElement("div");
+        analysisDiv.style.cssText = "background:#f8f9fa;border-left:3px solid #1677ff;padding:12px;margin-top:10px;font-size:13px;color:#333;border-radius:4px;line-height:1.6";
+        var analysisHtml = "";
+        if (f.importance && f.importance > 0) {
+          var stars = "⭐".repeat(f.importance);
+          analysisHtml += '<div style="margin-bottom:8px"><strong style="color:#1677ff">重要度：</strong>' + stars + ' <span style="color:#8a919c;font-size:12px">(' + f.importance + '/5)</span></div>';
+        }
+        if (f.what) {
+          analysisHtml += '<div style="margin-bottom:6px"><strong style="color:#203a43">💡 这是什么：</strong>' + f.what.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</div>';
+        }
+        if (f.industry_use) {
+          analysisHtml += '<div style="margin-bottom:6px"><strong style="color:#203a43">🏭 对行业有什么用：</strong>' + f.industry_use.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</div>';
+        }
+        if (f.capability) {
+          analysisHtml += '<div style="margin-bottom:6px"><strong style="color:#203a43">🔧 能干什么：</strong>' + f.capability.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</div>';
+        }
+        if (f.assessment) {
+          analysisHtml += '<div style="margin-bottom:6px"><strong style="color:#203a43">📊 评估判断：</strong>' + f.assessment.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</div>';
+        }
+        if (f.risk) {
+          analysisHtml += '<div style="margin-bottom:6px"><strong style="color:#e63946">⚠️ 风险提示：</strong>' + f.risk.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</div>';
+        }
+        analysisDiv.innerHTML = analysisHtml;
+        card.appendChild(analysisDiv);
       }
       /* 收藏备注 */
       if (f.context_note) {
@@ -1143,5 +1210,5 @@
   }
 
   /* ── 初始化：版本号防缓存 ── */
-  console.log("fav.js v3.3b-1 loaded");
+  console.log("fav.js v3.3c loaded");
 })();
