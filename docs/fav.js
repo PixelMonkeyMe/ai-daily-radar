@@ -620,11 +620,11 @@
     renderCategoryTabs(favs);
     var q = (document.getElementById("fav-q").value || "").toLowerCase();
     var items = favs.filter(function (f) {
-      // 扩大搜索范围：标题 + 摘要 + 来源 + 分类 + 成熟度 + 场景标签 + 备注
+      // 扩大搜索范围：标题 + 总结 + 来源 + 分类 + 成熟度 + 场景标签 + 备注
       if (q) {
         var searchText = [
           f.t || "",           // 标题
-          f.b || "",           // 摘要
+          f.b || "",           // 总结/摘要（brief）
           f.s || "",           // 来源
           f.c || "",           // 分类
           f.m || "",           // 成熟度
@@ -1143,5 +1143,5 @@
   }
 
   /* ── 初始化：版本号防缓存 ── */
-  console.log("fav.js v3.3b loaded");
+  console.log("fav.js v3.3b-1 loaded");
 })();
