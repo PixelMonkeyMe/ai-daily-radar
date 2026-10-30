@@ -37,6 +37,11 @@ jobs:
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: python scripts/build_site.py
 
+      - name: 回填收藏的 AI 分析数据（Phase 3.3c）
+        env:
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: python scripts/backfill_ai_analysis.py
+
       - name: 邮件推送日报
         env:
           SMTP_AUTH_CODE: ${{ secrets.SMTP_AUTH_CODE }}
