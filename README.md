@@ -140,8 +140,12 @@ Git commit 前必须确认：
 ### 2026-10-30
 - ✅ Phase 3.1：成熟度评级功能（S/A/B 三级）
 - ✅ Phase 3.3a：收藏上下文（场景标签 + 备注）
+- ✅ Phase 3.3b：收藏 UX 优化
+  - 修复 Edge 浏览器密码保存弹窗问题
+  - 搜索范围扩大至全文模糊查询（标题/摘要/来源/分类/标签/备注）
 - 🐛 修复：duplicate key 错误（upsert onConflict）
 - 🐛 修复：备注保存后不显示（cache 同步问题）
+- 📜 新增：项目开发规则（强制执行 PM→QA→Dev→Fix→Ship workflow）
 
 ### 2026-10-29
 - 🔧 调整 GitHub Actions 调度时间（UTC 01:00 → 00:00）
