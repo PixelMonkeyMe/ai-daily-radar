@@ -4,6 +4,41 @@
 
 ---
 
+## 🎯 **ECC Skills 强制使用规则**
+
+本项目已安装 **ECC (Enhanced Claude Code)** 系统（294k stars），所有开发任务**必须优先使用 ECC Skills**：
+
+### **核心 ECC Skills（强制）**
+
+| Skill | 用途 | 使用时机 |
+|-------|------|----------|
+| **continuous-learning-v2** | 项目记忆和学习 | 会话开始/结束时 |
+| **delivery-gate** | 交付质量门禁 | 提交前必用 |
+| **verification-loop** | 验证循环 | 每次修改后 |
+| **tdd-workflow** | TDD 工作流 | 开发新功能时 |
+| **agent-self-evaluation** | 自我评估 | 定期执行 |
+
+### **使用命令**
+
+```bash
+/ecc:continuous-learning    # 管理项目记忆
+/ecc:delivery-gate          # 质量门禁检查
+/ecc:verification-loop      # 验证修改
+/ecc:tdd-workflow           # TDD 开发
+/ecc:agent-self-evaluation  # 自我评估
+/ecc:codebase-onboarding    # 代码分析
+```
+
+### **强制规则**
+
+1. ✅ **所有功能开发必须使用 ECC skills** - 不是可选的！
+2. ✅ **提交前必须执行 delivery-gate** - 确保质量
+3. ✅ **每次修改后执行 verification-loop** - 确保正确性
+4. ✅ **会话开始/结束使用 continuous-learning** - 管理记忆
+5. ✅ **遵循 PM→QA→Dev→Fix→Ship workflow** - 结合 ECC skills
+
+---
+
 ## 📜 **项目开发规则（强制执行）**
 
 ### **规则 1：Workflow 流程必须严格执行**
