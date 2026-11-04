@@ -56,7 +56,7 @@ KIMI_SCORE_PROMPT = """你是一位资深的 AI 与开源技术分析师。
 
 【任务】
 对以下每条资讯，输出一个 JSON 数组，每个元素包含：
-{"title": "条目标题（保持原样）", "importance": 1到5的整数, "maturity": "S/A/B之一"}
+{"title": "条目标题（保持原样）", "url": "条目url（保持原样）", "importance": 1到5的整数, "maturity": "S/A/B之一"}
 
 importance 评分标准：
 5 = 与用户行业直接相关 + 已有落地案例/POC，强烈建议关注
@@ -73,6 +73,7 @@ B = 有 demo/开源可用（未验证落地，仅技术展示）
 【要求】
 - 只输出 JSON 数组，不要其他文字，不要 markdown 代码块
 - 必须为每条资讯给出评分，不要遗漏
+- title 和 url 必须与输入清单一字不差，不得改写、截断或翻译
 - maturity 判断依据：GitHub stars、文档完整度、是否有案例研究、是否提到生产部署"""
 
 SYNTHESIS_PROMPT = """你是一位资深的 AI 与开源技术分析师，服务对象是一位【完全不懂编程】的用户。
@@ -248,12 +249,15 @@ def main():
                            for a in analyzed]
             scores = call_kimi_score(score_items)
             if scores:
-                score_map = {s["title"]: s.get("importance", 3) for s in scores}
-                maturity_map = {s["title"]: s.get("maturity", "B") for s in scores}
+                # 双层对齐：url 精确匹配优先，title 兜底（防 LLM 改写标题导致错配）
+                score_by_url = {s.get("url", ""): s for s in scores if s.get("url")}
+                score_by_title = {s["title"]: s for s in scores}
                 for a in analyzed:
-                    a["importance"] = score_map.get(a["title"], 3)
-                    a["maturity"] = maturity_map.get(a["title"], "B")
-                print(f"  Kimi 完成 {len(scores)} 条评分")
+                    hit = score_by_url.get(a.get("url", "")) or score_by_title.get(a["title"])
+                    a["importance"] = hit.get("importance", 3) if hit else 3
+                    a["maturity"] = hit.get("maturity", "B") if hit else "B"
+                url_hits = sum(1 for a in analyzed if score_by_url.get(a.get("url", "")))
+                print(f"  Kimi 完成 {len(scores)} 条评分（url 匹配 {url_hits}/{len(analyzed)}）")
             else:
                 print("  Kimi 评分失败，使用默认 importance=3, maturity=B")
                 for a in analyzed:
@@ -300,9 +304,11 @@ def main():
         pipeline_ver = "none"       # 无 AI
 
     if analyzed:
-        extra_map = {i["title"]: i for i in raw["items"]}
+        # 双层对齐：url 精确匹配优先，title 兜底
+        extra_by_url = {i.get("url", ""): i for i in raw["items"] if i.get("url")}
+        extra_by_title = {i["title"]: i for i in raw["items"]}
         for a in analyzed:
-            src = extra_map.get(a.get("title"), {})
+            src = extra_by_url.get(a.get("url", "")) or extra_by_title.get(a.get("title"), {})
             a.setdefault("extra", src.get("extra", ""))
         report = {"date": date_str, "fetched_at": raw["fetched_at"],
                   "ai_enabled": True, "pipeline": pipeline_ver,
