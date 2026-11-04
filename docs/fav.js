@@ -1,6 +1,6 @@
 (function () {
   /* ── 版本号（唯一来源：升级 fav.js 时只改这里，build_site.py 构建时自动读取注入缓存破坏参数） ── */
-  var APP_VERSION = "3.3d-2";
+  var APP_VERSION = "3.3d-3";
 
   /* ── Supabase 配置 ── */
   var SUPABASE_URL = "https://bvhzexdluniqdwmsxaxw.supabase.co";
@@ -516,6 +516,9 @@
     var chip = document.getElementById("fav-chip");
     if (chip) chip.textContent = isLoggedIn() ? cache.length : "0";
   }
+
+  /* 历史懒加载片段注入后（history.js 派发），刷新新注入收藏按钮的 ☆/★ 初始态 */
+  document.addEventListener("hist:loaded", refreshButtons);
 
   function markAlreadyFav() {
     var cards = document.querySelectorAll(".card");

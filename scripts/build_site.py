@@ -32,6 +32,10 @@ def _read_favjs_version():
 
 FAVJS_VER = _read_favjs_version()
 
+# 数据版本（构建时间戳）：history 片段 URL 携带，每次构建强制浏览器刷新片段缓存。
+# 与 fav.js 的 APP_VERSION（代码版本）语义分离：AI 字段修订后无需手动升代码版本。
+BUILD_TS = datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S")
+
 REPORTS_DIR = os.path.join(BASE, "data", "reports")
 DIGESTS_DIR = os.path.join(BASE, "data", "digests")
 DOCS = os.path.join(BASE, "docs")
@@ -242,7 +246,7 @@ PAGE = """<!DOCTYPE html>
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="{favjs}"></script>
+<script src="{favjs}"></script>{historyjs}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="{pdfjs}"></script>
@@ -508,6 +512,7 @@ def build_daily():
             nav='<a href="../index.html">最新日报</a><a href="../digests/index.html">周期汇总（周/月/季）</a><a href="../favorites.html">我的收藏夹</a>',
             favjs=f"../fav.js?v={FAVJS_VER}",
             pdfjs="../export_pdf.js",
+            historyjs="",
             body=f'<script>sessionStorage.setItem("adr_report","archive/{rep["date"]}.html")</script>'
                  + fav_bar("../") + render_summary(rep, rep["date"]) + cards + f'<div class="archive"><b>历史日报：</b>{links}</div>')
         with open(os.path.join(ARCHIVE, f"{rep['date']}.html"), "w", encoding="utf-8") as fo:
@@ -516,20 +521,29 @@ def build_daily():
     # 生成 index.html：当日完整展示（含故事分组 + Top 5 补全） + 历史折叠
     latest_cards = render_items_for_index()
 
-    # 历史折叠面板：每个日期一个 <details>，内部是 item_line 精简列表
+    # 历史懒加载：每天生成 HTML 片段（与页面 DOM 同源同函数 item_line），
+    # index.html 只留空壳，前端 history.js 展开时 fetch 注入（见 docs/history.js）
+    history_dir = os.path.join(DOCS, "history")
+    os.makedirs(history_dir, exist_ok=True)
     history_parts = []
     for rep in reports[1:]:
-        lines = "\n".join(
-            item_line(i, rep.get("ai_enabled"), rep["date"], i.get("_similar_dates", []))
+        d = rep["date"]
+        frag = "\n".join(
+            item_line(i, rep.get("ai_enabled"), d, i.get("_similar_dates", []))
             for i in rep["items"]
         )
+        # 构建原子性：片段先写，index.html 最后写——失败时不会出现壳引用悬空片段
+        with open(os.path.join(history_dir, f"{d}.html"), "w", encoding="utf-8") as fo:
+            fo.write(frag)
         history_parts.append(
-            f'<details>'
-            f'<summary><span class="history-date">{esc(rep["date"])}</span> '
+            f'<details class="hist-day" data-date="{esc(d)}">'
+            f'<summary><span class="history-date">{esc(d)}</span> '
             f'（共 {len(rep["items"])} 条）· 点击展开</summary>'
-            f'<div class="history-day">{lines}</div>'
+            f'<div class="history-day" data-loaded="0">'
+            f'<p class="hist-status" role="status">此日期内容需启用 JavaScript 加载，'
+            f'或 <a href="archive/{esc(d)}.html">查看完整日报 →</a></p></div>'
             f'<div style="margin-top:8px;font-size:13px;">'
-            f'<a href="archive/{esc(rep["date"])}.html">查看完整日报 →</a></div>'
+            f'<a href="archive/{esc(d)}.html">查看完整日报 →</a></div>'
             f'</details>'
         )
 
@@ -578,6 +592,7 @@ def build_daily():
         nav='<a href="digests/index.html">周期汇总（周/月/季）</a><a href="favorites.html">我的收藏夹</a>',
         favjs=f"fav.js?v={FAVJS_VER}",
         pdfjs="export_pdf.js",
+        historyjs=f'<script src="history.js?v={BUILD_TS}"></script>',
         body=index_body)
     with open(os.path.join(DOCS, "index.html"), "w", encoding="utf-8") as fo:
         fo.write(index)
@@ -636,6 +651,7 @@ def build_digests():
             nav='<a href="../index.html">日报首页</a><a href="index.html">全部汇总</a><a href="../favorites.html">我的收藏夹</a>',
             favjs=f"../fav.js?v={FAVJS_VER}",
             pdfjs="../export_pdf.js",
+            historyjs="",
             body=render_digest(d))
         with open(os.path.join(DIGESTS_OUT, f"{d['label']}.html"), "w", encoding="utf-8") as fo:
             fo.write(page)
@@ -655,6 +671,7 @@ def build_digests():
         nav='<a href="../index.html">日报首页</a><a href="../favorites.html">我的收藏夹</a>',
         favjs=f"../fav.js?v={FAVJS_VER}",
         pdfjs="../export_pdf.js",
+        historyjs="",
         body=body or '<div class="card"><p>还没有汇总。周报/月报/季报会按时间自动生成。</p></div>')
     with open(os.path.join(DIGESTS_OUT, "index.html"), "w", encoding="utf-8") as fo:
         fo.write(page)
@@ -691,6 +708,7 @@ def build_favorites():
         nav='<a href="index.html" id="adr-home-link">日报首页</a><a href="digests/index.html">周期汇总（周/月/季）</a>',
         favjs=f"fav.js?v={FAVJS_VER}",
         pdfjs="export_pdf.js",
+        historyjs="",
         body=body + '<div><button class="export-pdf-btn" onclick="exportFavoritesPDF()">📄 导出收藏夹为 PDF</button>'
               + '<div class="pdf-loading" id="pdf-loading">⏳ 正在生成 PDF，请稍候...</div></div>')
     with open(os.path.join(DOCS, "favorites.html"), "w", encoding="utf-8") as f:
