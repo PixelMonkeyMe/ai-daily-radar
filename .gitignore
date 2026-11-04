@@ -12,3 +12,13 @@ docs/changes/
 supabase/.temp/
 CLAUDE.md
 scripts/set_password.py
+
+# Syncthing 本机同步配置（不属于项目）
+.stignore
+.stfolder-*/
+
+# BUG 截图不入库
+BUG截图/
+
+# 流水线临时产物（每次运行重新生成）
+data/raw.json
