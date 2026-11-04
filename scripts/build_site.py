@@ -3,6 +3,7 @@ import glob
 import html
 import json
 import os
+import re
 import sys
 from datetime import datetime, timezone, timedelta
 
@@ -13,6 +14,23 @@ if DATA_DIR not in sys.path:
 
 from story_grouping import group_stories
 from store import insert_items, find_previous_dates, get_top_historical, cleanup_old
+
+
+def _read_favjs_version():
+    """从 docs/fav.js 读取 APP_VERSION 作为唯一版本来源（消除双写）"""
+    fav_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "docs", "fav.js")
+    try:
+        m = re.search(r'APP_VERSION\s*=\s*"([^"]+)"',
+                      open(fav_path, encoding="utf-8").read())
+        if m:
+            return m.group(1)
+    except OSError:
+        pass
+    print("警告: 无法从 fav.js 读取 APP_VERSION，缓存破坏参数退化为 dev")
+    return "dev"
+
+
+FAVJS_VER = _read_favjs_version()
 
 REPORTS_DIR = os.path.join(BASE, "data", "reports")
 DIGESTS_DIR = os.path.join(BASE, "data", "digests")
@@ -236,37 +254,6 @@ PAGE = """<!DOCTYPE html>
 
 def esc(s):
     return html.escape(str(s or ""))
-
-
-def _jaccard(a, b):
-    """基于字符 bigram 的 Jaccard 相似度，用于判断标题是否类似。"""
-    a, b = str(a).lower(), str(b).lower()
-    if len(a) < 2 or len(b) < 2:
-        return 0.0
-    sa = set(a[i:i + 2] for i in range(len(a) - 1))
-    sb = set(b[i:i + 2] for i in range(len(b) - 1))
-    inter = len(sa & sb)
-    union = len(sa | sb)
-    return inter / union if union else 0.0
-
-
-def find_similar_dates(title, url, all_reports, current_date, threshold=0.65):
-    """
-    返回该条目在其它日期出现过的日期列表（按时间倒序，最多 3 个）。
-    判断规则：URL 完全一致，或标题 Jaccard 相似度 >= threshold。
-    """
-    matches = set()
-    for rep in all_reports:
-        if rep["date"] == current_date:
-            continue
-        for item in rep["items"]:
-            if item.get("url") == url:
-                matches.add(rep["date"])
-                break
-            if _jaccard(item.get("title", ""), title) >= threshold:
-                matches.add(rep["date"])
-                break
-    return sorted(matches, reverse=True)[:3]
 
 
 def fav_bar(prefix):
@@ -519,7 +506,7 @@ def build_daily():
             meta=f'数据抓取时间：{esc(rep["fetched_at"])} · 共 {len(rep["items"])} 条',
             mode="AI 深度解读" if rep.get("ai_enabled") else "原始榜单（未配置 API 密钥）",
             nav='<a href="../index.html">最新日报</a><a href="../digests/index.html">周期汇总（周/月/季）</a><a href="../favorites.html">我的收藏夹</a>',
-            favjs="../fav.js?v=3.3d-1",
+            favjs=f"../fav.js?v={FAVJS_VER}",
             pdfjs="../export_pdf.js",
             body=f'<script>sessionStorage.setItem("adr_report","archive/{rep["date"]}.html")</script>'
                  + fav_bar("../") + render_summary(rep, rep["date"]) + cards + f'<div class="archive"><b>历史日报：</b>{links}</div>')
@@ -589,7 +576,7 @@ def build_daily():
         meta=f'数据抓取时间：{esc(latest["fetched_at"])} · 共 {len(latest["items"])} 条',
         mode="AI 深度解读" if latest.get("ai_enabled") else "原始榜单（未配置 API 密钥）",
         nav='<a href="digests/index.html">周期汇总（周/月/季）</a><a href="favorites.html">我的收藏夹</a>',
-        favjs="fav.js?v=3.3d-1",
+        favjs=f"fav.js?v={FAVJS_VER}",
         pdfjs="export_pdf.js",
         body=index_body)
     with open(os.path.join(DOCS, "index.html"), "w", encoding="utf-8") as fo:
@@ -647,7 +634,7 @@ def build_digests():
             meta=f'生成时间：{esc(d["generated_at"])}',
             mode="AI 趋势分析" if d.get("ai_enabled") else "统计版汇总",
             nav='<a href="../index.html">日报首页</a><a href="index.html">全部汇总</a><a href="../favorites.html">我的收藏夹</a>',
-            favjs="../fav.js?v=3.3d-1",
+            favjs=f"../fav.js?v={FAVJS_VER}",
             pdfjs="../export_pdf.js",
             body=render_digest(d))
         with open(os.path.join(DIGESTS_OUT, f"{d['label']}.html"), "w", encoding="utf-8") as fo:
@@ -666,7 +653,7 @@ def build_digests():
         meta="周报每周一生成 · 月报每月 1 号生成 · 季报每季度首月 1 号生成",
         mode="周 / 月 / 季 / 自定义",
         nav='<a href="../index.html">日报首页</a><a href="../favorites.html">我的收藏夹</a>',
-        favjs="../fav.js?v=3.3d-1",
+        favjs=f"../fav.js?v={FAVJS_VER}",
         pdfjs="../export_pdf.js",
         body=body or '<div class="card"><p>还没有汇总。周报/月报/季报会按时间自动生成。</p></div>')
     with open(os.path.join(DIGESTS_OUT, "index.html"), "w", encoding="utf-8") as fo:
@@ -702,7 +689,7 @@ def build_favorites():
         meta="登录后跨设备实时同步 · 邮箱 Magic Link 免密码",
         mode="收藏夹",
         nav='<a href="index.html" id="adr-home-link">日报首页</a><a href="digests/index.html">周期汇总（周/月/季）</a>',
-        favjs="fav.js?v=3.3d-1",
+        favjs=f"fav.js?v={FAVJS_VER}",
         pdfjs="export_pdf.js",
         body=body + '<div><button class="export-pdf-btn" onclick="exportFavoritesPDF()">📄 导出收藏夹为 PDF</button>'
               + '<div class="pdf-loading" id="pdf-loading">⏳ 正在生成 PDF，请稍候...</div></div>')
