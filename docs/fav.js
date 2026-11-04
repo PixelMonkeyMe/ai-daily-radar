@@ -397,6 +397,8 @@
             localSave(cache);
             refreshAll();
             cloudAdd(fav);
+            /* Phase 3.3d: 登录后自动收藏也弹出上下文编辑 */
+            showContextEditDialog(fav, true);
           }
         }
       });
@@ -594,6 +596,8 @@
       localSave(cache);
       refreshAll();
       cloudAdd(fav);
+      /* Phase 3.3d: 收藏当下立即弹出上下文编辑（记忆最完整，免去到收藏夹补录） */
+      showContextEditDialog(fav, true);
     }
   });
 
@@ -1113,7 +1117,7 @@
   /* ── 上下文编辑对话框 ── */
   var CONTEXT_TAGS = ["技术选型", "趋势判断", "风险评估", "预算申请"];
 
-  function showContextEditDialog(fav) {
+  function showContextEditDialog(fav, isNew) {
     // 创建遮罩层 - 添加 autocomplete="off" 防止浏览器弹出密码保存
     var overlay = document.createElement("div");
     overlay.setAttribute("autocomplete", "off");
@@ -1125,7 +1129,8 @@
     dialog.setAttribute("autocomplete", "off");
     dialog.style.cssText = "background:#fff;border-radius:8px;padding:24px;max-width:500px;width:90%;max-height:80vh;overflow-y:auto;box-shadow:0 4px 12px rgba(0,0,0,0.15)";
 
-    var html = '<h3 style="margin:0 0 16px;font-size:18px;color:#203a43">✏️ 编辑收藏上下文</h3>';
+    var title = isNew ? "⭐ 收藏成功，补充上下文" : "✏️ 编辑收藏上下文";
+    var html = '<h3 style="margin:0 0 16px;font-size:18px;color:#203a43">' + title + '</h3>';
     html += '<p style="color:#8a919c;font-size:12px;margin-bottom:16px">💡 上下文用于后续生成会议弹药包，仅自己可见</p>';
 
     // 标签选择
@@ -1187,7 +1192,13 @@
 
     // 同步到云端
     if (isLoggedIn() && currentUser) {
-      var row = favToRow({ u: fav.u, t: fav.t, s: fav.s, d: fav.d, b: fav.b, c: fav.c, m: fav.m, context_tags: tags, context_note: note }, currentUser.id);
+      /* Phase 3.3d: 传入完整 fav（含 AI 分析字段），避免 upsert 把 what/industry_use 等重置为空 */
+      var row = favToRow({
+        u: fav.u, t: fav.t, s: fav.s, d: fav.d, b: fav.b, c: fav.c, m: fav.m,
+        what: fav.what, industry_use: fav.industry_use, capability: fav.capability,
+        assessment: fav.assessment, risk: fav.risk, importance: fav.importance,
+        context_tags: tags, context_note: note
+      }, currentUser.id);
       // 使用 onConflict 指定唯一约束列，避免 duplicate key 错误
       sb.from("favorites").upsert(row, { onConflict: 'url' }).then(function(res) {
         if (res.error) {
@@ -1226,5 +1237,5 @@
   }
 
   /* ── 初始化：版本号防缓存 ── */
-  console.log("fav.js v3.3c-1 loaded");
+  console.log("fav.js v3.3d-1 loaded");
 })();
