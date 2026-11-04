@@ -1,4 +1,7 @@
 (function () {
+  /* ── 版本号（唯一来源：升级 fav.js 时只改这里，build_site.py 构建时自动读取注入缓存破坏参数） ── */
+  var APP_VERSION = "3.3d-2";
+
   /* ── Supabase 配置 ── */
   var SUPABASE_URL = "https://bvhzexdluniqdwmsxaxw.supabase.co";
   var SUPABASE_KEY = "sb_publishable_ZkAEga1YBOmfUrFba7yFYQ_5gt4kkMj";
@@ -673,7 +676,8 @@
     });
     /* 渲染分类 tab */
     renderCategoryTabs(favs);
-    var q = (document.getElementById("fav-q").value || "").toLowerCase();
+    var qEl = document.getElementById("fav-q");
+    var q = ((qEl && qEl.value) || "").toLowerCase();
     var items = favs.filter(function (f) {
       // 扩大搜索范围：标题 + 总结 + 来源 + 分类 + 成熟度 + 场景标签 + 备注 + AI分析
       if (q) {
@@ -704,8 +708,10 @@
       var c = (a.d || "").localeCompare(b.d || "") || (a.t || "").localeCompare(b.t || "");
       return sortDesc ? -c : c;
     });
-    document.getElementById("fav-sort").textContent = sortDesc ? "按日期：新 → 旧" : "按日期：旧 → 新";
-    document.getElementById("fav-count").textContent = "共 " + favs.length + " 条收藏" + (q ? "，匹配 " + items.length + " 条" : "");
+    var sortEl = document.getElementById("fav-sort");
+    if (sortEl) sortEl.textContent = sortDesc ? "按日期：新 → 旧" : "按日期：旧 → 新";
+    var countEl = document.getElementById("fav-count");
+    if (countEl) countEl.textContent = "共 " + favs.length + " 条收藏" + (q ? "，匹配 " + items.length + " 条" : "");
     list.innerHTML = "";
     if (!items.length) {
       var p = document.createElement("p");
@@ -1237,5 +1243,5 @@
   }
 
   /* ── 初始化：版本号防缓存 ── */
-  console.log("fav.js v3.3d-1 loaded");
+  console.log("fav.js v" + APP_VERSION + " loaded");
 })();
