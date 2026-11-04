@@ -64,15 +64,17 @@ echo "  测试模式：$TEST_MODE"
 echo ""
 echo "▸ JS 语法校验"
 if [ "$TEST_MODE" = "full" ] || [ "$TEST_MODE" = "js" ]; then
-  if [ -f "$ROOT/docs/fav.js" ]; then
-    if node -e "new Function(require('fs').readFileSync('$ROOT_NODE/docs/fav.js','utf8'))" 2>/dev/null; then
-      pass "docs/fav.js 语法正确"
+  for f in fav-core.js fav-page.js fav-index.js; do
+    if [ -f "$ROOT/docs/$f" ]; then
+      if node -e "new Function(require('fs').readFileSync('$ROOT_NODE/docs/$f','utf8'))" 2>/dev/null; then
+        pass "docs/$f 语法正确"
+      else
+        fail "docs/$f 语法错误"
+      fi
     else
-      fail "docs/fav.js 语法错误"
+      fail "docs/$f 不存在"
     fi
-  else
-    fail "docs/fav.js 不存在"
-  fi
+  done
 
   if [ -f "$ROOT/docs/export_pdf.js" ]; then
     if node -e "new Function(require('fs').readFileSync('$ROOT_NODE/docs/export_pdf.js','utf8'))" 2>/dev/null; then
@@ -89,14 +91,14 @@ fi
 echo ""
 echo "▸ JS 函数名一致性检查"
 if [ "$TEST_MODE" = "full" ] || [ "$TEST_MODE" = "js" ]; then
-  if [ -f "$ROOT/docs/fav.js" ]; then
-    check_result=$(python "$ROOT/scripts/check_js_consistency.py" "$ROOT/docs/fav.js" 2>/dev/null)
+  if [ -f "$ROOT/docs/fav-core.js" ]; then
+    check_result=$(python "$ROOT/scripts/check_js_consistency.py" "$ROOT/docs/fav-core.js" 2>/dev/null)
     if [ "$check_result" = "OK" ]; then
-      pass "docs/fav.js 函数名一致"
+      pass "docs/fav-core.js 函数名一致"
     else
       IFS='|' read -ra errs <<< "$check_result"
       for e in "${errs[@]}"; do
-        fail "docs/fav.js: $e"
+        fail "docs/fav-core.js: $e"
       done
     fi
   fi
@@ -146,10 +148,20 @@ if [ -f "$ROOT/docs/index.html" ]; then
     fail "index.html 缺少 supabase-js"
   fi
 
-  if grep -q "fav.js" "$ROOT/docs/index.html" 2>/dev/null; then
-    pass "index.html 引用 fav.js"
+  if grep -q "fav-core.js" "$ROOT/docs/index.html" 2>/dev/null; then
+    pass "index.html 引用 fav-core.js"
   else
-    fail "index.html 缺少 fav.js 引用"
+    fail "index.html 缺少 fav-core.js 引用"
+  fi
+  # 单元测试（node:test，纯逻辑）
+  if command -v node >/dev/null 2>&1; then
+    if node --test "$ROOT/scripts/test/fav-core.test.js" >/dev/null 2>&1; then
+      pass "fav-core 单元测试通过"
+    else
+      fail "fav-core 单元测试失败"
+    fi
+  else
+    skip "单元测试（node 不可用）"
   fi
 else
   fail "docs/index.html 不存在"

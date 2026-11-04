@@ -17,8 +17,8 @@ from store import insert_items, find_previous_dates, get_top_historical, cleanup
 
 
 def _read_favjs_version():
-    """从 docs/fav.js 读取 APP_VERSION 作为唯一版本来源（消除双写）"""
-    fav_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "docs", "fav.js")
+    """从 docs/fav-core.js 读取 APP_VERSION 作为唯一版本来源（消除双写）"""
+    fav_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "docs", "fav-core.js")
     try:
         m = re.search(r'APP_VERSION\s*=\s*"([^"]+)"',
                       open(fav_path, encoding="utf-8").read())
@@ -26,14 +26,14 @@ def _read_favjs_version():
             return m.group(1)
     except OSError:
         pass
-    print("警告: 无法从 fav.js 读取 APP_VERSION，缓存破坏参数退化为 dev")
+    print("警告: 无法从 fav-core.js 读取 APP_VERSION，缓存破坏参数退化为 dev")
     return "dev"
 
 
 FAVJS_VER = _read_favjs_version()
 
 # 数据版本（构建时间戳）：history 片段 URL 携带，每次构建强制浏览器刷新片段缓存。
-# 与 fav.js 的 APP_VERSION（代码版本）语义分离：AI 字段修订后无需手动升代码版本。
+# 与 fav-core.js 的 APP_VERSION（代码版本）语义分离：AI 字段修订后无需手动升代码版本。
 BUILD_TS = datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S")
 
 REPORTS_DIR = os.path.join(BASE, "data", "reports")
@@ -200,7 +200,7 @@ PAGE = """<!DOCTYPE html>
 <title>AI 日报雷达 · {title}</title>
 <style>{css}</style>
 </head>
-<body>
+<body data-page="{pagetype}">
 <header class="top"><div class="top-inner">
   <h1>{heading}</h1>
   <div class="meta">{meta}</div>
@@ -246,7 +246,7 @@ PAGE = """<!DOCTYPE html>
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="{favjs}"></script>{historyjs}
+{favjs}{historyjs}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="{pdfjs}"></script>
@@ -510,7 +510,8 @@ def build_daily():
             meta=f'数据抓取时间：{esc(rep["fetched_at"])} · 共 {len(rep["items"])} 条',
             mode="AI 深度解读" if rep.get("ai_enabled") else "原始榜单（未配置 API 密钥）",
             nav='<a href="../index.html">最新日报</a><a href="../digests/index.html">周期汇总（周/月/季）</a><a href="../favorites.html">我的收藏夹</a>',
-            favjs=f"../fav.js?v={FAVJS_VER}",
+            favjs=f'<script src="../fav-core.js?v={FAVJS_VER}"></script>',
+            pagetype="archive",
             pdfjs="../export_pdf.js",
             historyjs="",
             body=f'<script>sessionStorage.setItem("adr_report","archive/{rep["date"]}.html")</script>'
@@ -590,7 +591,8 @@ def build_daily():
         meta=f'数据抓取时间：{esc(latest["fetched_at"])} · 共 {len(latest["items"])} 条',
         mode="AI 深度解读" if latest.get("ai_enabled") else "原始榜单（未配置 API 密钥）",
         nav='<a href="digests/index.html">周期汇总（周/月/季）</a><a href="favorites.html">我的收藏夹</a>',
-        favjs=f"fav.js?v={FAVJS_VER}",
+        favjs=f'<script src="fav-core.js?v={FAVJS_VER}"></script><script src="fav-index.js?v={FAVJS_VER}"></script>',
+        pagetype="index",
         pdfjs="export_pdf.js",
         historyjs=f'<script src="history.js?v={BUILD_TS}"></script>',
         body=index_body)
@@ -649,7 +651,8 @@ def build_digests():
             meta=f'生成时间：{esc(d["generated_at"])}',
             mode="AI 趋势分析" if d.get("ai_enabled") else "统计版汇总",
             nav='<a href="../index.html">日报首页</a><a href="index.html">全部汇总</a><a href="../favorites.html">我的收藏夹</a>',
-            favjs=f"../fav.js?v={FAVJS_VER}",
+            favjs=f'<script src="../fav-core.js?v={FAVJS_VER}"></script>',
+            pagetype="digest",
             pdfjs="../export_pdf.js",
             historyjs="",
             body=render_digest(d))
@@ -669,7 +672,8 @@ def build_digests():
         meta="周报每周一生成 · 月报每月 1 号生成 · 季报每季度首月 1 号生成",
         mode="周 / 月 / 季 / 自定义",
         nav='<a href="../index.html">日报首页</a><a href="../favorites.html">我的收藏夹</a>',
-        favjs=f"../fav.js?v={FAVJS_VER}",
+        favjs=f'<script src="../fav-core.js?v={FAVJS_VER}"></script>',
+        pagetype="digest",
         pdfjs="../export_pdf.js",
         historyjs="",
         body=body or '<div class="card"><p>还没有汇总。周报/月报/季报会按时间自动生成。</p></div>')
@@ -706,7 +710,8 @@ def build_favorites():
         meta="登录后跨设备实时同步 · 邮箱 Magic Link 免密码",
         mode="收藏夹",
         nav='<a href="index.html" id="adr-home-link">日报首页</a><a href="digests/index.html">周期汇总（周/月/季）</a>',
-        favjs=f"fav.js?v={FAVJS_VER}",
+        favjs=f'<script src="fav-core.js?v={FAVJS_VER}"></script><script src="fav-page.js?v={FAVJS_VER}"></script>',
+        pagetype="favorites",
         pdfjs="export_pdf.js",
         historyjs="",
         body=body + '<div><button class="export-pdf-btn" onclick="exportFavoritesPDF()">📄 导出收藏夹为 PDF</button>'
