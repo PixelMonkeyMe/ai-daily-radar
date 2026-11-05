@@ -106,6 +106,12 @@ CSS = """
   .fav-bar a { display: block; background: #fff7e8; border: 1px solid #f5c26b; border-radius: 12px; padding: 12px 16px; color: #8a5a00; text-decoration: none; font-size: 14.5px; }
   .fav-bar a:hover { background: #ffefc9; }
   .fav-chip { display: inline-block; background: #f5a623; color: #fff; border-radius: 99px; padding: 0 10px; font-size: 13px; margin: 0 4px; }
+  /* 回到顶部浮动按钮（back-to-top.js 注入 DOM；z-index 低于登录弹窗 9999） */
+  .back-to-top { display: none; position: fixed; right: 18px; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); width: 44px; height: 44px; border-radius: 50%; border: none; background: rgba(22,119,255,.85); color: #fff; font-size: 20px; line-height: 1; cursor: pointer; z-index: 500; box-shadow: 0 2px 10px rgba(0,0,0,.18); align-items: center; justify-content: center; transition: background .2s; }
+  .back-to-top.visible { display: flex; }
+  .back-to-top:hover { background: rgba(22,119,255,1); }
+  .back-to-top:focus-visible { outline: 2px solid #1677ff; outline-offset: 2px; }
+  @media print { .back-to-top { display: none !important; } }
   .history-day { padding: 8px 0 12px; }
   .history-day .item-line { padding: 4px 0; border-bottom: 1px dashed #e5e8ec; }
   .history-day .item-line:last-child { border-bottom: none; }
@@ -591,7 +597,7 @@ def build_daily():
         meta=f'数据抓取时间：{esc(latest["fetched_at"])} · 共 {len(latest["items"])} 条',
         mode="AI 深度解读" if latest.get("ai_enabled") else "原始榜单（未配置 API 密钥）",
         nav='<a href="digests/index.html">周期汇总（周/月/季）</a><a href="favorites.html">我的收藏夹</a>',
-        favjs=f'<script src="fav-core.js?v={FAVJS_VER}"></script><script src="fav-index.js?v={FAVJS_VER}"></script>',
+        favjs=f'<script src="fav-core.js?v={FAVJS_VER}"></script><script src="fav-index.js?v={FAVJS_VER}"></script><script src="back-to-top.js?v={FAVJS_VER}"></script>',
         pagetype="index",
         pdfjs="export_pdf.js",
         historyjs=f'<script src="history.js?v={BUILD_TS}"></script>',
@@ -710,7 +716,7 @@ def build_favorites():
         meta="登录后跨设备实时同步 · 邮箱 Magic Link 免密码",
         mode="收藏夹",
         nav='<a href="index.html" id="adr-home-link">日报首页</a><a href="digests/index.html">周期汇总（周/月/季）</a>',
-        favjs=f'<script src="fav-core.js?v={FAVJS_VER}"></script><script src="fav-page.js?v={FAVJS_VER}"></script>',
+        favjs=f'<script src="fav-core.js?v={FAVJS_VER}"></script><script src="fav-page.js?v={FAVJS_VER}"></script><script src="back-to-top.js?v={FAVJS_VER}"></script>',
         pagetype="favorites",
         pdfjs="export_pdf.js",
         historyjs="",

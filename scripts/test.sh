@@ -64,7 +64,7 @@ echo "  测试模式：$TEST_MODE"
 echo ""
 echo "▸ JS 语法校验"
 if [ "$TEST_MODE" = "full" ] || [ "$TEST_MODE" = "js" ]; then
-  for f in fav-core.js fav-page.js fav-index.js; do
+  for f in fav-core.js fav-page.js fav-index.js back-to-top.js; do
     if [ -f "$ROOT/docs/$f" ]; then
       if node -e "new Function(require('fs').readFileSync('$ROOT_NODE/docs/$f','utf8'))" 2>/dev/null; then
         pass "docs/$f 语法正确"
