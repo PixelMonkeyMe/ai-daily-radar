@@ -171,6 +171,20 @@ CSS = """
     .back-to-top:active, .back-to-top.is-pressed { transform: none; }
   }
   @media print { .back-to-top { display: none !important; } }
+  /* ===== 我的标注（首页回顾区块，fav-index.js 渲染） ===== */
+  .my-notes { margin: 18px 0; }
+  .my-notes summary { cursor: pointer; font-size: 15px; font-weight: 600; color: #1f2733; padding: 8px 0; }
+  .my-notes-count { display: inline-block; background: #1677ff; color: #fff; border-radius: 99px; padding: 0 9px; font-size: 12px; margin: 0 4px; }
+  .my-notes-list { padding: 4px 0 8px; }
+  .my-notes-item { padding: 10px 12px; border-bottom: 1px solid #eef1f5; }
+  .my-notes-item:last-child { border-bottom: none; }
+  .my-notes-head { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+  .my-notes-head a { color: #1677ff; text-decoration: none; font-weight: 600; }
+  .my-notes-head a:hover { text-decoration: underline; }
+  .my-notes-note { margin-top: 6px; font-size: 14px; color: #333; white-space: pre-wrap; word-break: break-word; line-height: 1.55; }
+  .my-notes-tags { margin-top: 6px; display: flex; gap: 6px; flex-wrap: wrap; }
+  .my-notes-tag { font-size: 12px; color: #57606f; background: #eef1f5; border-radius: 4px; padding: 2px 8px; }
+  @media print { .my-notes { display: none !important; } }
   .history-day { padding: 8px 0 12px; }
   .history-day .item-line { padding: 4px 0; border-bottom: 1px dashed #e5e8ec; }
   .history-day .item-line:last-child { border-bottom: none; }

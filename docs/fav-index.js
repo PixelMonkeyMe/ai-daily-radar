@@ -155,5 +155,70 @@
       .split('\n').join('<br>');
   }
 
+  /* ── 我的标注区块：首页展示已收藏且有备注/标签的条目（回顾端，补全 3.3d 写入口） ── */
+  function esc(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  }
+
+  function buildNotesBlock(items) {
+    var det = document.createElement("details");
+    det.className = "my-notes";
+    var sum = document.createElement("summary");
+    sum.innerHTML = '⭐ 我的标注 <span class="my-notes-count">' + items.length +
+                    '</span> · 点击展开';
+    det.appendChild(sum);
+    var list = document.createElement("div");
+    list.className = "my-notes-list";
+    items.forEach(function (f) {
+      var item = document.createElement("div");
+      item.className = "my-notes-item";
+      var tags = (f.context_tags || "").split(",").map(function (t) { return t.trim(); })
+                 .filter(Boolean);
+      item.innerHTML =
+        '<div class="my-notes-head"><span class="tag-src">' + esc(f.s || "") + '</span>' +
+        '<a href="' + esc(f.u || "") + '" target="_blank" rel="noopener">' + esc(f.t || "") + '</a></div>' +
+        (f.context_note ? '<div class="my-notes-note">' + esc(f.context_note) + '</div>' : "") +
+        (tags.length ? '<div class="my-notes-tags">' + tags.map(function (t) {
+          return '<span class="my-notes-tag">' + esc(t) + '</span>';
+        }).join("") + '</div>' : "");
+      list.appendChild(item);
+    });
+    det.appendChild(list);
+    return det;
+  }
+
+  function renderMyNotes() {
+    if (!ADR.isLoggedIn()) { removeNotesBlock(); return; }
+    var items = ADR.load().filter(function (f) {
+      return (f.context_note || "").trim() || (f.context_tags || "").trim();
+    }).sort(function (a, b) { return (b.d || "").localeCompare(a.d || ""); });
+    if (!items.length) { removeNotesBlock(); return; }
+
+    var existing = document.querySelector(".my-notes");
+    var fresh = buildNotesBlock(items);
+    if (existing) {
+      existing.parentNode.replaceChild(fresh, existing);
+      return;
+    }
+    var anchor = document.querySelector(".archive");
+    if (anchor) { anchor.parentNode.insertBefore(fresh, anchor); return; }
+    var footer = document.querySelector("footer");
+    if (footer) { footer.parentNode.insertBefore(fresh, footer); }
+  }
+
+  function removeNotesBlock() {
+    var el = document.querySelector(".my-notes");
+    if (el) el.remove();
+  }
+
+  document.addEventListener("favs:changed", renderMyNotes);
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", renderMyNotes);
+  } else {
+    renderMyNotes();
+  }
+
 })();
 
