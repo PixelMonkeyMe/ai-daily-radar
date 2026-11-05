@@ -181,7 +181,7 @@ CSS = """
   .my-notes-head { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
   .my-notes-head a { color: #1677ff; text-decoration: none; font-weight: 600; }
   .my-notes-head a:hover { text-decoration: underline; }
-  .my-notes-note { margin-top: 6px; font-size: 14px; color: #333; white-space: pre-wrap; word-break: break-word; line-height: 1.55; }
+  .my-notes-note { margin-top: 6px; font-size: 14px; color: #333; white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.55; }
   .my-notes-tags { margin-top: 6px; display: flex; gap: 6px; flex-wrap: wrap; }
   .my-notes-tag { font-size: 12px; color: #57606f; background: #eef1f5; border-radius: 4px; padding: 2px 8px; }
   @media print { .my-notes { display: none !important; } }

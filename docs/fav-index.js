@@ -162,50 +162,25 @@
       .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
   }
 
-  function buildNotesBlock(items) {
-    var det = document.createElement("details");
-    det.className = "my-notes";
-    var sum = document.createElement("summary");
-    sum.innerHTML = '⭐ 我的标注 <span class="my-notes-count">' + items.length +
-                    '</span> · 点击展开';
-    det.appendChild(sum);
-    var list = document.createElement("div");
-    list.className = "my-notes-list";
-    items.forEach(function (f) {
-      var item = document.createElement("div");
-      item.className = "my-notes-item";
-      var tags = (f.context_tags || "").split(",").map(function (t) { return t.trim(); })
-                 .filter(Boolean);
-      item.innerHTML =
-        '<div class="my-notes-head"><span class="tag-src">' + esc(f.s || "") + '</span>' +
-        '<a href="' + esc(f.u || "") + '" target="_blank" rel="noopener">' + esc(f.t || "") + '</a></div>' +
-        (f.context_note ? '<div class="my-notes-note">' + esc(f.context_note) + '</div>' : "") +
-        (tags.length ? '<div class="my-notes-tags">' + tags.map(function (t) {
-          return '<span class="my-notes-tag">' + esc(t) + '</span>';
-        }).join("") + '</div>' : "");
-      list.appendChild(item);
-    });
-    det.appendChild(list);
-    return det;
+  /* 字段规范化（评审[阻塞]1）：旧收藏可能缺 context 字段或值为非字符串 */
+  function normStr(v) { return typeof v === "string" ? v.trim() : ""; }
+  function parseTags(v) {
+    if (Array.isArray(v)) return v.map(function (t) { return normStr(t); }).filter(Boolean);
+    return normStr(v).split(",").map(function (t) { return t.trim(); }).filter(Boolean);
+  }
+  function hasContext(f) {
+    return normStr(f.context_note).length > 0 || parseTags(f.context_tags).length > 0;
+  }
+  function safeHref(u) {
+    var s = normStr(u);
+    return /^https?:\/\//i.test(s) ? s : ""; /* 仅允许 http/https（评审建议4） */
   }
 
-  function renderMyNotes() {
-    if (!ADR.isLoggedIn()) { removeNotesBlock(); return; }
-    var items = ADR.load().filter(function (f) {
-      return (f.context_note || "").trim() || (f.context_tags || "").trim();
-    }).sort(function (a, b) { return (b.d || "").localeCompare(a.d || ""); });
-    if (!items.length) { removeNotesBlock(); return; }
-
-    var existing = document.querySelector(".my-notes");
-    var fresh = buildNotesBlock(items);
-    if (existing) {
-      existing.parentNode.replaceChild(fresh, existing);
-      return;
-    }
-    var anchor = document.querySelector(".archive");
-    if (anchor) { anchor.parentNode.insertBefore(fresh, anchor); return; }
-    var footer = document.querySelector("footer");
-    if (footer) { footer.parentNode.insertBefore(fresh, footer); }
+  var notesScheduled = false;
+  function scheduleNotes() {
+    if (notesScheduled) return; /* 同帧合并高频 favs:changed（评审建议3） */
+    notesScheduled = true;
+    window.requestAnimationFrame(function () { notesScheduled = false; renderMyNotes(); });
   }
 
   function removeNotesBlock() {
@@ -213,12 +188,107 @@
     if (el) el.remove();
   }
 
-  document.addEventListener("favs:changed", renderMyNotes);
+  function renderMyNotes() {
+    var existing = document.querySelector(".my-notes");
+    var wasOpen = existing ? existing.open : false; /* 保留展开状态（评审建议3） */
+    if (!ADR.isLoggedIn() || !document.body ||
+        (document.body.getAttribute("data-page") !== "index")) {
+      removeNotesBlock(); return;
+    }
+    var items = ADR.load().filter(hasContext).sort(function (a, b) {
+      return normStr(b.d).localeCompare(normStr(a.d));
+    });
+    if (!items.length) { removeNotesBlock(); return; }
+
+    var list = document.createElement("div");
+    list.className = "my-notes-list";
+    items.forEach(function (f) {
+      var item = document.createElement("div");
+      item.className = "my-notes-item";
+
+      var head = document.createElement("div");
+      head.className = "my-notes-head";
+      var src = document.createElement("span");
+      src.className = "tag-src";
+      src.textContent = normStr(f.s); /* 用户文本一律 textContent（评审建议4） */
+      head.appendChild(src);
+      var href = safeHref(f.u);
+      if (href) {
+        var a = document.createElement("a");
+        a.href = href;
+        a.target = "_blank";
+        a.rel = "noopener";
+        a.textContent = normStr(f.t);
+        head.appendChild(a);
+      } else {
+        var titleSpan = document.createElement("span");
+        titleSpan.className = "my-notes-title";
+        titleSpan.textContent = normStr(f.t);
+        head.appendChild(titleSpan);
+      }
+      item.appendChild(head);
+
+      var note = normStr(f.context_note);
+      if (note) {
+        var nd = document.createElement("div");
+        nd.className = "my-notes-note";
+        nd.textContent = note;
+        item.appendChild(nd);
+      }
+
+      var tags = parseTags(f.context_tags);
+      if (tags.length) {
+        var tw = document.createElement("div");
+        tw.className = "my-notes-tags";
+        tags.forEach(function (t) { /* 逐个创建并 textContent，不做整体模板 */
+          var chip = document.createElement("span");
+          chip.className = "my-notes-tag";
+          chip.textContent = t;
+          tw.appendChild(chip);
+        });
+        item.appendChild(tw);
+      }
+      list.appendChild(item);
+    });
+
+    if (existing) {
+      existing.innerHTML = "";
+      existing.appendChild(list); /* 只更新列表内容，保留 details.open/焦点 */
+      existing.open = wasOpen;
+      return;
+    }
+
+    var det = document.createElement("details");
+    det.className = "my-notes";
+    var sum = document.createElement("summary");
+    var label = document.createElement("span");
+    label.textContent = "⭐ 我的标注 ";
+    var cnt = document.createElement("span");
+    cnt.className = "my-notes-count";
+    cnt.textContent = items.length;
+    var tail = document.createElement("span");
+    tail.textContent = " · 点击展开";
+    sum.appendChild(label);
+    sum.appendChild(cnt);
+    sum.appendChild(tail);
+    det.appendChild(sum);
+    det.appendChild(list);
+
+    var anchor = document.querySelector(".archive");
+    if (anchor && anchor.parentNode) {
+      anchor.parentNode.insertBefore(det, anchor);
+      return;
+    }
+    var footer = document.querySelector("footer");
+    if (footer && footer.parentNode) footer.parentNode.insertBefore(det, footer);
+    /* 都找不到则不渲染（防御，评审确认合理） */
+  }
+
+  document.addEventListener("favs:changed", scheduleNotes);
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", renderMyNotes);
+    document.addEventListener("DOMContentLoaded", scheduleNotes);
   } else {
-    renderMyNotes();
+    scheduleNotes();
   }
 
 })();
-
