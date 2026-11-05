@@ -176,11 +176,10 @@
     return /^https?:\/\//i.test(s) ? s : ""; /* 仅允许 http/https（评审建议4） */
   }
 
-  var notesScheduled = false;
   function scheduleNotes() {
-    if (notesScheduled) return; /* 同帧合并高频 favs:changed（评审建议3） */
-    notesScheduled = true;
-    window.requestAnimationFrame(function () { notesScheduled = false; renderMyNotes(); });
+    /* favs:changed 为低频事件（收藏/登出/云加载），直接同步渲染；
+       不用 rAF——后台/无焦点标签页 rAF 会被节流导致渲染丢失 */
+    renderMyNotes();
   }
 
   function removeNotesBlock() {
@@ -203,63 +202,9 @@
     var list = document.createElement("div");
     list.className = "my-notes-list";
     items.forEach(function (f) {
-      var item = document.createElement("div");
-      item.className = "my-notes-item";
-
-      var head = document.createElement("div");
-      head.className = "my-notes-head";
-      var src = document.createElement("span");
-      src.className = "tag-src";
-      src.textContent = normStr(f.s); /* 用户文本一律 textContent（评审建议4） */
-      head.appendChild(src);
-      var href = safeHref(f.u);
-      if (href) {
-        var a = document.createElement("a");
-        a.href = href;
-        a.target = "_blank";
-        a.rel = "noopener";
-        a.textContent = normStr(f.t);
-        head.appendChild(a);
-      } else {
-        var titleSpan = document.createElement("span");
-        titleSpan.className = "my-notes-title";
-        titleSpan.textContent = normStr(f.t);
-        head.appendChild(titleSpan);
-      }
-      item.appendChild(head);
-
-      var note = normStr(f.context_note);
-      if (note) {
-        var nd = document.createElement("div");
-        nd.className = "my-notes-note";
-        nd.textContent = note;
-        item.appendChild(nd);
-      }
-
-      var tags = parseTags(f.context_tags);
-      if (tags.length) {
-        var tw = document.createElement("div");
-        tw.className = "my-notes-tags";
-        tags.forEach(function (t) { /* 逐个创建并 textContent，不做整体模板 */
-          var chip = document.createElement("span");
-          chip.className = "my-notes-tag";
-          chip.textContent = t;
-          tw.appendChild(chip);
-        });
-        item.appendChild(tw);
-      }
-      list.appendChild(item);
+      list.appendChild(ADR.buildFavCard(f)); /* 与收藏页同源同构（需求 1） */
     });
 
-    if (existing) {
-      existing.innerHTML = "";
-      existing.appendChild(list); /* 只更新列表内容，保留 details.open/焦点 */
-      existing.open = wasOpen;
-      return;
-    }
-
-    var det = document.createElement("details");
-    det.className = "my-notes";
     var sum = document.createElement("summary");
     var label = document.createElement("span");
     label.textContent = "⭐ 我的标注 ";
@@ -271,6 +216,23 @@
     sum.appendChild(label);
     sum.appendChild(cnt);
     sum.appendChild(tail);
+
+    if (existing) {
+      /* 只替换列表，保留 summary 与折叠状态（innerHTML 清空会连带删掉 summary） */
+      var oldList = existing.querySelector(".my-notes-list");
+      if (oldList) {
+        existing.replaceChild(list, oldList);
+      } else {
+        existing.textContent = "";
+        existing.appendChild(sum);
+        existing.appendChild(list);
+      }
+      existing.open = wasOpen;
+      return;
+    }
+
+    var det = document.createElement("details");
+    det.className = "my-notes";
     det.appendChild(sum);
     det.appendChild(list);
 
@@ -280,8 +242,8 @@
       return;
     }
     var footer = document.querySelector("footer");
-    if (footer && footer.parentNode) footer.parentNode.insertBefore(det, footer);
-    /* 都找不到则不渲染（防御，评审确认合理） */
+    if (footer && footer.parentNode) { footer.parentNode.insertBefore(det, footer); return; }
+    console.warn("[fav-index] 我的标注：未找到插入锚点（.archive/footer），区块跳过");
   }
 
   document.addEventListener("favs:changed", scheduleNotes);

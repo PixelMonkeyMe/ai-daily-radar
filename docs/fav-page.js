@@ -5,6 +5,11 @@
   if (document.body.getAttribute("data-page") !== "favorites") return;
   if (!document.getElementById("fav-list")) { console.error("[fav-page] 必需锚点 #fav-list 缺失"); return; }
 
+  /* summary:// 条目点击（由 core 的 buildFavCard 派发）→ 总结弹窗（渲染前注册，评审建议） */
+  document.addEventListener("summary:open", function (ev) {
+    showSummaryModal(ev.detail && ev.detail.id, ev.detail && ev.detail.title);
+  });
+
   /* 从 core 初始化区移入：搜索框 readonly 解除 + input 触发重渲染 */
   document.addEventListener("DOMContentLoaded", function () {
     var q = document.getElementById("fav-q");
@@ -135,109 +140,7 @@
       return;
     }
     items.forEach(function (f) {
-      var card = document.createElement("div");
-      card.className = "card";
-      var h = document.createElement("h2");
-      var a = document.createElement("a");
-      /* summary:// 链接 → 点击弹窗展示完整内容，而非跳转空白页 */
-      if (/^summary:\/\//.test(f.u)) {
-        a.href = "javascript:void(0)";
-        a.style.cursor = "pointer";
-        a.onclick = function () { showSummaryModal(f.u.replace("summary://", ""), f.t); };
-      } else {
-        a.href = f.u; a.target = "_blank"; a.rel = "noopener";
-      }
-      a.textContent = f.t;
-      h.appendChild(a);
-      var btn = document.createElement("button");
-      btn.className = "fav-btn on"; btn.textContent = "★"; btn.title = "取消收藏";
-      btn.setAttribute("data-t", f.t || ""); btn.setAttribute("data-u", f.u || "");
-      btn.setAttribute("data-s", f.s || ""); btn.setAttribute("data-d", f.d || "");
-      btn.setAttribute("data-b", f.b || "");
-      h.appendChild(btn);
-      card.appendChild(h);
-      var meta = document.createElement("div");
-      meta.className = "tags";
-      /* 分类标签 */
-      var catInfo = ADR.getCategoryInfo(f.c || "行业趋势");
-      var catTag = document.createElement("span");
-      catTag.style.cssText = "background:#f0f7ff;color:#1677ff;border-radius:6px;padding:1px 8px;margin-right:8px;font-size:12px";
-      catTag.textContent = catInfo.icon + " " + catInfo.name;
-      meta.appendChild(catTag);
-      /* 成熟度标签 */
-      var mat = f.m || "";
-      if (mat) {
-        var matTag = document.createElement("span");
-        var matColor = mat === "S" ? "#52c41a" : mat === "A" ? "#1677ff" : "#8a919c";
-        var matText = mat === "S" ? "已落地" : mat === "A" ? "有POC" : "仅demo";
-        matTag.style.cssText = "background:" + matColor + "22;color:" + matColor + ";border-radius:6px;padding:1px 8px;margin-right:8px;font-size:12px;font-weight:600";
-        matTag.textContent = matText;
-        meta.appendChild(matTag);
-      }
-      /* 上下文标签 */
-      if (f.context_tags) {
-        var tags = f.context_tags.split(',').filter(function(t) { return t.trim(); });
-        tags.forEach(function(tag) {
-          var tagEl = document.createElement('span');
-          tagEl.style.cssText = "background:#f0f0f0;color:#666;border-radius:4px;padding:2px 8px;margin-right:6px;font-size:12px";
-          tagEl.textContent = '#' + tag.trim();
-          meta.appendChild(tagEl);
-        });
-      }
-      var src = document.createElement("span");
-      src.className = "tag-src"; src.textContent = f.s || "";
-      meta.appendChild(src);
-      meta.appendChild(document.createTextNode(" " + (f.d || "")));
-      card.appendChild(meta);
-      if (f.b) {
-        var br = document.createElement("p");
-        br.className = "brief"; br.textContent = f.b;
-        card.appendChild(br);
-      }
-      /* Phase 3.3c: 显示完整 AI 分析（非 summary:// 类型） */
-      if (f.what || f.industry_use || f.capability || f.assessment || f.risk) {
-        var analysisDiv = document.createElement("div");
-        analysisDiv.style.cssText = "background:#f8f9fa;border-left:3px solid #1677ff;padding:12px;margin-top:10px;font-size:13px;color:#333;border-radius:4px;line-height:1.6";
-        var analysisHtml = "";
-        if (f.importance && f.importance > 0) {
-          var stars = "⭐".repeat(f.importance);
-          analysisHtml += '<div style="margin-bottom:8px"><strong style="color:#1677ff">重要度：</strong>' + stars + ' <span style="color:#8a919c;font-size:12px">(' + f.importance + '/5)</span></div>';
-        }
-        if (f.what) {
-          analysisHtml += '<div style="margin-bottom:6px"><strong style="color:#203a43">💡 这是什么：</strong>' + f.what.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</div>';
-        }
-        if (f.industry_use) {
-          analysisHtml += '<div style="margin-bottom:6px"><strong style="color:#203a43">🏭 对行业有什么用：</strong>' + f.industry_use.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</div>';
-        }
-        if (f.capability) {
-          analysisHtml += '<div style="margin-bottom:6px"><strong style="color:#203a43">🔧 能干什么：</strong>' + f.capability.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</div>';
-        }
-        if (f.assessment) {
-          analysisHtml += '<div style="margin-bottom:6px"><strong style="color:#203a43">📊 评估判断：</strong>' + f.assessment.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</div>';
-        }
-        if (f.risk) {
-          analysisHtml += '<div style="margin-bottom:6px"><strong style="color:#e63946">⚠️ 风险提示：</strong>' + f.risk.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</div>';
-        }
-        analysisDiv.innerHTML = analysisHtml;
-        card.appendChild(analysisDiv);
-      }
-      /* 收藏备注 */
-      if (f.context_note) {
-        var noteEl = document.createElement("div");
-        noteEl.className = "context-note-display";
-        noteEl.style.cssText = "background:#fffbe6;border-left:3px solid #faad14;padding:8px 12px;margin-top:8px;font-size:13px;color:#555;border-radius:4px;line-height:1.5";
-        noteEl.innerHTML = '<strong style="color:#8a7d00"> 我的备注：</strong>' + f.context_note.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-        card.appendChild(noteEl);
-      }
-      /* 编辑上下文按钮 - 根据是否有备注显示不同状态 */
-      var editBtn = document.createElement("button");
-      editBtn.className = "context-edit-btn";
-      var hasNote = f.context_note || f.context_tags;
-      editBtn.textContent = hasNote ? "️ 编辑上下文（已填写）" : "✏️ 添加上下文";
-      editBtn.style.cssText = "background:" + (hasNote ? "#f0f7ff" : "#fff") + ";border:1px solid " + (hasNote ? "#1677ff" : "#d9d9d9") + ";border-radius:4px;padding:4px 12px;font-size:12px;color:" + (hasNote ? "#1677ff" : "#666") + ";cursor:pointer;margin-top:8px";
-      editBtn.onclick = function() { showContextEditDialog(f); };
-      card.appendChild(editBtn);
-      list.appendChild(card);
+      list.appendChild(ADR.buildFavCard(f));
     });
   }
 
