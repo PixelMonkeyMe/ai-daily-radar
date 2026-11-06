@@ -131,20 +131,15 @@
     .back-to-top:active, .back-to-top.is-pressed { transform: none; }
   }
   @media print { .back-to-top { display: none !important; } }
-  /* ===== 我的标注（首页回顾区块，fav-index.js 渲染） ===== */
-  .my-notes { margin: 18px 0; }
-  .my-notes summary { cursor: pointer; font-size: 15px; font-weight: 600; color: #1f2733; padding: 8px 0; }
-  .my-notes-count { display: inline-block; background: #1677ff; color: #fff; border-radius: 99px; padding: 0 9px; font-size: 12px; margin: 0 4px; }
-  .my-notes-list { padding: 4px 0 8px; }
-  .my-notes-item { padding: 10px 12px; border-bottom: 1px solid #eef1f5; }
-  .my-notes-item:last-child { border-bottom: none; }
-  .my-notes-head { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
-  .my-notes-head a { color: #1677ff; text-decoration: none; font-weight: 600; }
-  .my-notes-head a:hover { text-decoration: underline; }
-  .my-notes-note { margin-top: 6px; font-size: 14px; color: #333; white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.55; }
-  .my-notes-tags { margin-top: 6px; display: flex; gap: 6px; flex-wrap: wrap; }
-  .my-notes-tag { font-size: 12px; color: #57606f; background: #eef1f5; border-radius: 4px; padding: 2px 8px; }
-  @media print { .my-notes { display: none !important; } }
+  /* ===== 备注原地展示（已收藏且有备注的条目，卡片下方直接显示） ===== */
+  .inline-note { margin-top: 10px; background: #fffbe6; border-left: 3px solid #faad14; border-radius: 6px; padding: 10px 12px; font-size: 13px; color: #555; line-height: 1.55; }
+  .inline-note-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 6px; }
+  .inline-note-tags span { font-size: 11px; color: #8a7d00; background: #fff1b8; border-radius: 10px; padding: 1px 9px; }
+  .inline-note-body { overflow-wrap: anywhere; }
+  .inline-note-body b { color: #8a7d00; margin-right: 4px; }
+  .inline-note-edit { margin-top: 8px; border: 1px solid #faad14; background: #fff; color: #8a7d00; border-radius: 6px; padding: 3px 12px; font-size: 12px; cursor: pointer; }
+  .inline-note-edit:hover { background: #fff7d6; }
+  @media print { .inline-note-edit { display: none !important; } }
   /* ===== 日期导航（PRD v2.2：置顶、两行胶囊、默认最新一期） ===== */
   .issue-nav { margin: 18px 0 14px; }
   .date-bar { display: flex; align-items: stretch; gap: 10px; background: #f8fbff; border: 1px solid #dbe9ff; border-radius: 12px; padding: 12px; }
@@ -361,7 +356,7 @@
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="../fav-core.js?v=3.3d-6"></script>
+<script src="../fav-core.js?v=3.3d-7"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="../export_pdf.js"></script>

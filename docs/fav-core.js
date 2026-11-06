@@ -2,7 +2,7 @@
    依赖: 无。消费方: 全部页面。API 见底部 window.ADR；可变状态（sb/cache/currentUser 等）为模块私有。 */
 (function () {
   /* ── 版本号（唯一来源：升级 fav.js 时只改这里，build_site.py 构建时自动读取注入缓存破坏参数） ── */
-  var APP_VERSION = "3.3d-6";
+  var APP_VERSION = "3.3d-7";
 
   /* ── Supabase 配置 ── */
   var SUPABASE_URL = "https://bvhzexdluniqdwmsxaxw.supabase.co";
@@ -889,13 +889,81 @@
       cache = localLoad();
       refreshAll();
     }
+    injectInlineNotes();
   });
 
   document.addEventListener("hist:loaded", refreshButtons);
+  /* 备注原地展示：收藏变更 / 期次切换后刷新 */
+  document.addEventListener("favs:changed", injectInlineNotes);
+  document.addEventListener("hist:loaded", function () { setTimeout(injectInlineNotes, 0); });
 
   console.log("fav.js v" + APP_VERSION + " loaded");
   }
 
+
+  /* ── 备注原地展示：已收藏且有备注/标签的条目，在条目卡片下方直接显示 ──
+     覆盖两处：当日卡片（h2 为容器）与历史期次片段（.item-line）。
+     收藏页的 buildFavCard 已自带备注展示，此处跳过（存在 .context-note-display 即视为已有） */
+  function removeInlineNote(host) {
+    var old = host.querySelector(".inline-note");
+    if (old) old.parentNode.removeChild(old);
+  }
+
+  function buildInlineNote(fav) {
+    var box = document.createElement("div");
+    box.className = "inline-note";
+
+    var tags = String(fav.context_tags || "").split(",").map(function (t) { return t.trim(); }).filter(Boolean);
+    if (tags.length) {
+      var tw = document.createElement("div");
+      tw.className = "inline-note-tags";
+      tags.forEach(function (t) {
+        var c = document.createElement("span");
+        c.textContent = "#" + t;
+        tw.appendChild(c);
+      });
+      box.appendChild(tw);
+    }
+
+    if (fav.context_note) {
+      var nb = document.createElement("div");
+      nb.className = "inline-note-body";
+      var lab = document.createElement("b");
+      lab.textContent = "我的备注：";
+      nb.appendChild(lab);
+      nb.appendChild(document.createTextNode(String(fav.context_note)));
+      box.appendChild(nb);
+    }
+
+    var edit = document.createElement("button");
+    edit.type = "button";
+    edit.className = "inline-note-edit";
+    edit.textContent = "编辑";
+    edit.addEventListener("click", function () { showContextEditDialog(fav); });
+    box.appendChild(edit);
+
+    return box;
+  }
+
+  function injectInlineNotes() {
+    if (!isLoggedIn()) {
+      Array.prototype.forEach.call(document.querySelectorAll(".inline-note"), function (n) { n.parentNode.removeChild(n); });
+      return;
+    }
+    var byUrl = {};
+    cache.forEach(function (f) { if (f && f.u) byUrl[f.u] = f; });
+
+    Array.prototype.forEach.call(document.querySelectorAll(".fav-btn[data-u]"), function (btn) {
+      var host = btn.closest(".item-line") || (btn.closest("h2") ? btn.closest("h2").parentElement : null);
+      if (!host) return;
+      if (host.querySelector(".context-note-display")) return;  /* 收藏页卡片已自带 */
+      var fav = byUrl[btn.getAttribute("data-u")];
+      var has = fav && ((typeof fav.context_note === "string" && fav.context_note.trim()) ||
+                        String(fav.context_tags || "").split(",").some(function (t) { return t.trim(); }));
+      removeInlineNote(host);
+      if (has) host.appendChild(buildInlineNote(fav));
+    });
+  }
 
   /* ── UMD: Node require 仅取纯逻辑（零副作用）；浏览器挂 ADR 命名空间并执行 init ── */
   if (typeof module !== "undefined" && module.exports) {

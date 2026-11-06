@@ -25,6 +25,7 @@
 
   /* ── 筛选/排序 ── */
   var sortDesc = true;
+  var filterHasNote = false;
   var filterDate = "";
   var filterFrom = "";
   var filterTo = "";
@@ -121,6 +122,11 @@
       if (filterFrom && d < filterFrom) return false;
       if (filterTo && d > filterTo) return false;
       if (filterCategory && f.c !== filterCategory) return false;
+      if (filterHasNote) {
+        var n = typeof f.context_note === "string" ? f.context_note.trim() : "";
+        var tg = String(f.context_tags || "").split(",").some(function (x) { return x.trim(); });
+        if (!n && !tg) return false;
+      }
       return true;
     });
     items.sort(function (a, b) {
@@ -165,8 +171,22 @@
     /* 行业趋势（不在 ADR.CATEGORIES 数组里的默认分类） */
     var trendActive = filterCategory === "行业趋势";
     html += '<button class="fav-cat-tab" onclick="adrFilterCategory(\'行业趋势\')" style="padding:4px 12px;border:1px solid #d9dde3;border-radius:16px;font-size:13px;cursor:pointer;margin:2px;background:' + (trendActive ? "#1677ff" : "#fff") + ';color:' + (trendActive ? "#fff" : "#333") + '">📊 行业趋势(' + (counts["行业趋势"] || 0) + ')</button>';
+    /* 「有备注」筛选（需求 1 修订：撤聚合区后的信息可达性补偿） */
+    var noteCount = favs.filter(function (f) {
+      var n = typeof f.context_note === "string" ? f.context_note.trim() : "";
+      var tg = String(f.context_tags || "").split(",").some(function (x) { return x.trim(); });
+      return n || tg;
+    }).length;
+    html += '<button class="fav-cat-tab" onclick="adrFilterHasNote()" style="padding:4px 12px;border:1px solid ' +
+      (filterHasNote ? "#faad14" : "#d9dde3") + ';border-radius:16px;font-size:13px;cursor:pointer;margin:2px;background:' +
+      (filterHasNote ? "#faad14" : "#fff") + ';color:' + (filterHasNote ? "#fff" : "#333") + '">📝 有备注(' + noteCount + ')</button>';
     container.innerHTML = html;
   }
+
+  window.adrFilterHasNote = function () {
+    filterHasNote = !filterHasNote;
+    renderFavPage();
+  };
 
   window.adrExport = function () {
     var data = JSON.stringify(ADR.load(), null, 2);
