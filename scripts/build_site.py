@@ -185,6 +185,47 @@ CSS = """
   .my-notes-tags { margin-top: 6px; display: flex; gap: 6px; flex-wrap: wrap; }
   .my-notes-tag { font-size: 12px; color: #57606f; background: #eef1f5; border-radius: 4px; padding: 2px 8px; }
   @media print { .my-notes { display: none !important; } }
+  /* ===== 日期导航（PRD v2.2：置顶、两行胶囊、默认最新一期） ===== */
+  .issue-nav { margin: 18px 0 14px; }
+  .date-bar { display: flex; align-items: stretch; gap: 10px; background: #f8fbff; border: 1px solid #dbe9ff; border-radius: 12px; padding: 12px; }
+  .date-prev, .date-next { width: 46px; min-height: 48px; flex: 0 0 auto; border: 1px solid #1677ff; background: #fff; color: #1677ff; border-radius: 10px; font-size: 20px; line-height: 1; cursor: pointer; }
+  .date-prev:disabled, .date-next:disabled { border-color: #e5e8ec; color: #c9ced6; cursor: not-allowed; background: #fafbfc; }
+  .date-display { position: relative; flex: 1 1 auto; min-height: 48px; border: 1.5px solid #1677ff; background: #fff; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer; padding: 4px 8px; }
+  .date-main { font-size: 15px; font-weight: 600; color: #1677ff; line-height: 1.2; }
+  .date-sub { font-size: 11px; color: #8a919c; line-height: 1.2; }
+  .date-select { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; border: none; }
+  /* 历史态：中性配色，「今天/最新」徽标变出口按钮 */
+  .date-bar.is-history { background: #fafbfc; border-color: #e5e8ec; }
+  .date-bar.is-history .date-display { border-color: #d9d9d9; }
+  .date-bar.is-history .date-main { color: #1f2733; }
+  .date-back-today { background: #52c41a !important; color: #fff !important; border-color: #52c41a !important; }
+  .issue-live { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .issue-nav { position: relative; }
+
+  /* ===== 期次内容区状态 ===== */
+  .issue-status { padding: 28px 16px; text-align: center; color: #8a919c; font-size: 14px; }
+  .issue-status button { margin-top: 10px; border: 1px solid #1677ff; background: #fff; color: #1677ff; border-radius: 6px; padding: 6px 16px; font-size: 13px; cursor: pointer; }
+  .issue-status .issue-jump { display: inline-flex; gap: 8px; margin-top: 12px; }
+  .issue-status .issue-jump button { border-color: #d9d9d9; color: #57606f; }
+  .issue-loading { opacity: .5; transition: opacity .15s; }
+
+  /* ===== 底部翻页条（读完一期手指在底部，直接翻相邻期） ===== */
+  .issue-pager { display: flex; align-items: stretch; gap: 10px; margin: 18px 0 10px; }
+  .issue-pager button { flex: 1 1 0; min-height: 48px; border: 1px solid #e5e8ec; background: #fff; border-radius: 10px; padding: 8px 12px; font-size: 13px; color: #1f2733; cursor: pointer; text-align: left; line-height: 1.35; }
+  .issue-pager button:hover { border-color: #1677ff; }
+  .issue-pager button .pg-dir { display: block; font-size: 11px; color: #8a919c; margin-bottom: 2px; }
+  .issue-pager button.pg-next { text-align: right; }
+  .issue-pager button:disabled { color: #c9ced6; border-color: #eef1f5; cursor: not-allowed; }
+  .issue-footer { text-align: center; font-size: 12px; color: #8a919c; margin: 6px 0 18px; }
+  .issue-footer a { color: #1677ff; text-decoration: none; }
+  @media (max-width: 520px) {
+    .date-bar { padding: 10px; gap: 8px; }
+    .date-prev, .date-next { width: 44px; }
+    .date-main { font-size: 15px; }
+    .issue-pager { flex-direction: column; }
+    .issue-pager button.pg-next { text-align: left; }
+  }
+  @media print { .issue-nav, .issue-pager, .issue-footer { display: none !important; } }
   .history-day { padding: 8px 0 12px; }
   .history-day .item-line { padding: 4px 0; border-bottom: 1px dashed #e5e8ec; }
   .history-day .item-line:last-child { border-bottom: none; }
@@ -601,40 +642,25 @@ def build_daily():
     # 生成 index.html：当日完整展示（含故事分组 + Top 5 补全） + 历史折叠
     latest_cards = render_items_for_index()
 
-    # 历史懒加载：每天生成 HTML 片段（与页面 DOM 同源同函数 item_line），
-    # index.html 只留空壳，前端 history.js 展开时 fetch 注入（见 docs/history.js）
+    # ── 期次片段：所有期次（含最新）统一生成，供日期导航按需 fetch ──
+    # 技术评审 T1：latest 也必须有片段，否则"最新→历史→最新"往返无文件可 fetch
     history_dir = os.path.join(DOCS, "history")
     os.makedirs(history_dir, exist_ok=True)
-    history_parts = []
-    for rep in reports[1:]:
+    issue_index = []
+    for rep in reports:
         d = rep["date"]
         frag = "\n".join(
             item_line(i, rep.get("ai_enabled"), d, i.get("_similar_dates", []))
             for i in rep["items"]
         )
-        # 构建原子性：片段先写，index.html 最后写——失败时不会出现壳引用悬空片段
+        # 构建原子性：片段先写，index.html 最后写——失败时不会出现引用悬空片段
         with open(os.path.join(history_dir, f"{d}.html"), "w", encoding="utf-8") as fo:
             fo.write(frag)
-        history_parts.append(
-            f'<details class="hist-day" data-date="{esc(d)}">'
-            f'<summary><span class="history-date">{esc(d)}</span> '
-            f'（共 {len(rep["items"])} 条）· 点击展开</summary>'
-            f'<div class="history-day" data-loaded="0">'
-            f'<p class="hist-status" role="status">此日期内容需启用 JavaScript 加载，'
-            f'或 <a href="archive/{esc(d)}.html">查看完整日报 →</a></p></div>'
-            f'<div style="margin-top:8px;font-size:13px;">'
-            f'<a href="archive/{esc(d)}.html">查看完整日报 →</a></div>'
-            f'</details>'
-        )
+        issue_index.append({"date": d, "count": len(rep["items"])})
 
-    if history_parts:
-        history_section = (
-            '<h3 class="group">历史日报</h3>'
-            + "".join(history_parts)
-        )
-        archive_div = f'<div class="archive">{history_section}</div>'
-    else:
-        archive_div = ""
+    # 期次索引内联（技术评审裁剪：不做独立索引文件，避免额外请求与版本错配）
+    issue_index_json = json.dumps(issue_index, ensure_ascii=False, separators=(",", ":"))
+    archive_div = ""
 
     # 时段分析器 HTML
     range_analyzer = '''<div class="range-analyzer">
@@ -654,15 +680,50 @@ def build_daily():
   <div id="range-result"></div>
 </div>'''
 
+    # ── 日期导航区（PRD v2.2 §4.1）：置顶、默认最新一期、两行胶囊 ──
+    issue_nav = (
+        '<div class="issue-nav" id="issue-nav">'
+        '<h3 class="group">📅 日报期次</h3>'
+        '<div class="date-bar">'
+        '<button class="date-prev" id="date-prev" type="button" aria-label="上一期">‹</button>'
+        '<label class="date-display" id="date-display">'
+        '<span class="date-main" id="date-main">--</span>'
+        '<span class="date-sub" id="date-sub">--</span>'
+        '<select class="date-select" id="date-select" aria-label="选择日报日期"></select>'
+        '</label>'
+        '<button class="date-next" id="date-next" type="button" aria-label="下一期">›</button>'
+        '</div>'
+        '<div class="issue-live" id="issue-live" role="status" aria-live="polite"></div>'
+        '</div>'
+        '<script>window.__ADR_ISSUES=' + issue_index_json +
+        ';window.__ADR_LATEST="' + esc(latest["date"]) + '";</script>'
+    )
+
+    # ── 期次内容容器：SSR 最新一期，切期时由 history.js 替换 ──
+    issue_content = (
+        '<div id="issue-content" data-date="' + esc(latest["date"]) + '">'
+        + render_summary(latest, latest["date"])
+        + latest_cards
+        + '</div>'
+    )
+
+    # ── 底部翻页条（UI 评审 S2）：读完一期手指在底部，直接翻相邻期 ──
+    issue_pager = (
+        '<div class="issue-pager" id="issue-pager"></div>'
+        '<div class="issue-footer">共 <span id="issue-total">' + str(len(reports)) +
+        '</span> 期 · <a href="archive/' + esc(latest["date"]) + '.html">查看完整日报 →</a>'
+        ' · <a href="digests/index.html">周期汇总（周/月/季）</a></div>'
+    )
+
     index_body = (
         '<script>sessionStorage.setItem("adr_report","index.html")</script>'
         + fav_bar("")
-        + '<div><button class="export-pdf-btn" onclick="exportDailyPDF()">📄 导出当日日报为 PDF</button>'
+        + '<div><button class="export-pdf-btn" onclick="exportDailyPDF()">📄 导出日报为 PDF</button>'
         + '<div class="pdf-loading" id="pdf-loading">⏳ 正在生成 PDF，请稍候...</div></div>'
+        + issue_nav
+        + issue_content
+        + issue_pager
         + range_analyzer
-        + render_summary(latest, latest["date"])
-        + latest_cards
-        + archive_div
     )
 
     index = PAGE.format(

@@ -178,30 +178,54 @@ fi
 
 # ─ 6.5 历史片段完整性检查（懒加载产物） ──
 echo ""
-echo "▸ 历史片段检查"
-SHELL_COUNT=$(grep -o 'details class="hist-day"' "$ROOT/docs/index.html" 2>/dev/null | wc -l | tr -d ' ')
-FRAG_COUNT=$(ls "$ROOT/docs/history/"*.html 2>/dev/null | wc -l | tr -d ' ')
-if [ "$SHELL_COUNT" -gt 0 ] && [ "$SHELL_COUNT" -eq "$FRAG_COUNT" ]; then
-  pass "历史片段数量与壳一致（片段 $FRAG_COUNT / 壳 $SHELL_COUNT）"
-else
-  fail "历史片段数量不匹配（片段 $FRAG_COUNT / 壳 $SHELL_COUNT）"
-fi
-if [ "$SHELL_COUNT" -gt 0 ]; then
-  MISMATCH=0
-  for d in $(grep -o 'details class="hist-day" data-date="[0-9-]*"' "$ROOT/docs/index.html" | grep -o '[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}'); do
-    [ -f "$ROOT/docs/history/$d.html" ] || MISMATCH=1
+echo "▸ 期次片段与日期索引检查"
+# PRD v2.2：不再有 hist-day 壳，改为校验"内联日期索引 ↔ 片段文件"一致性
+IDX_JSON=$(grep -o 'window.__ADR_ISSUES=\[[^]]*\]' "$ROOT/docs/index.html" 2>/dev/null | head -1 | sed 's/^window.__ADR_ISSUES=//')
+if [ -n "$IDX_JSON" ]; then
+  pass "index.html 内联期次索引存在"
+  IDX_DATES=$(echo "$IDX_JSON" | grep -o '[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}')
+  IDX_COUNT=$(echo "$IDX_DATES" | wc -l | tr -d ' ')
+  UNIQ_COUNT=$(echo "$IDX_DATES" | sort -u | wc -l | tr -d ' ')
+  if [ "$IDX_COUNT" -eq "$UNIQ_COUNT" ]; then
+    pass "期次索引无重复日期（$IDX_COUNT 期）"
+  else
+    fail "期次索引存在重复日期（$IDX_COUNT 条 / $UNIQ_COUNT 唯一）"
+  fi
+  FRAG_COUNT=$(ls "$ROOT/docs/history/"*.html 2>/dev/null | wc -l | tr -d ' ')
+  if [ "$IDX_COUNT" -eq "$FRAG_COUNT" ]; then
+    pass "索引期次数与片段文件数一致（$IDX_COUNT）"
+  else
+    fail "索引期次数与片段文件数不一致（索引 $IDX_COUNT / 片段 $FRAG_COUNT）"
+  fi
+  MISSING=0
+  for d in $IDX_DATES; do
+    [ -f "$ROOT/docs/history/$d.html" ] || MISSING=$((MISSING+1))
   done
-  if [ "$MISMATCH" -eq 0 ]; then
-    pass "壳 data-date 与片段文件一一对应"
+  if [ "$MISSING" -eq 0 ]; then
+    pass "每个索引期次均有片段文件"
   else
-    fail "存在壳引用但片段文件缺失"
+    fail "有 $MISSING 个索引期次缺少片段文件"
   fi
-  LATEST_FRAG=$(ls "$ROOT/docs/history/"*.html 2>/dev/null | sort | tail -1)
-  if [ -n "$LATEST_FRAG" ] && grep -q 'class="item-line"' "$LATEST_FRAG"; then
-    pass "历史片段内容抽查（item-line 存在）"
+  LATEST_IN_IDX=$(grep -o 'window.__ADR_LATEST="[0-9-]*"' "$ROOT/docs/index.html" | grep -o '[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}')
+  if [ -n "$LATEST_IN_IDX" ] && [ -f "$ROOT/docs/history/$LATEST_IN_IDX.html" ]; then
+    pass "最新期片段存在（往返切换无缺口，评审 T1）"
   else
-    fail "历史片段内容异常（缺少 item-line）"
+    fail "最新期 $LATEST_IN_IDX 缺少片段文件（会导致往返内容缺失）"
   fi
+  SAMPLE=$(echo "$IDX_DATES" | head -1)
+  if grep -q 'class="item-line"' "$ROOT/docs/history/$SAMPLE.html" 2>/dev/null; then
+    pass "片段内容抽查（item-line 存在）"
+  else
+    fail "片段内容异常（缺少 item-line）"
+  fi
+  RESIDUAL=$(grep -o 'details class="hist-day"' "$ROOT/docs/index.html" 2>/dev/null | wc -l | tr -d ' ')
+  if [ "$RESIDUAL" -eq 0 ]; then
+    pass "无残留 hist-day 旧壳"
+  else
+    fail "发现 $RESIDUAL 个残留 hist-day 旧壳"
+  fi
+else
+  fail "index.html 缺少内联期次索引 window.__ADR_ISSUES"
 fi
 
 # ─ 7. 性能检查（大规模变更时运行） ──
