@@ -2,7 +2,7 @@
    依赖: 无。消费方: 全部页面。API 见底部 window.ADR；可变状态（sb/cache/currentUser 等）为模块私有。 */
 (function () {
   /* ── 版本号（唯一来源：升级 fav.js 时只改这里，build_site.py 构建时自动读取注入缓存破坏参数） ── */
-  var APP_VERSION = "3.3d-7";
+  var APP_VERSION = "3.3d-8";
 
   /* ── Supabase 配置 ── */
   var SUPABASE_URL = "https://bvhzexdluniqdwmsxaxw.supabase.co";
@@ -377,7 +377,7 @@
     html += '<div style="margin-bottom:16px">';
     html += '<label style="display:block;font-size:14px;font-weight:600;margin-bottom:8px">备注</label>';
     var noteValue = fav.context_note || "";
-    html += '<textarea id="ctx-note-input" style="width:100%;min-height:80px;padding:8px;border:1px solid #d9d9d9;border-radius:4px;font-size:13px;resize:vertical" placeholder="为什么收藏？计划用在什么场景？" autocomplete="off">' + noteValue.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</textarea>';
+    html += '<textarea id="ctx-note-input" style="width:100%;min-height:80px;padding:8px;border:1px solid #d9d9d9;border-radius:4px;font-size:13px;resize:vertical" placeholder="为什么收藏？计划用在什么场景？（支持 Markdown：**加粗**、- 列表、> 引用、``` 代码）" autocomplete="off">' + noteValue.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</textarea>';
     html += '</div>';
 
     // 按钮
@@ -389,6 +389,31 @@
     dialog.innerHTML = html;
     overlay.appendChild(dialog);
     document.body.appendChild(overlay);
+
+    // 粘贴整理（评审裁决：仅两条无损规则，代码块内容完全跳过）
+    (function () {
+      var ta = document.getElementById("ctx-note-input");
+      if (!ta) return;
+      ta.addEventListener("paste", function () {
+        setTimeout(function () {
+          var before = ta.value;
+          if (before.length < 200 || before.indexOf("\n") < 0) return;
+          var after = tidyNotePaste(before);
+          if (after === before) return;
+          ta.value = after;
+          var tip = document.createElement("div");
+          tip.className = "note-tidy-tip";
+          tip.textContent = "已整理排版（压缩空行）· 撤销";
+          tip.style.cssText = "margin-top:6px;font-size:12px;color:#8a919c;cursor:pointer;text-decoration:underline";
+          tip.addEventListener("click", function () {
+            ta.value = before;
+            tip.remove();
+          });
+          ta.parentNode.insertBefore(tip, ta.nextSibling);
+          setTimeout(function () { if (tip.parentNode) tip.remove(); }, 6000);
+        }, 0);
+      });
+    })();
 
     // 绑定事件
     document.getElementById("ctx-cancel-btn").onclick = function() { overlay.remove(); };
@@ -577,8 +602,12 @@
     if (f.context_note) {
       var noteEl = document.createElement("div");
       noteEl.className = "context-note-display";
-      noteEl.style.cssText = "background:#fffbe6;border-left:3px solid #faad14;padding:8px 12px;margin-top:8px;font-size:13px;color:#555;border-radius:4px;line-height:1.5";
-      noteEl.innerHTML = '<strong style="color:#8a7d00"> 我的备注：</strong>' + f.context_note.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      var labEl = document.createElement("div");
+      labEl.className = "note-label";
+      labEl.textContent = "我的备注";
+      noteEl.appendChild(labEl);
+      noteEl.appendChild(buildNoteBox(f.context_note, String(f.u || f.t || "note"),
+                                      function () { showContextEditDialog(f); }));
       card.appendChild(noteEl);
     }
     /* 编辑上下文按钮 - 根据是否有备注显示不同状态 */
@@ -901,6 +930,207 @@
   }
 
 
+  /* ── 备注 Markdown 白名单渲染器（评审要求：DOM 构建，永不产生用户可控 HTML 字符串）──
+     块级 6 种：围栏代码块 / 标题 / 引用 / 无序列表 / 有序列表 / 段落
+     行内 2 种：**加粗** / `行内代码`；仅允许白名单元素，内容一律 textContent */
+  function appendNoteInline(parent, text) {
+    var s = String(text == null ? "" : text);
+    var re = /(\*\*[^*]+\*\*|`[^`]+`)/g;
+    var last = 0, m;
+    while ((m = re.exec(s))) {
+      if (m.index > last) parent.appendChild(document.createTextNode(s.slice(last, m.index)));
+      var tok = m[0];
+      if (tok.charAt(0) === "*") {
+        var strong = document.createElement("strong");
+        strong.textContent = tok.slice(2, -2);
+        parent.appendChild(strong);
+      } else {
+        var code = document.createElement("code");
+        code.className = "note-code";
+        code.textContent = tok.slice(1, -1);
+        parent.appendChild(code);
+      }
+      last = re.lastIndex;
+    }
+    if (last < s.length) parent.appendChild(document.createTextNode(s.slice(last)));
+  }
+
+  function renderNoteMd(text) {
+    var frag = document.createDocumentFragment();
+    var lines = String(text == null ? "" : text).replace(/\r\n?/g, "\n").split("\n");
+    var i = 0;
+    while (i < lines.length) {
+      var line = lines[i];
+      /* 围栏代码块：内部原样保留，不做任何语法解析 */
+      if (/^\s*```/.test(line)) {
+        var codeLines = [];
+        i++;
+        while (i < lines.length && !/^\s*```/.test(lines[i])) { codeLines.push(lines[i]); i++; }
+        i++;
+        var pre = document.createElement("pre");
+        pre.className = "note-pre";
+        var codeEl = document.createElement("code");
+        codeEl.textContent = codeLines.join("\n");
+        pre.appendChild(codeEl);
+        frag.appendChild(pre);
+        continue;
+      }
+      if (!line.trim()) { i++; continue; }
+      /* 标题：所有层级压平成一级（不用 h1-h6，避免污染读屏大纲） */
+      var hm = line.match(/^\s*#{1,6}\s+(.*)$/);
+      if (hm) {
+        var hp = document.createElement("p");
+        hp.className = "note-h";
+        appendNoteInline(hp, hm[1]);
+        frag.appendChild(hp);
+        i++; continue;
+      }
+      /* 引用 */
+      if (/^\s*>\s?/.test(line)) {
+        var qs = [];
+        while (i < lines.length && /^\s*>\s?/.test(lines[i])) {
+          qs.push(lines[i].replace(/^\s*>\s?/, "")); i++;
+        }
+        var bq = document.createElement("blockquote");
+        bq.className = "note-quote";
+        appendNoteInline(bq, qs.join("\n"));
+        frag.appendChild(bq);
+        continue;
+      }
+      /* 无序列表 */
+      if (/^\s*[-*+]\s+/.test(line)) {
+        var ul = document.createElement("ul");
+        ul.className = "note-ul";
+        while (i < lines.length && /^\s*[-*+]\s+/.test(lines[i])) {
+          var li = document.createElement("li");
+          appendNoteInline(li, lines[i].replace(/^\s*[-*+]\s+/, "")); i++;
+          ul.appendChild(li);
+        }
+        frag.appendChild(ul); continue;
+      }
+      /* 有序列表 */
+      if (/^\s*\d+\.\s+/.test(line)) {
+        var ol = document.createElement("ol");
+        ol.className = "note-ol";
+        while (i < lines.length && /^\s*\d+\.\s+/.test(lines[i])) {
+          var li2 = document.createElement("li");
+          appendNoteInline(li2, lines[i].replace(/^\s*\d+\.\s+/, "")); i++;
+          ol.appendChild(li2);
+        }
+        frag.appendChild(ol); continue;
+      }
+      /* 段落：连续普通行合并 */
+      var ps = [];
+      while (i < lines.length && lines[i].trim() &&
+             !/^\s*(```|#{1,6}\s|>|[-*+]\s|\d+\.\s)/.test(lines[i])) {
+        ps.push(lines[i]); i++;
+      }
+      if (ps.length) {
+        var p = document.createElement("p");
+        p.className = "note-p";
+        appendNoteInline(p, ps.join("\n"));
+        frag.appendChild(p);
+      } else { i++; }
+    }
+    return frag;
+  }
+
+
+  /* ── 备注折叠：按渲染后实测高度判断（评审：不用字数）──
+     展开整页延展（不做内滚，避免手机手势冲突），收起时视口回到备注顶部 */
+  var noteExpanded = {};   /* key -> true，内存记忆：切期保留、刷新重置 */
+
+  function buildNoteBox(noteText, key, onEdit) {
+    var text = String(noteText == null ? "" : noteText);
+    var wrap = document.createElement("div");
+    wrap.className = "note-wrap";
+
+    var inner = document.createElement("div");
+    inner.className = "note-md";
+    inner.id = "note-md-" + key.replace(/[^a-zA-Z0-9_-]/g, "_");
+    inner.appendChild(renderNoteMd(text));
+    wrap.appendChild(inner);
+
+    var bar = document.createElement("div");
+    bar.className = "note-bar";
+    var toggle = document.createElement("button");
+    toggle.type = "button";
+    toggle.className = "note-toggle";
+    toggle.textContent = "展开全文 ▾";
+    toggle.setAttribute("aria-expanded", "false");
+    toggle.setAttribute("aria-controls", inner.id);
+    bar.appendChild(toggle);
+
+    var meta = document.createElement("span");
+    meta.className = "note-meta";
+    bar.appendChild(meta);
+
+    if (onEdit) {
+      var editBtn = document.createElement("button");
+      editBtn.type = "button";
+      editBtn.className = "note-edit";
+      editBtn.textContent = "编辑";
+      editBtn.addEventListener("click", onEdit);
+      bar.appendChild(editBtn);
+    }
+    wrap.appendChild(bar);
+
+    function applyCollapsed(collapsed) {
+      inner.classList.toggle("collapsed", collapsed);
+      toggle.setAttribute("aria-expanded", collapsed ? "false" : "true");
+      toggle.textContent = collapsed ? "展开全文 ▾" : "收起 ▴";
+      noteExpanded[key] = !collapsed;
+    }
+
+    /* 折叠态初值：默认收起，除非本次浏览内记过展开 */
+    applyCollapsed(!noteExpanded[key]);
+
+    /* 渲染后实测高度：超过 3 行才显示折叠控件 */
+    window.requestAnimationFrame(function () {
+      inner.classList.add("collapsed");
+      var over = inner.scrollHeight > inner.clientHeight + 1;
+      if (!over) {
+        inner.classList.remove("collapsed");
+        bar.style.display = "none";
+        return;
+      }
+      meta.textContent = "约 " + text.length + " 字";
+      bar.style.display = "flex";
+      applyCollapsed(!noteExpanded[key]);
+    });
+
+    toggle.addEventListener("click", function () {
+      var willExpand = inner.classList.contains("collapsed");
+      applyCollapsed(!willExpand);
+      if (!willExpand) {
+        /* 收起：把备注顶部送回视口，否则按钮已滚出屏幕 */
+        try { wrap.scrollIntoView({ block: "start", behavior: "auto" }); } catch (e) { wrap.scrollIntoView(); }
+      }
+    });
+
+    return wrap;
+  }
+
+
+  /* ── 粘贴整理（保守两条无损规则，评审裁决）──
+     1) 统一换行符  2) 代码块外 3+ 连续空行压成 1 个；代码块内容完全跳过 */
+  function tidyNotePaste(text) {
+    var s = String(text == null ? "" : text).replace(/\r\n?/g, "\n");
+    var out = [], inFence = false, blanks = 0;
+    s.split("\n").forEach(function (line) {
+      if (/^\s*```/.test(line)) { inFence = !inFence; blanks = 0; out.push(line); return; }
+      if (inFence) { out.push(line); return; }
+      if (!line.trim()) {
+        blanks++;
+        if (blanks <= 1) out.push("");
+        return;
+      }
+      blanks = 0;
+      out.push(line.replace(/[ \t]+$/, ""));
+    });
+    return out.join("\n").replace(/^\n+|\n+$/g, "");
+  }
+
   /* ── 备注原地展示：已收藏且有备注/标签的条目，在条目卡片下方直接显示 ──
      覆盖两处：当日卡片（h2 为容器）与历史期次片段（.item-line）。
      收藏页的 buildFavCard 已自带备注展示，此处跳过（存在 .context-note-display 即视为已有） */
@@ -926,21 +1156,20 @@
     }
 
     if (fav.context_note) {
-      var nb = document.createElement("div");
-      nb.className = "inline-note-body";
-      var lab = document.createElement("b");
-      lab.textContent = "我的备注：";
-      nb.appendChild(lab);
-      nb.appendChild(document.createTextNode(String(fav.context_note)));
-      box.appendChild(nb);
+      var lab = document.createElement("div");
+      lab.className = "note-label";
+      lab.textContent = "我的备注";
+      box.appendChild(lab);
+      box.appendChild(buildNoteBox(fav.context_note, String(fav.u || fav.t || "note"),
+                                   function () { showContextEditDialog(fav); }));
+    } else {
+      var editSolo = document.createElement("button");
+      editSolo.type = "button";
+      editSolo.className = "inline-note-edit";
+      editSolo.textContent = "编辑";
+      editSolo.addEventListener("click", function () { showContextEditDialog(fav); });
+      box.appendChild(editSolo);
     }
-
-    var edit = document.createElement("button");
-    edit.type = "button";
-    edit.className = "inline-note-edit";
-    edit.textContent = "编辑";
-    edit.addEventListener("click", function () { showContextEditDialog(fav); });
-    box.appendChild(edit);
 
     return box;
   }

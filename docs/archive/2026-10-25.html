@@ -140,6 +140,32 @@
   .inline-note-edit { margin-top: 8px; border: 1px solid #faad14; background: #fff; color: #8a7d00; border-radius: 6px; padding: 3px 12px; font-size: 12px; cursor: pointer; }
   .inline-note-edit:hover { background: #fff7d6; }
   @media print { .inline-note-edit { display: none !important; } }
+  /* ===== 备注 Markdown 排版（首页 .inline-note 与收藏页 .context-note-display 共用） ===== */
+  .note-label { font-size: 12px; font-weight: 600; color: #8a7d00; margin-bottom: 6px; }
+  .note-md { font-size: 13px; line-height: 1.7; color: #4a4a4a; overflow-wrap: anywhere; word-break: break-word; }
+  .note-md.collapsed { max-height: calc(1.7em * 3); overflow: hidden; position: relative; }
+  .note-md.collapsed::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 24px; background: linear-gradient(to bottom, rgba(255,251,230,0), #fffbe6); pointer-events: none; }
+  .note-md > *:first-child { margin-top: 0; }
+  .note-md > *:last-child { margin-bottom: 0; }
+  .note-md p.note-p { margin: 0 0 8px; }
+  .note-md p.note-h { margin: 8px 0 4px; font-size: 14px; font-weight: 600; color: #3a3a1a; }
+  .note-md blockquote.note-quote { margin: 6px 0; padding: 2px 0 2px 10px; border-left: 2px solid #e8c766; color: #4a4a4a; }
+  .note-md ul.note-ul, .note-md ol.note-ol { margin: 4px 0 8px; padding-left: 18px; }
+  .note-md ul.note-ul li, .note-md ol.note-ol li { margin: 2px 0; }
+  .note-md ul.note-ul ul, .note-md ol.note-ol ol { margin: 2px 0; }
+  .note-md pre.note-pre { margin: 6px 0; padding: 8px 10px; background: rgba(0,0,0,.055); border-radius: 4px; overflow-x: auto; font-size: 12px; line-height: 1.55; }
+  .note-md pre.note-pre code { background: none; padding: 0; font-size: inherit; }
+  .note-md code.note-code { font-size: 12px; background: rgba(0,0,0,.055); border-radius: 3px; padding: 1px 4px; }
+  .note-md strong { font-weight: 600; }
+  /* 折叠条：整行可点 36px，左侧主色、右侧字数 */
+  .note-bar { display: none; align-items: center; gap: 8px; margin-top: 6px; }
+  .note-toggle { flex: 1 1 auto; min-height: 32px; text-align: left; background: none; border: none; border-top: 1px dashed rgba(138,125,0,.25); padding: 6px 0 0; font-size: 13px; color: #b8860b; cursor: pointer; }
+  .note-toggle:hover { color: #8a7d00; }
+  .note-meta { font-size: 11px; color: #aaa08a; flex: 0 0 auto; }
+  .note-edit { flex: 0 0 auto; border: 1px solid #faad14; background: #fff; color: #8a7d00; border-radius: 6px; padding: 3px 12px; font-size: 12px; cursor: pointer; }
+  .note-edit:hover { background: #fff7d6; }
+  .note-tidy-tip { user-select: none; }
+  @media print { .note-toggle, .note-meta, .note-edit { display: none !important; } .note-md.collapsed { max-height: none; overflow: visible; } .note-md.collapsed::after { display: none; } }
   /* ===== 日期导航（PRD v2.2：置顶、两行胶囊、默认最新一期） ===== */
   .issue-nav { margin: 18px 0 14px; }
   .date-bar { display: flex; align-items: stretch; gap: 10px; background: #f8fbff; border: 1px solid #dbe9ff; border-radius: 12px; padding: 12px; }
@@ -351,7 +377,7 @@
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="../fav-core.js?v=3.3d-7"></script>
+<script src="../fav-core.js?v=3.3d-8"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="../export_pdf.js"></script>
