@@ -173,6 +173,7 @@ CSS = """
   @media print { .back-to-top { display: none !important; } }
   /* ===== 备注原地展示（已收藏且有备注的条目，卡片下方直接显示） ===== */
   .inline-note { margin-top: 10px; background: #fffbe6; border-left: 3px solid #faad14; border-radius: 6px; padding: 10px 12px; font-size: 13px; color: #555; line-height: 1.55; }
+  .context-note-display { margin-top: 10px; background: #fffbe6; border-left: 3px solid #faad14; border-radius: 6px; padding: 10px 12px; }
   .inline-note-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 6px; }
   .inline-note-tags span { font-size: 11px; color: #8a7d00; background: #fff1b8; border-radius: 10px; padding: 1px 9px; }
   .inline-note-body { overflow-wrap: anywhere; }
