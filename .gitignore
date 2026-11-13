@@ -10,7 +10,7 @@ package-lock.json
 .playwright-mcp/
 docs/changes/
 supabase/.temp/
-CLAUDE.md
+# CLAUDE.md 已纳入版本管理（2026-11-13 拆分：规则入库，架构细节移入 .claude/workspace/）
 scripts/set_password.py
 
 # Syncthing 本机同步配置（不属于项目）
