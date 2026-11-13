@@ -1,6 +1,12 @@
 __pycache__/
 *.pyc
-.claude/
+# .claude/ 精确处理（2026-11-13）：
+# - commands/ 角色定义入库（纯方法论，无敏感信息，是规则落地的前提）
+# - workspace/ 本地工作产物（PRD/原型/架构文档），不入库
+# - settings*.json 本地配置，不入库
+.claude/workspace/
+.claude/settings.json
+.claude/settings.local.json
 .env
 *.log
 node_modules/
