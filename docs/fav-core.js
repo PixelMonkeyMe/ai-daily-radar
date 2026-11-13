@@ -2,7 +2,7 @@
    依赖: 无。消费方: 全部页面。API 见底部 window.ADR；可变状态（sb/cache/currentUser 等）为模块私有。 */
 (function () {
   /* ── 版本号（唯一来源：升级 fav.js 时只改这里，build_site.py 构建时自动读取注入缓存破坏参数） ── */
-  var APP_VERSION = "3.3d-11";
+  var APP_VERSION = "3.3d-12";
 
   /* ── Supabase 配置 ── */
   var SUPABASE_URL = "https://bvhzexdluniqdwmsxaxw.supabase.co";
@@ -427,7 +427,10 @@
       // 更新收藏
       updateFavoriteContext(fav, selectedTags.join(','), note, function() {
         overlay.remove();
-        renderFavPage(); // 重新渲染
+        /* 模块化拆分遗留：renderFavPage 属 fav-page.js 闭包，core 作用域访问不到。
+           改派发 favs:changed 事件——fav-page 监听后重渲染列表，
+           injectInlineNotes 同时刷新首页备注原地展示。 */
+        document.dispatchEvent(new CustomEvent("favs:changed"));
       });
     };
   }
