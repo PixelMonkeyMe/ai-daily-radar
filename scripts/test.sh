@@ -192,31 +192,52 @@ if [ -n "$IDX_JSON" ]; then
     fail "期次索引存在重复日期（$IDX_COUNT 条 / $UNIQ_COUNT 唯一）"
   fi
   FRAG_COUNT=$(ls "$ROOT/docs/history/"*.html 2>/dev/null | wc -l | tr -d ' ')
-  if [ "$IDX_COUNT" -eq "$FRAG_COUNT" ]; then
-    pass "索引期次数与片段文件数一致（$IDX_COUNT）"
+  # 设计：最新期不产片段（前端缓存 SSR DOM），故片段数 = 索引期次 - 1
+  EXPECTED_FRAG=$((IDX_COUNT - 1))
+  if [ "$EXPECTED_FRAG" -eq "$FRAG_COUNT" ]; then
+    pass "片段文件数符合设计（$FRAG_COUNT = 索引 $IDX_COUNT - 最新期 1）"
   else
-    fail "索引期次数与片段文件数不一致（索引 $IDX_COUNT / 片段 $FRAG_COUNT）"
+    fail "片段文件数不符（片段 $FRAG_COUNT / 期望 $EXPECTED_FRAG = 索引 $IDX_COUNT - 1）"
   fi
   MISSING=0
+  LATEST_TMP=$(grep -o 'window.__ADR_LATEST="[0-9-]*"' "$ROOT/docs/index.html" | grep -o '[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}')
   for d in $IDX_DATES; do
+    [ "$d" = "$LATEST_TMP" ] && continue
     [ -f "$ROOT/docs/history/$d.html" ] || MISSING=$((MISSING+1))
   done
   if [ "$MISSING" -eq 0 ]; then
-    pass "每个索引期次均有片段文件"
+    pass "每个历史期次均有片段文件（最新期除外）"
   else
-    fail "有 $MISSING 个索引期次缺少片段文件"
+    fail "有 $MISSING 个历史期次缺少片段文件"
   fi
   LATEST_IN_IDX=$(grep -o 'window.__ADR_LATEST="[0-9-]*"' "$ROOT/docs/index.html" | grep -o '[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}')
   if [ -n "$LATEST_IN_IDX" ] && [ -f "$ROOT/docs/history/$LATEST_IN_IDX.html" ]; then
-    pass "最新期片段存在（往返切换无缺口，评审 T1）"
+    fail "最新期不应生成片段文件（前端缓存 SSR DOM 恢复，避免故事分组丢失）"
   else
-    fail "最新期 $LATEST_IN_IDX 缺少片段文件（会导致往返内容缺失）"
+    pass "最新期无片段文件（符合设计：SSR DOM 缓存）"
   fi
-  SAMPLE=$(echo "$IDX_DATES" | head -1)
-  if grep -q 'class="item-line"' "$ROOT/docs/history/$SAMPLE.html" 2>/dev/null; then
-    pass "片段内容抽查（item-line 存在）"
-  else
-    fail "片段内容异常（缺少 item-line）"
+  SAMPLE=$(echo "$IDX_DATES" | head -2 | tail -1)
+  if [ -f "$ROOT/docs/history/$SAMPLE.html" ]; then
+    if grep -Eq "class=['\"]card" "$ROOT/docs/history/$SAMPLE.html" 2>/dev/null; then
+      pass "历史片段含完整卡片（class=card）"
+    else
+      fail "历史片段缺完整卡片（可能仍在用 item-line）"
+    fi
+    if grep -q '展开完整分析' "$ROOT/docs/history/$SAMPLE.html" 2>/dev/null; then
+      pass "历史片段含 AI 分析折叠区"
+    else
+      # 该期可能无 AI 数据，检查是否有中性说明条
+      if grep -q 'no-ai-text' "$ROOT/docs/history/$SAMPLE.html" 2>/dev/null; then
+        pass "该期无 AI 数据，已显示中性说明条"
+      else
+        fail "历史片段既无 AI 分析也无说明条"
+      fi
+    fi
+    if grep -q '此前曾在\|fav-btn' "$ROOT/docs/history/$SAMPLE.html" 2>/dev/null; then
+      pass "历史片段保留相似标注/收藏按钮"
+    else
+      fail "历史片段丢失相似标注或收藏按钮"
+    fi
   fi
   RESIDUAL=$(grep -o 'details class="hist-day"' "$ROOT/docs/index.html" 2>/dev/null | wc -l | tr -d ' ')
   if [ "$RESIDUAL" -eq 0 ]; then

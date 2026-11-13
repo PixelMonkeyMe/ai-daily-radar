@@ -24,6 +24,12 @@
   }
 
   var cache = {};
+  if (nav) nav.setAttribute("aria-label", "期次导航");
+  /* 最新期用 index 的 SSR 内容（含故事分组 + Top5 补全），切走再切回时恢复，
+     避免用 render_card 片段重造导致结构不一致（技术评审：latest 无片段文件） */
+  var latestDom = content.innerHTML;
+  var originalTitle = document.title;
+  var baseHeading = "AI 日报雷达";
   var reqToken = 0;
   var currentDate = null;
 
@@ -89,6 +95,25 @@
       }
       back.style.display = "";
     } else if (back) { back.style.display = "none"; }
+
+    /* 标题锚点（UI 评审阻塞 2）：分享/PDF/多标签页只读得到 title 与 h1 */
+    var isHist = it.date !== LATEST;
+    document.title = isHist ? (mainLabel(it.date) + " · " + baseHeading) : originalTitle;
+    var h1 = document.querySelector(".top h1");
+    if (h1) h1.textContent = isHist ? (baseHeading + " · " + mainLabel(it.date)) : baseHeading;
+
+    /* 历史期次标签 */
+    var tag = bar.querySelector(".hist-tag");
+    if (isHist) {
+      if (!tag) {
+        tag = document.createElement("span");
+        tag.className = "hist-tag";
+        tag.textContent = "历史期次";
+        bar.appendChild(tag);
+        tag = bar.querySelector(".hist-tag");
+      }
+      tag.style.display = "";
+    } else if (tag) { tag.style.display = "none"; }
   }
 
   function pagerBtn(issue, dir) {
@@ -113,6 +138,15 @@
     writeUrl(date, replaceUrl);
     updateChrome(idx);
     updateSelect(idx);
+    if (date === LATEST) {
+      content.innerHTML = latestDom;
+      content.setAttribute("data-date", LATEST);
+      content.classList.remove("issue-loading");
+      document.dispatchEvent(new CustomEvent("hist:loaded", { detail: { date: LATEST } }));
+      announce("已回到 " + mainLabel(LATEST) + "，共 " + ISSUES[0].count + " 条");
+      focusTop();
+      return;
+    }
     if (cache[date]) { commit(date, cache[date], myToken); return; }
     content.classList.add("issue-loading");
     fetchIssue(date).then(function (html) {

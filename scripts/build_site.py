@@ -240,6 +240,15 @@ CSS = """
   .issue-pager button:disabled { color: #c9ced6; border-color: #eef1f5; cursor: not-allowed; }
   .issue-footer { text-align: center; font-size: 12px; color: #8a919c; margin: 6px 0 18px; }
   .issue-footer a { color: #1677ff; text-decoration: none; }
+  /* ===== 历史期次态（UI 评审阻塞 2）：sticky 定位 + 期次标签 + 标题锚点 ===== */
+  .issue-nav { position: sticky; top: 0; z-index: 30; background: #fff; padding-top: 6px; padding-bottom: 2px; }
+  .issue-nav .group { margin-bottom: 6px; }
+  .hist-tag { display: inline-block; margin-top: 8px; font-size: 11px; color: #57606f; background: #eef1f5; border-radius: 10px; padding: 2px 10px; }
+  .date-bar.is-history { background: #f7f8fa; border-color: #dfe3e9; }
+
+  /* ===== 无 AI 解读的早期期次：中性说明条（非警告色，占总览位） ===== */
+  .no-ai-note { background: #f8f9fa; border-left: 3px solid #c9ced6; }
+  .no-ai-text { font-size: 13px; color: #8a919c; line-height: 1.6; }
   @media (max-width: 520px) {
     .date-bar { padding: 10px; gap: 8px; }
     .date-prev, .date-next { width: 44px; }
@@ -450,10 +459,25 @@ def _render_pick(title, reason, url):
     return f'<div class="trend"><b>{title_esc}</b><br>{reason_esc}</div>'
 
 
-def render_summary(rep, date=""):
+def _day_label(date):
+    """把 YYYY-MM-DD 格式化成「11月6日」；异常时回退原字符串"""
+    try:
+        return f"{int(date[5:7])}月{int(date[8:10])}日"
+    except Exception:
+        return str(date or "")
+
+
+def render_summary(rep, date="", is_latest=True):
     s = rep.get("summary")
     if not s:
         return ""
+    # 标题文案（UI 评审：历史期用日期锚定，区块名中性；格式化在此统一生成，避免调用点漂移）
+    if is_latest:
+        head_title = "今日总结 · AI 主编解读"
+        overview_label = "今日总览"
+    else:
+        head_title = _day_label(date) + "总结 · AI 主编解读"
+        overview_label = "当日总览"
     url_by_title = {i.get("title"): i.get("url") for i in rep["items"]}
     all_titles = list(url_by_title.keys())
     conclusions = "".join(f'<div class="trend">{esc(c)}</div>' for c in s.get("conclusions", []))
@@ -469,9 +493,9 @@ def render_summary(rep, date=""):
                        f'data-s="AI 日报总结" data-d="{esc(date)}" '
                        f'data-b="{overview_brief}">☆</button>')
     return f"""<div class="card summary-card">
-<h2 class="summary-title">今日总结 · AI 主编解读{summary_btn}</h2>
+<h2 class="summary-title">{head_title}{summary_btn}</h2>
 <dl>
-<dt>今日总览</dt><dd>{esc(s.get("overview"))}</dd>
+<dt>{overview_label}</dt><dd>{esc(s.get("overview"))}</dd>
 <dt>核心结论</dt><dd>{conclusions}</dd>
 <dt>今日重点关注</dt><dd>{picks}</dd>
 <dt>对我的行业有什么用？</dt><dd>{esc(s.get("industry_use"))}</dd>
@@ -545,6 +569,9 @@ def render_story_group(story, ai, date="", similar_dates_map=None):
 
 
 def item_line(i, ai, date="", similar_dates=None):
+    """精简条目行——**仅用于周期汇总页（digest）的折叠索引列表**。
+    月报可达数百条（docs/digests/2026-10.html 744KB），用完整卡片会膨胀数倍，
+    故保留此精简渲染器。日报期次（当日/历史/archive）一律用 render_card。"""
     similar_dates = similar_dates or []
     star = f' <span class="tag-star">{STARS.get(int(i["importance"]), "")}</span>' \
         if ai and i.get("importance") else ""
@@ -664,21 +691,37 @@ def build_daily():
     # 生成 index.html：当日完整展示（含故事分组 + Top 5 补全） + 历史折叠
     latest_cards = render_items_for_index()
 
-    # ── 期次片段：所有期次（含最新）统一生成，供日期导航按需 fetch ──
-    # 技术评审 T1：latest 也必须有片段，否则"最新→历史→最新"往返无文件可 fetch
+    # ── 期次片段：仅历史期（最新期用 index 的 SSR 内容，前端缓存恢复）──
+    # 评审依据：最新期 SSR 含故事分组+Top5，用 render_card 重造成片段会导致
+    # "切走再切回"结构不一致；故只为历史期生成片段，最新期由前端缓存 DOM 恢复。
     history_dir = os.path.join(DOCS, "history")
     os.makedirs(history_dir, exist_ok=True)
     issue_index = []
     for rep in reports:
         d = rep["date"]
-        frag = "\n".join(
-            item_line(i, rep.get("ai_enabled"), d, i.get("_similar_dates", []))
+        issue_index.append({"date": d, "count": len(rep["items"])})
+        if d == latest["date"]:
+            continue  # 最新期不产片段（见上）
+        parts = []
+        if rep.get("summary"):
+            parts.append(render_summary(rep, d, is_latest=False))
+        elif rep.get("ai_enabled") is False or not rep.get("summary"):
+            # 无 AI 解读的早期期次：中性说明条（UI 评审：非警告色，占 summary 位）
+            parts.append('<div class="card no-ai-note"><div class="no-ai-text">'
+                         '该期暂无 AI 解读，仅显示原始条目</div></div>')
+        parts.extend(
+            render_card(i, rep.get("ai_enabled"), d, i.get("_similar_dates", []))
             for i in rep["items"]
         )
-        # 构建原子性：片段先写，index.html 最后写——失败时不会出现引用悬空片段
+        # 构建原子性：片段先写，index.html 最后写
         with open(os.path.join(history_dir, f"{d}.html"), "w", encoding="utf-8") as fo:
-            fo.write(frag)
-        issue_index.append({"date": d, "count": len(rep["items"])})
+            fo.write("\n".join(parts))
+
+    # 清理不属于历史期的残留片段（最新期不产片段；已删除的期次也一并清掉）
+    _keep = {r["date"] for r in reports if r["date"] != latest["date"]}
+    for _f in os.listdir(history_dir):
+        if _f.endswith(".html") and _f[:-5] not in _keep:
+            os.remove(os.path.join(history_dir, _f))
 
     # 期次索引内联（技术评审裁剪：不做独立索引文件，避免额外请求与版本错配）
     issue_index_json = json.dumps(issue_index, ensure_ascii=False, separators=(",", ":"))

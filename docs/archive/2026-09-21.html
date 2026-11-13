@@ -200,6 +200,15 @@
   .issue-pager button:disabled { color: #c9ced6; border-color: #eef1f5; cursor: not-allowed; }
   .issue-footer { text-align: center; font-size: 12px; color: #8a919c; margin: 6px 0 18px; }
   .issue-footer a { color: #1677ff; text-decoration: none; }
+  /* ===== 历史期次态（UI 评审阻塞 2）：sticky 定位 + 期次标签 + 标题锚点 ===== */
+  .issue-nav { position: sticky; top: 0; z-index: 30; background: #fff; padding-top: 6px; padding-bottom: 2px; }
+  .issue-nav .group { margin-bottom: 6px; }
+  .hist-tag { display: inline-block; margin-top: 8px; font-size: 11px; color: #57606f; background: #eef1f5; border-radius: 10px; padding: 2px 10px; }
+  .date-bar.is-history { background: #f7f8fa; border-color: #dfe3e9; }
+
+  /* ===== 无 AI 解读的早期期次：中性说明条（非警告色，占总览位） ===== */
+  .no-ai-note { background: #f8f9fa; border-left: 3px solid #c9ced6; }
+  .no-ai-text { font-size: 13px; color: #8a919c; line-height: 1.6; }
   @media (max-width: 520px) {
     .date-bar { padding: 10px; gap: 8px; }
     .date-prev, .date-next { width: 44px; }
@@ -397,7 +406,7 @@
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="../fav-core.js?v=3.3d-9"></script>
+<script src="../fav-core.js?v=3.3d-11"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="../export_pdf.js"></script>
