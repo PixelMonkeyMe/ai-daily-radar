@@ -4,6 +4,21 @@
   "split_days": 10,
   "reports": [
     {
+      "date": "2026-11-14",
+      "pipeline": "split",
+      "items": 35,
+      "complete_rate": 1.0,
+      "importance_dist": {
+        "1": 8,
+        "2": 18,
+        "3": 7,
+        "4": 2,
+        "5": 0
+      },
+      "mid_range_rate": 0.771,
+      "avg_importance": 2.09
+    },
+    {
       "date": "2026-11-13",
       "pipeline": "split",
       "items": 38,
@@ -137,25 +152,10 @@
       },
       "mid_range_rate": 0.775,
       "avg_importance": 2.23
-    },
-    {
-      "date": "2026-11-04",
-      "pipeline": "split",
-      "items": 38,
-      "complete_rate": 1.0,
-      "importance_dist": {
-        "1": 6,
-        "2": 15,
-        "3": 10,
-        "4": 5,
-        "5": 2
-      },
-      "mid_range_rate": 0.789,
-      "avg_importance": 2.53
     }
   ],
   "avg_complete_rate": 1.0,
-  "avg_mid_range_rate": 0.741,
+  "avg_mid_range_rate": 0.739,
   "skipped": {
     "no_pipeline_field": 0,
     "old_pipeline": 0,
@@ -167,5 +167,5 @@
     "mid_range_rate": 0.6,
     "min_days": 3
   },
-  "checked_at": "2026-11-13T06:16:06.827473"
+  "checked_at": "2026-11-14T06:00:26.192598"
 }
