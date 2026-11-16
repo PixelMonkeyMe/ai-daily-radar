@@ -2,7 +2,7 @@
    依赖: 无。消费方: 全部页面。API 见底部 window.ADR；可变状态（sb/cache/currentUser 等）为模块私有。 */
 (function () {
   /* ── 版本号（唯一来源：升级 fav.js 时只改这里，build_site.py 构建时自动读取注入缓存破坏参数） ── */
-  var APP_VERSION = "3.3d-14";
+  var APP_VERSION = "3.3d-15";
 
   /* ── Supabase 配置 ── */
   var SUPABASE_URL = "https://bvhzexdluniqdwmsxaxw.supabase.co";
@@ -958,7 +958,112 @@
     if (last < s.length) parent.appendChild(document.createTextNode(s.slice(last)));
   }
 
+  /* 表格分隔行解析：返回对齐数组（left/center/right/""），非分隔行返回 null
+     严格要求：每列至少一个 -，列数 >= 2（挡掉普通文本里偶发 |--- 的误判） */
+  function parseTableSep(line) {
+    var s = String(line == null ? "" : line).trim();
+    if (s.indexOf("|") < 0) return null;
+    if (s.charAt(0) === "|") s = s.slice(1);
+    if (s.charAt(s.length - 1) === "|") s = s.slice(0, -1);
+    var cells = s.split("|");
+    if (cells.length < 2) return null;
+    var aligns = [];
+    for (var k = 0; k < cells.length; k++) {
+      var c = cells[k].trim();
+      if (!/^:?-+:?$/.test(c)) return null;
+      var left = c.charAt(0) === ":";
+      var right = c.charAt(c.length - 1) === ":";
+      aligns.push(left && right ? "center" : right ? "right" : left ? "left" : "");
+    }
+    return aligns;
+  }
+
+  /* 行切分：按未转义 | 切单元格，反斜杠+竖线 反转义为字面竖线 */
+  function splitTableRow(line) {
+    var s = String(line == null ? "" : line).trim();
+    if (s.charAt(0) === "|") s = s.slice(1);
+    if (s.charAt(s.length - 1) === "|") s = s.slice(0, -1);
+    var cells = [], cur = "";
+    for (var k = 0; k < s.length; k++) {
+      var ch = s.charAt(k);
+      if (ch === "\\" && s.charAt(k + 1) === "|") { cur += "|"; k++; continue; }
+      if (ch === "|") { cells.push(cur); cur = ""; continue; }
+      cur += ch;
+    }
+    cells.push(cur);
+    return cells;
+  }
+
+  /* 构建表格（全 DOM，零 HTML 字符串；单元格走 appendNoteInline 继承安全基线） */
+  function buildNoteTable(headerCells, aligns, dataRows) {
+    var wrap = document.createElement("div");
+    wrap.className = "note-table-wrap";
+    var table = document.createElement("table");
+    table.className = "note-table";
+    /* 按列数设置最小宽度：中文可在任意字符换行，CSS 无法靠内容撑开表格，
+       故由 JS 按列数给绝对值（每列约 110px），超出容器时由 .note-table-wrap 横向滚动 */
+    table.style.minWidth = "max(100%, " + (headerCells.length * 110) + "px)";
+
+    var thead = document.createElement("thead");
+    var htr = document.createElement("tr");
+    headerCells.forEach(function (c, idx) {
+      var th = document.createElement("th");
+      if (aligns[idx]) th.style.textAlign = aligns[idx];
+      appendNoteInline(th, c.trim());
+      htr.appendChild(th);
+    });
+    thead.appendChild(htr);
+    table.appendChild(thead);
+
+    if (dataRows.length) {
+      var tbody = document.createElement("tbody");
+      dataRows.forEach(function (row) {
+        var tr = document.createElement("tr");
+        for (var ci = 0; ci < headerCells.length; ci++) {
+          var td = document.createElement("td");
+          if (aligns[ci]) td.style.textAlign = aligns[ci];
+          appendNoteInline(td, (row[ci] || "").trim());
+          tr.appendChild(td);
+        }
+        tbody.appendChild(tr);
+      });
+      table.appendChild(tbody);
+    }
+    wrap.appendChild(table);
+    return wrap;
+  }
+
+  /* 大表格折叠（列>4 或 行>6）：原生 details，summary 带表头预览 */
+  function wrapTableCollapsible(wrap, headerCells, totalRows) {
+    var det = document.createElement("details");
+    det.className = "note-table-det";
+    var sum = document.createElement("summary");
+    sum.className = "note-table-sum";
+    var preview = headerCells.slice(0, 3).map(function (c) { return c.trim(); }).join(" | ");
+    if (headerCells.length > 3) preview += " | …";
+    sum.textContent = "📊 表格 " + headerCells.length + "×" + totalRows +
+                      (preview ? "（" + preview + "）" : "") + " · 点击展开";
+    det.appendChild(sum);
+    det.appendChild(wrap);
+    return det;
+  }
+
+  /* 外层安全包装：任何解析异常降级为纯文本，绝不空白、不中断其他卡片 */
   function renderNoteMd(text) {
+    try {
+      return renderNoteMdInner(text);
+    } catch (e) {
+      try { console.warn("[note] Markdown 渲染失败，降级为纯文本:", e); } catch (_) {}
+      var frag = document.createDocumentFragment();
+      var p = document.createElement("p");
+      p.className = "note-p";
+      p.textContent = String(text == null ? "" : text);
+      frag.appendChild(p);
+      return frag;
+    }
+  }
+
+  function renderNoteMdInner(text) {
     var frag = document.createDocumentFragment();
     var lines = String(text == null ? "" : text).replace(/\r\n?/g, "\n").split("\n");
     var i = 0;
@@ -1022,10 +1127,38 @@
         }
         frag.appendChild(ol); continue;
       }
+      /* 表格：当前行含未转义 |，且下一行是分隔行（列>=2）
+         必须放在围栏并空行之后、标题之前无冲突（# > - 1. 开头的行不含前导 |） */
+      if (line.indexOf("|") >= 0 && i + 1 < lines.length) {
+        var tblAligns = parseTableSep(lines[i + 1]);
+        if (tblAligns) {
+          var headerCells = splitTableRow(line);
+          while (headerCells.length < tblAligns.length) headerCells.push("");
+          headerCells = headerCells.slice(0, tblAligns.length);
+          var tblRows = [];
+          var tj = i + 2;
+          while (tj < lines.length && lines[tj].trim() && lines[tj].indexOf("|") >= 0) {
+            var r = splitTableRow(lines[tj]);
+            while (r.length < tblAligns.length) r.push("");
+            tblRows.push(r.slice(0, tblAligns.length));
+            tj++;
+          }
+          var tblNode = buildNoteTable(headerCells, tblAligns, tblRows);
+          var totalRows = tblRows.length + 1;
+          if (tblAligns.length > 4 || totalRows > 6) {
+            tblNode = wrapTableCollapsible(tblNode, headerCells, totalRows);
+          }
+          frag.appendChild(tblNode);
+          i = tj;
+          continue;
+        }
+      }
+
       /* 段落：连续普通行合并 */
       var ps = [];
       while (i < lines.length && lines[i].trim() &&
              !/^\s*(```|#{1,6}\s|>|[-*+]\s|\d+\.\s)/.test(lines[i])) {
+        if (i + 1 < lines.length && lines[i].indexOf("|") >= 0 && parseTableSep(lines[i + 1])) break;
         ps.push(lines[i]); i++;
       }
       if (ps.length) {
@@ -1186,6 +1319,7 @@
     cache.forEach(function (f) { if (f && f.u) byUrl[f.u] = f; });
 
     Array.prototype.forEach.call(document.querySelectorAll(".fav-btn[data-u]"), function (btn) {
+      try {
       var host = btn.closest(".item-line") || (btn.closest("h2") ? btn.closest("h2").parentElement : null);
       if (!host) return;
       if (host.querySelector(".context-note-display")) return;  /* 收藏页卡片已自带 */
@@ -1194,6 +1328,9 @@
                         String(fav.context_tags || "").split(",").some(function (t) { return t.trim(); }));
       removeInlineNote(host);
       if (has) host.appendChild(buildInlineNote(fav));
+      } catch (e) {
+        try { console.warn("[note] 单条备注注入失败（不影响其他卡片）:", e); } catch (_) {}
+      }
     });
   }
 

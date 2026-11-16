@@ -157,6 +157,23 @@
   .note-md pre.note-pre { margin: 6px 0; padding: 8px 10px; background: rgba(0,0,0,.055); border-radius: 4px; overflow-x: auto; font-size: 12px; line-height: 1.55; }
   .note-md pre.note-pre code { background: none; padding: 0; font-size: inherit; }
   .note-md code.note-code { font-size: 12px; background: rgba(0,0,0,.055); border-radius: 3px; padding: 1px 4px; }
+  /* ===== 备注表格（横滚 + sticky 首列；评审确认的四个要点） ===== */
+  .note-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 8px 0; overscroll-behavior-x: contain; touch-action: pan-x pan-y; }
+  /* ③ 必须 separate：border-collapse:collapse 会让 sticky 单元格边框在滚动时消失（Chromium 已知问题） */
+  /* 表格宽度：min-width:100% 保证短表格撑满容器；每列 min-width 让多列表格自然溢出触发横滚
+     （中文可在任意字符换行，max-content 无法撑开，故用列最小宽度而非内容宽度） */
+  .note-table { border-collapse: separate; border-spacing: 0; font-size: 12.5px; line-height: 1.5; min-width: 100%; }
+  .note-table th, .note-table td { min-width: 96px; }
+  /* ④ 必须覆盖 .note-md 的 overflow-wrap:anywhere，否则长内容撑爆行高、横滚永不出现 */
+  .note-table th, .note-table td { border-right: 1px solid rgba(0,0,0,.1); border-bottom: 1px solid rgba(0,0,0,.1); padding: 6px 10px; vertical-align: top; overflow-wrap: normal; word-break: normal; text-align: left; }
+  .note-table thead th { border-top: 1px solid rgba(0,0,0,.1); background: rgba(0,0,0,.05); font-weight: 600; white-space: nowrap; }
+  .note-table tr > *:first-child { border-left: 1px solid rgba(0,0,0,.1); }
+  /* ② sticky 单元格必须不透明背景，否则滚动时底下内容透出来 */
+  .note-table th:first-child, .note-table td:first-child { position: sticky; left: 0; z-index: 1; background: #fffbe6; box-shadow: 2px 0 4px rgba(0,0,0,.06); }
+  .note-table thead th:first-child { background: linear-gradient(rgba(0,0,0,.05), rgba(0,0,0,.05)), #fffbe6; }
+  .note-table-det { margin: 8px 0; }
+  .note-table-sum { cursor: pointer; font-size: 12.5px; color: #8a7d00; padding: 4px 0; }
+  @media print { .note-table-wrap { overflow: visible; } .note-table th:first-child, .note-table td:first-child { position: static; box-shadow: none; } }
   .note-md strong { font-weight: 600; }
   /* 折叠条：整行可点 36px，左侧主色、右侧字数 */
   .note-bar { display: none; align-items: center; gap: 8px; margin-top: 6px; }
@@ -385,7 +402,7 @@
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="../fav-core.js?v=3.3d-14"></script>
+<script src="../fav-core.js?v=3.3d-15"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-qZvrmS2ekKPF2mSznTQsxqPgnpkI4DNTlrdUmTzrDgektczlKNRRhy5X5AAOnx5S09ydFYWWNSfcEqDTTHgtNA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="../export_pdf.js"></script>
