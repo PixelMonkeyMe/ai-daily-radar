@@ -1,4 +1,4 @@
-/* fav-index.js —— 时段 AI 分析 + renderMarkdown（由 fav.js 拆分）
+/* fav-index.js —— 时段 AI 分析（Markdown 渲染复用 ADR.renderNoteMd）
    依赖: fav-core.js（window.ADR，仅 guard）。激活条件: data-page="index" 且 #range-analyzer 存在。 */
 (function () {
   if (!window.ADR) { console.error("[fav-index] fav-core.js 未加载，模块跳过"); return; }
@@ -68,6 +68,17 @@
     window.adrAnalyzeRange();
   };
 
+  /* 安全设置结果区文本（用户/API/异常信息一律走 textContent，不进 innerHTML） */
+  function setResultText(color, text) {
+    var el = document.getElementById("range-result");
+    if (!el) return;
+    el.textContent = "";
+    var p = document.createElement("p");
+    p.style.color = color;
+    p.textContent = text;
+    el.appendChild(p);
+  }
+
   window.adrAnalyzeRange = async function () {
     var startInput = document.getElementById("range-start");
     var endInput = document.getElementById("range-end");
@@ -117,16 +128,33 @@
       }
 
       // Render the analysis result as markdown-like HTML
-      var html = '<div class="card summary-card">';
-      html += '<h3 class="summary-title">📊 ' + escapeHtml(startDate) + ' 至 ' + escapeHtml(endDate) + ' AI 分析报告</h3>';
-      if (data.cached) {
-        html += '<p style="color:#8a919c;font-size:12px">（缓存结果）</p>';
-      }
-      html += '<div style="margin-top:16px;line-height:1.8">';
-      html += renderMarkdown(data.data);
-      html += '</div></div>';
+      /* 复用备注的 Markdown 渲染器（ADR.renderNoteMd）：DOM 构建、支持表格、
+         继承 XSS 安全基线。视觉向备注靠拢（正文 13px / 行高 1.7 / 标题一级） */
+      if (resultDiv) {
+        resultDiv.textContent = "";
+        var card = document.createElement("div");
+        card.className = "card summary-card";
 
-      if (resultDiv) resultDiv.innerHTML = html;
+        var titleEl = document.createElement("h3");
+        titleEl.className = "summary-title";
+        titleEl.textContent = "📊 " + startDate + " 至 " + endDate + " AI 分析报告";
+        card.appendChild(titleEl);
+
+        if (data.cached) {
+          var cachedEl = document.createElement("p");
+          cachedEl.style.cssText = "color:#8a919c;font-size:12px";
+          cachedEl.textContent = "（缓存结果）";
+          card.appendChild(cachedEl);
+        }
+
+        var bodyEl = document.createElement("div");
+        bodyEl.className = "note-md";   /* 复用备注排版（表格/标题/列表样式随之生效） */
+        bodyEl.style.marginTop = "16px";
+        bodyEl.appendChild(ADR.renderNoteMd(data.data));
+        card.appendChild(bodyEl);
+
+        resultDiv.appendChild(card);
+      }
 
     } catch (e) {
       if (btn) { btn.disabled = false; btn.textContent = "开始 AI 分析"; }
@@ -144,34 +172,6 @@
   })();
 
   /* 简单的 Markdown 渲染 */
-  /* XSS 防护：LLM 输出是不可信内容，必须先转义再套 Markdown 语法 */
-  function escapeHtml(s) {
-    return String(s == null ? "" : s)
-      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
-  }
-
-  /* 安全设置结果区文本（用户/API/异常信息一律走 textContent，不进 innerHTML） */
-  function setResultText(color, text) {
-    var el = document.getElementById("range-result");
-    if (!el) return;
-    el.textContent = "";
-    var p = document.createElement("p");
-    p.style.color = color;
-    p.textContent = text;
-    el.appendChild(p);
-  }
-
-  function renderMarkdown(text) {
-    return escapeHtml(text)
-      .replace(/^## (.+)$/gm, '<h3 style="color:#203a43;margin:20px 0 10px;font-size:18px;border-left:4px solid #1677ff;padding-left:10px">$1</h3>')
-      .replace(/^### (.+)$/gm, '<h4 style="color:#2c5364;margin:16px 0 8px;font-size:16px">$1</h4>')
-      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-      .replace(/\*(.+?)\*/g, '<em>$1</em>')
-      .replace(/^- (.+)$/gm, '<li style="margin:4px 0;margin-left:20px">$1</li>')
-      .split('\n\n').join('<br><br>')
-      .split('\n').join('<br>');
-  }
 
 
 
