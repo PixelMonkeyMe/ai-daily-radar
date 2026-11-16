@@ -217,35 +217,42 @@
     }
   }
 
+  /* XSS 防护：LLM 总结内容与用户标题都是不可信输入，插入 HTML 前必须转义 */
+  function escapeHtml(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  }
+
   window.showSummaryModal = async function (date, title) {
     var summaries = await _loadSummaries();
     var s = summaries[date];
     var html = '<div style="padding:0 2px;line-height:1.75;text-align:left">';
     if (!s) {
       html += '<p style="color:#8a919c">该日总结内容暂未索引，请查看对应日报页面。</p>';
-      html += '<p style="font-size:13px"><a href="' + (window.location.pathname.indexOf("/archive/") >= 0 ? "../" : "") + 'archive/' + date + '.html" target="_blank" style="color:#1677ff">打开 ' + date + ' 日报 →</a></p>';
+      html += '<p style="font-size:13px"><a href="' + (window.location.pathname.indexOf("/archive/") >= 0 ? "../" : "") + 'archive/' + encodeURIComponent(date) + '.html" target="_blank" style="color:#1677ff">打开 ' + escapeHtml(date) + ' 日报 →</a></p>';
     } else {
       html += '<h4 style="color:#203a43;margin:0 0 6px"> 今日总览</h4>';
-      html += '<p style="margin:0 0 12px">' + (s.overview || "") + '</p>';
+      html += '<p style="margin:0 0 12px">' + escapeHtml(s.overview) + '</p>';
       if (s.conclusions && s.conclusions.length) {
         html += '<h4 style="color:#203a43;margin:0 0 6px">🎯 核心结论</h4><ul style="margin:0 0 12px;padding-left:20px">';
-        s.conclusions.forEach(function (c) { html += '<li style="margin:3px 0">' + c + '</li>'; });
+        s.conclusions.forEach(function (c) { html += '<li style="margin:3px 0">' + escapeHtml(c) + '</li>'; });
         html += '</ul>';
       }
       if (s.top_picks && s.top_picks.length) {
         html += '<h4 style="color:#203a43;margin:0 0 6px">⭐ 今日重点关注</h4>';
         s.top_picks.forEach(function (p) {
-          html += '<div style="margin:0 0 6px"><b>' + (p.title || "") + '</b><br><span style="color:#555;font-size:13.5px">' + (p.reason || "") + '</span></div>';
+          html += '<div style="margin:0 0 6px"><b>' + escapeHtml(p.title) + '</b><br><span style="color:#555;font-size:13.5px">' + escapeHtml(p.reason) + '</span></div>';
         });
         html += '<div style="margin-bottom:12px"></div>';
       }
       if (s.industry_use) {
         html += '<h4 style="color:#203a43;margin:0 0 6px">💡 对行业有什么用？</h4>';
-        html += '<p style="margin:0 0 12px">' + s.industry_use + '</p>';
+        html += '<p style="margin:0 0 12px">' + escapeHtml(s.industry_use) + '</p>';
       }
       if (s.risks) {
         html += '<h4 style="color:#203a43;margin:0 0 6px">⚠️ 风险提示</h4>';
-        html += '<p style="margin:0">' + s.risks + '</p>';
+        html += '<p style="margin:0">' + escapeHtml(s.risks) + '</p>';
       }
     }
     html += '</div>';
@@ -258,7 +265,7 @@
     modal.className = "adr-modal";
     modal.style.cssText = "position:relative;max-width:680px;width:92%;max-height:92vh;overflow-y:auto";
     modal.innerHTML = '<button class="adr-modal-close" id="summary-modal-close">&times;</button>' +
-      '<h3>' + (title || "今日总结 · " + date) + '</h3>' + html;
+      '<h3>' + escapeHtml(title || ("今日总结 · " + date)) + '</h3>' + html;
     overlay.appendChild(modal);
     document.body.appendChild(overlay);
     function _closeModal() {

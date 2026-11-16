@@ -89,7 +89,7 @@
 
     if (btn) { btn.disabled = true; btn.textContent = "分析中..."; }
     _setQuickBtnsDisabled(true);
-    if (resultDiv) resultDiv.innerHTML = '<p style="color:#1677ff">🔄 正在分析 ' + startDate + ' 至 ' + endDate + ' 的数据，请稍候（约 10-30 秒）...</p>';
+    setResultText("#1677ff", "🔄 正在分析 " + startDate + " 至 " + endDate + " 的数据，请稍候（约 10-30 秒）...");
 
     try {
       var res = await fetch(EDGE_FUNCTION_URL, {
@@ -107,18 +107,18 @@
       _setQuickBtnsDisabled(false);
 
       if (!data.success) {
-        if (resultDiv) resultDiv.innerHTML = '<p style="color:#e63946">分析失败：' + (data.error || "未知错误") + '</p>';
+        setResultText("#e63946", "分析失败：" + (data.error || "未知错误"));
         return;
       }
 
       if (!data.data) {
-        if (resultDiv) resultDiv.innerHTML = '<p style="color:#8a919c">' + (data.message || "该时段暂无数据") + '</p>';
+        setResultText("#8a919c", data.message || "该时段暂无数据");
         return;
       }
 
       // Render the analysis result as markdown-like HTML
       var html = '<div class="card summary-card">';
-      html += '<h3 class="summary-title">📊 ' + startDate + ' 至 ' + endDate + ' AI 分析报告</h3>';
+      html += '<h3 class="summary-title">📊 ' + escapeHtml(startDate) + ' 至 ' + escapeHtml(endDate) + ' AI 分析报告</h3>';
       if (data.cached) {
         html += '<p style="color:#8a919c;font-size:12px">（缓存结果）</p>';
       }
@@ -131,7 +131,7 @@
     } catch (e) {
       if (btn) { btn.disabled = false; btn.textContent = "开始 AI 分析"; }
       _setQuickBtnsDisabled(false);
-      if (resultDiv) resultDiv.innerHTML = '<p style="color:#e63946">请求失败：' + e.message + '</p>';
+      setResultText("#e63946", "请求失败：" + (e && e.message ? e.message : "未知错误"));
     }
   };
 
@@ -144,8 +144,26 @@
   })();
 
   /* 简单的 Markdown 渲染 */
+  /* XSS 防护：LLM 输出是不可信内容，必须先转义再套 Markdown 语法 */
+  function escapeHtml(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  }
+
+  /* 安全设置结果区文本（用户/API/异常信息一律走 textContent，不进 innerHTML） */
+  function setResultText(color, text) {
+    var el = document.getElementById("range-result");
+    if (!el) return;
+    el.textContent = "";
+    var p = document.createElement("p");
+    p.style.color = color;
+    p.textContent = text;
+    el.appendChild(p);
+  }
+
   function renderMarkdown(text) {
-    return text
+    return escapeHtml(text)
       .replace(/^## (.+)$/gm, '<h3 style="color:#203a43;margin:20px 0 10px;font-size:18px;border-left:4px solid #1677ff;padding-left:10px">$1</h3>')
       .replace(/^### (.+)$/gm, '<h4 style="color:#2c5364;margin:16px 0 8px;font-size:16px">$1</h4>')
       .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
