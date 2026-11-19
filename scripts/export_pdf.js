@@ -3,6 +3,79 @@
 // 关键：必须使用页面中真实的 DOM 元素（不能用 clone），
 // 因为 html2canvas 需要计算样式，脱离 DOM 的节点样式全部丢失会导出空白。
 // 做法：临时隐藏不需要导出的元素，生成完再恢复。
+//
+// 按需加载（2026-11-19）：两个库合计 133KB（gzip），只有点「导出 PDF」才用得到，
+// 之前作为普通 <script> 常驻，会阻塞 DOMContentLoaded 达 5s+，
+// 把首页备注原地展示等初始化逻辑一起拖慢。现改为点击时注入。
+
+var PDF_LIB_SRI = {
+  html2canvas: "sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA==",
+  jspdf: "sha512-qZvrmS2ekKPF2mSznTQsxqPgnpkI4DNTlrdUmTzrDgektczlKNRRhy5X5AAOnx5S09ydFYWWNSfcEqDTTHgtNA=="
+};
+
+var _pdfLibsPromise = null;
+var _pdfLibsLoaded = {};
+
+/* 按需加载 html2canvas + jsPDF。返回 Promise，失败后允许重试。
+   保留 SRI / crossorigin / referrerpolicy，与原先内联在页面里的标签一致。 */
+function _loadPdfLibs() {
+  if (_pdfLibsPromise) return _pdfLibsPromise;
+
+  var specs = [
+    { url: "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js", sri: PDF_LIB_SRI.html2canvas },
+    { url: "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js", sri: PDF_LIB_SRI.jspdf }
+  ];
+
+  _pdfLibsPromise = new Promise(function (resolve, reject) {
+    var pending = 0;
+    var settled = false;
+
+    function fail() {
+      if (settled) return;
+      settled = true;
+      _pdfLibsPromise = null; /* 下一次点击重新尝试 */
+      reject(new Error("PDF 组件加载失败，请检查网络后重试"));
+    }
+
+    function maybeDone() {
+      if (settled || pending > 0) return;
+      settled = true;
+      resolve();
+    }
+
+    specs.forEach(function (spec) {
+      if (_pdfLibsLoaded[spec.url]) return;
+      pending++;
+      var el = document.createElement("script");
+      el.src = spec.url;
+      el.integrity = spec.sri;
+      el.crossOrigin = "anonymous";
+      el.referrerPolicy = "no-referrer";
+      el.onload = function () {
+        _pdfLibsLoaded[spec.url] = true;
+        pending--;
+        maybeDone();
+      };
+      el.onerror = fail;
+      document.head.appendChild(el);
+    });
+
+    maybeDone();
+  });
+
+  return _pdfLibsPromise;
+}
+
+/* 导出按钮的失败态：库没加载成功时什么都还没隐藏，只需复位按钮 */
+function _failPdfLibs(btn, loading, restoreText, err) {
+  console.error("PDF libs failed to load:", err);
+  btn.disabled = false;
+  btn.textContent = "❌ 组件加载失败，请重试";
+  if (loading) loading.style.display = "none";
+  setTimeout(function () {
+    btn.textContent = restoreText;
+  }, 2000);
+}
 
 function _hideEls(selectors) {
   var saved = [];
@@ -176,33 +249,38 @@ function exportDailyPDF() {
   btn.textContent = '⏳ 正在生成...';
   loading.style.display = 'block';
 
-  var hidden = _hideEls([
-    '.fav-bar', '.export-pdf-btn', '.pdf-loading',
-    '.archive', 'footer', '.fav-btn'
-  ]);
+  /* 库加载失败时什么都还没隐藏，用二参数 then 的 onRejected 精确区分 */
+  _loadPdfLibs().then(function() {
+    var hidden = _hideEls([
+      '.fav-bar', '.export-pdf-btn', '.pdf-loading',
+      '.archive', 'footer', '.fav-btn'
+    ]);
 
-  var detailsSaved = _expandDetails();
+    var detailsSaved = _expandDetails();
 
-  var wrap = document.querySelector('.wrap');
-  var date = document.title.replace('AI 日报雷达 · ', '');
-  var filename = 'AI日报雷达_' + date + '.pdf';
+    var wrap = document.querySelector('.wrap');
+    var date = document.title.replace('AI 日报雷达 · ', '');
+    var filename = 'AI日报雷达_' + date + '.pdf';
 
-  _generatePDF(wrap, filename).then(function() {
-    _restoreDetails(detailsSaved);
-    _restoreEls(hidden);
-    btn.disabled = false;
-    btn.textContent = '📄 导出当日日报为 PDF';
-    loading.style.display = 'none';
-  }).catch(function(err) {
-    console.error('PDF export failed:', err);
-    _restoreDetails(detailsSaved);
-    _restoreEls(hidden);
-    btn.disabled = false;
-    btn.textContent = '❌ 导出失败，请重试';
-    loading.style.display = 'none';
-    setTimeout(function() {
+    _generatePDF(wrap, filename).then(function() {
+      _restoreDetails(detailsSaved);
+      _restoreEls(hidden);
+      btn.disabled = false;
       btn.textContent = '📄 导出当日日报为 PDF';
-    }, 2000);
+      loading.style.display = 'none';
+    }).catch(function(err) {
+      console.error('PDF export failed:', err);
+      _restoreDetails(detailsSaved);
+      _restoreEls(hidden);
+      btn.disabled = false;
+      btn.textContent = '❌ 导出失败，请重试';
+      loading.style.display = 'none';
+      setTimeout(function() {
+        btn.textContent = '📄 导出当日日报为 PDF';
+      }, 2000);
+    });
+  }, function(err) {
+    _failPdfLibs(btn, loading, '📄 导出当日日报为 PDF', err);
   });
 }
 
@@ -215,43 +293,48 @@ function exportFavoritesPDF() {
   btn.textContent = '⏳ 正在生成...';
   loading.style.display = 'block';
 
-  // 1. Save filter state
-  var filterState = _getFilterState();
+  /* 库加载失败时什么都还没隐藏，用二参数 then 的 onRejected 精确区分 */
+  _loadPdfLibs().then(function() {
+    // 1. Save filter state
+    var filterState = _getFilterState();
 
-  // 2. Hide UI elements (complete selectors: add cat tabs, date filter, count)
-  var hidden = _hideEls([
-    '.export-pdf-btn', '.pdf-loading', '.fav-btn',
-    '.fav-toolbar', '.fav-link-box', '.copy-btn',
-    '.fav-cat-tab', '.fav-date-filter', '#fav-count'
-  ]);
-  var detailsSaved = _expandDetails();
+    // 2. Hide UI elements (complete selectors: add cat tabs, date filter, count)
+    var hidden = _hideEls([
+      '.export-pdf-btn', '.pdf-loading', '.fav-btn',
+      '.fav-toolbar', '.fav-link-box', '.copy-btn',
+      '.fav-cat-tab', '.fav-date-filter', '#fav-count'
+    ]);
+    var detailsSaved = _expandDetails();
 
-  // 3. Clear all filters to show ALL favorites
-  if (typeof window.adrSetFilterState === 'function') {
-    window.adrSetFilterState({ category: '', date: '', from: '', to: '', search: '', sortDesc: true });
-  }
+    // 3. Clear all filters to show ALL favorites
+    if (typeof window.adrSetFilterState === 'function') {
+      window.adrSetFilterState({ category: '', date: '', from: '', to: '', search: '', sortDesc: true });
+    }
 
-  // 4. Wait for DOM update -> inject summary content -> generate PDF
-  setTimeout(function() {
-    _injectSummaryContent().then(function() {
-      var wrap = document.querySelector('.wrap');
-      var filename = 'AI日报雷达_收藏夹.pdf';
-      _generatePDF(wrap, filename).then(function() {
-        // 5. Restore state
-        _restoreDetails(detailsSaved); _restoreEls(hidden); _restoreFilterState(filterState);
-        btn.disabled = false;
-        btn.textContent = '📄 导出收藏夹为 PDF';
-        loading.style.display = 'none';
-      }).catch(function(err) {
-        console.error('PDF export failed:', err);
-        _restoreDetails(detailsSaved); _restoreEls(hidden); _restoreFilterState(filterState);
-        btn.disabled = false;
-        btn.textContent = '❌ 导出失败，请重试';
-        loading.style.display = 'none';
-        setTimeout(function() {
+    // 4. Wait for DOM update -> inject summary content -> generate PDF
+    setTimeout(function() {
+      _injectSummaryContent().then(function() {
+        var wrap = document.querySelector('.wrap');
+        var filename = 'AI日报雷达_收藏夹.pdf';
+        _generatePDF(wrap, filename).then(function() {
+          // 5. Restore state
+          _restoreDetails(detailsSaved); _restoreEls(hidden); _restoreFilterState(filterState);
+          btn.disabled = false;
           btn.textContent = '📄 导出收藏夹为 PDF';
-        }, 2000);
+          loading.style.display = 'none';
+        }).catch(function(err) {
+          console.error('PDF export failed:', err);
+          _restoreDetails(detailsSaved); _restoreEls(hidden); _restoreFilterState(filterState);
+          btn.disabled = false;
+          btn.textContent = '❌ 导出失败，请重试';
+          loading.style.display = 'none';
+          setTimeout(function() {
+            btn.textContent = '📄 导出收藏夹为 PDF';
+          }, 2000);
+        });
       });
-    });
-  }, 300);
+    }, 300);
+  }, function(err) {
+    _failPdfLibs(btn, loading, '📄 导出收藏夹为 PDF', err);
+  });
 }
