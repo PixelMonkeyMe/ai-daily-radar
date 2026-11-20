@@ -66,6 +66,8 @@
 
   function updateChrome(idx) {
     var it = ISSUES[idx];
+    /* 分享按钮读它拼 archive/<date>.html（见 print.js 的 _issueShareUrl） */
+    window.ADR_SHARE_DATE = it.date;
     elMain.textContent = mainLabel(it.date);
     elSub.textContent = subLabel(idx);
     bar.classList.toggle("is-history", it.date !== LATEST);

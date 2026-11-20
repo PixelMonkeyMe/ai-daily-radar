@@ -76,12 +76,21 @@ if [ "$TEST_MODE" = "full" ] || [ "$TEST_MODE" = "js" ]; then
     fi
   done
 
-  if [ -f "$ROOT/docs/export_pdf.js" ]; then
-    if node -e "new Function(require('fs').readFileSync('$ROOT_NODE/docs/export_pdf.js','utf8'))" 2>/dev/null; then
-      pass "docs/export_pdf.js 语法正确"
+  if [ -f "$ROOT/docs/print.js" ]; then
+    if node -e "new Function(require('fs').readFileSync('$ROOT_NODE/docs/print.js','utf8'))" 2>/dev/null; then
+      pass "docs/print.js 语法正确"
     else
-      fail "docs/export_pdf.js 语法错误"
+      fail "docs/print.js 语法错误"
     fi
+  else
+    fail "docs/print.js 不存在"
+  fi
+
+  # 自研 PDF 导出已移除，残留检查（防止回退时悄悄复活）
+  if grep -rq "html2canvas\|jspdf\|export_pdf" "$ROOT/docs" --include=*.html 2>/dev/null; then
+    fail "docs/*.html 仍引用已移除的 PDF 渲染库"
+  else
+    pass "PDF 渲染库零残留"
   fi
 else
   skip "JS 语法校验（非 JS 变更）"

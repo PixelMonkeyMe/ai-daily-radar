@@ -279,10 +279,14 @@ CSS = """
   .history-day .item-line:last-child { border-bottom: none; }
   .history-date { font-weight: 600; color: #203a43; }
   .already-fav { display: inline-block; background: #fff7e8; color: #8a5a00; border-radius: 6px; padding: 0 8px; font-size: 12px; margin-left: 6px; font-weight: 600; }
-  .export-pdf-btn { display: inline-block; background: #e63946; color: #fff; border: none; border-radius: 8px; padding: 8px 18px; font-size: 14px; cursor: pointer; margin: 10px 0; font-weight: 600; }
-  .export-pdf-btn:hover { background: #c1121f; }
-  .export-pdf-btn:disabled { background: #ccc; cursor: not-allowed; }
-  .pdf-loading { display: none; background: #fff3cd; border: 1px solid #ffc107; border-radius: 8px; padding: 10px 16px; margin: 10px 0; font-size: 14px; color: #856404; }
+  .action-btn { display: inline-block; background: #e63946; color: #fff; border: none; border-radius: 8px; padding: 8px 18px; font-size: 14px; cursor: pointer; margin: 0; font-weight: 600; }
+  .action-btn:hover { background: #c1121f; }
+  .action-btn:disabled { background: #ccc; cursor: not-allowed; }
+  .share-bar { display: flex; gap: 10px; flex-wrap: wrap; margin: 10px 0; }
+  .copy-link-btn { background: #1677ff; }
+  .copy-link-btn:hover { background: #0e5fcc; }
+  /* 打印前由 print.js 注入的今日总结全文 */
+  .summary-full-content { margin-top: 12px; padding: 12px; background: #f7fbfc; border-radius: 8px; font-size: 13px; }
   /* ── 登录弹窗 ── */
   .adr-modal-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,.45); z-index:9999; justify-content:center; align-items:center; }
   .adr-modal { background:#fff; border-radius:16px; padding:32px 28px 24px; max-width:400px; width:90%; box-shadow:0 8px 30px rgba(0,0,0,.15); text-align:center; }
@@ -318,10 +322,20 @@ CSS = """
   .range-quick-btn.active { background: #1677ff; color: #fff; border-color: #1677ff; }
   .range-quick-btn:disabled { opacity: .5; cursor: not-allowed; }
   @media print {
-    .export-pdf-btn, .pdf-loading, .fav-btn, .fav-bar, .nav, header.top .badge { display: none !important; }
+    /* 交互控件一律不打印。收藏页的工具栏/筛选/复制/条数此前靠 JS 临时隐藏，
+       改走浏览器打印后必须在 CSS 里声明，否则会被一起印出来。 */
+    .action-btn, .share-bar, .pdf-loading, .fav-btn, .fav-bar, .nav, header.top .badge,
+    .fav-toolbar, .fav-date-filter, .fav-date-reset, .copy-btn, .fav-link-box,
+    #fav-count, .fav-cat-tab, .back-to-top, .issue-nav, .issue-pager, .issue-footer,
+    .note-toggle, .note-meta, .note-edit, .inline-note-edit { display: none !important; }
     body { background: #fff; }
     .wrap { max-width: 100%; padding: 0; }
     .card { box-shadow: none; border: 1px solid #ddd; page-break-inside: avoid; }
+    /* 折叠备注在打印时全展开 */
+    .note-md.collapsed { max-height: none; overflow: visible; }
+    .note-md.collapsed::after { display: none; }
+    .note-table-wrap { overflow: visible; }
+    .note-table th:first-child, .note-table td:first-child { position: static; box-shadow: none; }
   }
   /* ── 响应式布局（仅屏幕设备，打印/PDF 导出时不生效） ── */
   @media screen and (max-width: 768px) {
@@ -356,7 +370,7 @@ CSS = """
     .archive a { font-size: 13px; margin-right: 10px; }
     .adr-modal { width: 96%; padding: 20px 16px 14px; }
     .summary-title { font-size: 17px !important; }
-    .export-pdf-btn { font-size: 13px; padding: 6px 14px; }
+    .action-btn { font-size: 13px; padding: 6px 14px; }
   }
 """
 
@@ -365,6 +379,7 @@ PAGE = """<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{ogmeta}
 <title>AI 日报雷达 · {title}</title>
 <style>{css}</style>
 </head>
@@ -415,10 +430,9 @@ PAGE = """<!DOCTYPE html>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 {favjs}{historyjs}
-<!-- html2canvas + jsPDF 不在此处引入：由 export_pdf.js 在点击「导出 PDF」时按需加载，
-     避免每个页面白白下载 133KB（gzip）并在 5s+ 内阻塞 DOMContentLoaded。
-     SRI 校验值保留在 export_pdf.js 的 PDF_LIB_SRI 常量中。 -->
-<script src="{pdfjs}"></script>
+<!-- 打印 / 复制链接：交给浏览器自带的打印引擎完成，不再引入任何 PDF 渲染库
+     （旧的截图式导出会产出 264MB 且无超链接）。只有需要按钮的页面传脚本，其余传空串。 -->
+<script src="{printjs}"></script>
 </body>
 </html>"""
 
@@ -427,6 +441,37 @@ PAGE = """<!DOCTYPE html>
 
 def esc(s):
     return html.escape(str(s or ""))
+
+
+def og_meta(title, description):
+    """分享预览用。html.escape 默认转义引号，可安全放进属性值。"""
+    t = esc(title)
+    d = esc(description)
+    return (f'<meta property="og:title" content="{t}">'
+            f'<meta property="og:description" content="{d}">'
+            f'<meta property="og:type" content="article">'
+            f'<meta name="description" content="{d}">')
+
+
+def _top_desc(rep, limit=120):
+    """取当期第一条标题做预览描述。"""
+    for item in rep.get("items", []):
+        t = (item.get("title") or "").strip()
+        if t:
+            return t[:limit]
+    return ""
+
+
+def action_bar(kind, with_copy):
+    """kind: daily（首页/期次页）| favorites（收藏页）"""
+    bar = '<div class="share-bar">'
+    if with_copy:
+        bar += ('<button class="action-btn copy-link-btn" type="button" '
+                'onclick="adrCopyIssueLink()">🔗 复制链接</button>')
+    bar += (f'<button class="action-btn" type="button" '
+            f'onclick="adrPrint(\'{kind}\')">🖨 打印 / 存为 PDF</button>')
+    bar += '</div>'
+    return bar
 
 
 def fav_bar(prefix):
@@ -699,10 +744,12 @@ def build_daily():
             nav='<a href="../index.html">最新日报</a><a href="../digests/index.html">周期汇总（周/月/季）</a><a href="../favorites.html">我的收藏夹</a>',
             favjs=f'<script src="../fav-core.js?v={FAVJS_VER}"></script>',
             pagetype="archive",
-            pdfjs="../export_pdf.js",
+            printjs="../print.js",
+            ogmeta=og_meta(f"AI 日报雷达 · {rep['date']}", _top_desc(rep)),
             historyjs="",
-            body=f'<script>sessionStorage.setItem("adr_report","archive/{rep["date"]}.html")</script>'
-                 + fav_bar("../") + render_summary(rep, rep["date"]) + cards + f'<div class="archive"><b>历史日报：</b>{links}</div>')
+            body=f'<script>sessionStorage.setItem("adr_report","archive/{rep["date"]}.html");window.ADR_SHARE_DATE="{rep["date"]}";</script>'
+                 + fav_bar("../") + action_bar("daily", True)
+                 + render_summary(rep, rep["date"]) + cards + f'<div class="archive"><b>历史日报：</b>{links}</div>')
         with open(os.path.join(ARCHIVE, f"{rep['date']}.html"), "w", encoding="utf-8") as fo:
             fo.write(page)
 
@@ -801,8 +848,7 @@ def build_daily():
     index_body = (
         '<script>sessionStorage.setItem("adr_report","index.html")</script>'
         + fav_bar("")
-        + '<div><button class="export-pdf-btn" onclick="exportDailyPDF()">📄 导出日报为 PDF</button>'
-        + '<div class="pdf-loading" id="pdf-loading">⏳ 正在生成 PDF，请稍候...</div></div>'
+        + action_bar("daily", True)
         + issue_nav
         + issue_content
         + issue_pager
@@ -816,7 +862,9 @@ def build_daily():
         nav='<a href="digests/index.html">周期汇总（周/月/季）</a><a href="favorites.html">我的收藏夹</a>',
         favjs=f'<script src="fav-core.js?v={FAVJS_VER}"></script><script src="fav-index.js?v={FAVJS_VER}"></script><script src="back-to-top.js?v={FAVJS_VER}"></script>',
         pagetype="index",
-        pdfjs="export_pdf.js",
+        printjs="print.js",
+        ogmeta=og_meta("AI 日报雷达 · 每日 AI 资讯与深度解读",
+                       _top_desc(latest)),
         historyjs=f'<script src="history.js?v={BUILD_TS}"></script>',
         body=index_body)
     with open(os.path.join(DOCS, "index.html"), "w", encoding="utf-8") as fo:
@@ -876,7 +924,8 @@ def build_digests():
             nav='<a href="../index.html">日报首页</a><a href="index.html">全部汇总</a><a href="../favorites.html">我的收藏夹</a>',
             favjs=f'<script src="../fav-core.js?v={FAVJS_VER}"></script>',
             pagetype="digest",
-            pdfjs="../export_pdf.js",
+            printjs="",
+            ogmeta="",
             historyjs="",
             body=render_digest(d))
         with open(os.path.join(DIGESTS_OUT, f"{d['label']}.html"), "w", encoding="utf-8") as fo:
@@ -897,7 +946,8 @@ def build_digests():
         nav='<a href="../index.html">日报首页</a><a href="../favorites.html">我的收藏夹</a>',
         favjs=f'<script src="../fav-core.js?v={FAVJS_VER}"></script>',
         pagetype="digest",
-        pdfjs="../export_pdf.js",
+        printjs="",
+        ogmeta="",
         historyjs="",
         body=body or '<div class="card"><p>还没有汇总。周报/月报/季报会按时间自动生成。</p></div>')
     with open(os.path.join(DIGESTS_OUT, "index.html"), "w", encoding="utf-8") as fo:
@@ -935,10 +985,10 @@ def build_favorites():
         nav='<a href="index.html" id="adr-home-link">日报首页</a><a href="digests/index.html">周期汇总（周/月/季）</a>',
         favjs=f'<script src="fav-core.js?v={FAVJS_VER}"></script><script src="fav-page.js?v={FAVJS_VER}"></script><script src="back-to-top.js?v={FAVJS_VER}"></script>',
         pagetype="favorites",
-        pdfjs="export_pdf.js",
+        printjs="print.js",
+        ogmeta="",
         historyjs="",
-        body=body + '<div><button class="export-pdf-btn" onclick="exportFavoritesPDF()">📄 导出收藏夹为 PDF</button>'
-              + '<div class="pdf-loading" id="pdf-loading">⏳ 正在生成 PDF，请稍候...</div></div>')
+        body=body + action_bar("favorites", False))
     with open(os.path.join(DOCS, "favorites.html"), "w", encoding="utf-8") as f:
         f.write(page)
 
@@ -1010,11 +1060,11 @@ def main():
     build_favorites()
     build_summaries()
     # docs/fav.js 直接维护，不再从常量写入
-    # 复制 export_pdf.js 到 docs/
-    export_pdf_src = os.path.join(os.path.dirname(__file__), "export_pdf.js")
-    if os.path.exists(export_pdf_src):
-        with open(export_pdf_src, "r", encoding="utf-8") as src:
-            with open(os.path.join(DOCS, "export_pdf.js"), "w", encoding="utf-8") as dst:
+    # 复制 print.js 到 docs/（打印 / 复制链接）
+    print_src = os.path.join(os.path.dirname(__file__), "print.js")
+    if os.path.exists(print_src):
+        with open(print_src, "r", encoding="utf-8") as src:
+            with open(os.path.join(DOCS, "print.js"), "w", encoding="utf-8") as dst:
                 dst.write(src.read())
     # 清理 90 天前的 SQLite 历史数据
     cleanup_old(days=90)

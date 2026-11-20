@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta property="og:title" content="AI 日报雷达 · 2026-11-12"><meta property="og:description" content="meta//astryx"><meta property="og:type" content="article"><meta name="description" content="meta//astryx">
 <title>AI 日报雷达 · 2026-11-12</title>
 <style>
   * { box-sizing: border-box; margin: 0; }
@@ -239,10 +240,14 @@
   .history-day .item-line:last-child { border-bottom: none; }
   .history-date { font-weight: 600; color: #203a43; }
   .already-fav { display: inline-block; background: #fff7e8; color: #8a5a00; border-radius: 6px; padding: 0 8px; font-size: 12px; margin-left: 6px; font-weight: 600; }
-  .export-pdf-btn { display: inline-block; background: #e63946; color: #fff; border: none; border-radius: 8px; padding: 8px 18px; font-size: 14px; cursor: pointer; margin: 10px 0; font-weight: 600; }
-  .export-pdf-btn:hover { background: #c1121f; }
-  .export-pdf-btn:disabled { background: #ccc; cursor: not-allowed; }
-  .pdf-loading { display: none; background: #fff3cd; border: 1px solid #ffc107; border-radius: 8px; padding: 10px 16px; margin: 10px 0; font-size: 14px; color: #856404; }
+  .action-btn { display: inline-block; background: #e63946; color: #fff; border: none; border-radius: 8px; padding: 8px 18px; font-size: 14px; cursor: pointer; margin: 0; font-weight: 600; }
+  .action-btn:hover { background: #c1121f; }
+  .action-btn:disabled { background: #ccc; cursor: not-allowed; }
+  .share-bar { display: flex; gap: 10px; flex-wrap: wrap; margin: 10px 0; }
+  .copy-link-btn { background: #1677ff; }
+  .copy-link-btn:hover { background: #0e5fcc; }
+  /* 打印前由 print.js 注入的今日总结全文 */
+  .summary-full-content { margin-top: 12px; padding: 12px; background: #f7fbfc; border-radius: 8px; font-size: 13px; }
   /* ── 登录弹窗 ── */
   .adr-modal-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,.45); z-index:9999; justify-content:center; align-items:center; }
   .adr-modal { background:#fff; border-radius:16px; padding:32px 28px 24px; max-width:400px; width:90%; box-shadow:0 8px 30px rgba(0,0,0,.15); text-align:center; }
@@ -278,10 +283,20 @@
   .range-quick-btn.active { background: #1677ff; color: #fff; border-color: #1677ff; }
   .range-quick-btn:disabled { opacity: .5; cursor: not-allowed; }
   @media print {
-    .export-pdf-btn, .pdf-loading, .fav-btn, .fav-bar, .nav, header.top .badge { display: none !important; }
+    /* 交互控件一律不打印。收藏页的工具栏/筛选/复制/条数此前靠 JS 临时隐藏，
+       改走浏览器打印后必须在 CSS 里声明，否则会被一起印出来。 */
+    .action-btn, .share-bar, .pdf-loading, .fav-btn, .fav-bar, .nav, header.top .badge,
+    .fav-toolbar, .fav-date-filter, .fav-date-reset, .copy-btn, .fav-link-box,
+    #fav-count, .fav-cat-tab, .back-to-top, .issue-nav, .issue-pager, .issue-footer,
+    .note-toggle, .note-meta, .note-edit, .inline-note-edit { display: none !important; }
     body { background: #fff; }
     .wrap { max-width: 100%; padding: 0; }
     .card { box-shadow: none; border: 1px solid #ddd; page-break-inside: avoid; }
+    /* 折叠备注在打印时全展开 */
+    .note-md.collapsed { max-height: none; overflow: visible; }
+    .note-md.collapsed::after { display: none; }
+    .note-table-wrap { overflow: visible; }
+    .note-table th:first-child, .note-table td:first-child { position: static; box-shadow: none; }
   }
   /* ── 响应式布局（仅屏幕设备，打印/PDF 导出时不生效） ── */
   @media screen and (max-width: 768px) {
@@ -316,7 +331,7 @@
     .archive a { font-size: 13px; margin-right: 10px; }
     .adr-modal { width: 96%; padding: 20px 16px 14px; }
     .summary-title { font-size: 17px !important; }
-    .export-pdf-btn { font-size: 13px; padding: 6px 14px; }
+    .action-btn { font-size: 13px; padding: 6px 14px; }
   }
 </style>
 </head>
@@ -328,7 +343,7 @@
   <div class="nav" style="display:flex;align-items:center"><a href="../index.html">最新日报</a><a href="../digests/index.html">周期汇总（周/月/季）</a><a href="../favorites.html">我的收藏夹</a><div class="adr-nav-auth"><span class="adr-user-email" id="adr-user-info"></span><button class="adr-login-btn" id="adr-login-btn" onclick="document.getElementById('adr-login-modal').style.display='flex'">登录</button><button class="adr-logout-btn" id="adr-logout-btn" onclick="adrLogout()">登出</button></div></div>
 </div></header>
 <div class="wrap">
-<script>sessionStorage.setItem("adr_report","archive/2026-11-12.html")</script><div class="fav-bar"><a href="../favorites.html">★ 我的收藏夹（<span class="fav-chip" id="fav-chip">0</span>条）· 点条目旁的 ☆ 即可收藏</a></div><div class="card summary-card">
+<script>sessionStorage.setItem("adr_report","archive/2026-11-12.html");window.ADR_SHARE_DATE="2026-11-12";</script><div class="fav-bar"><a href="../favorites.html">★ 我的收藏夹（<span class="fav-chip" id="fav-chip">0</span>条）· 点条目旁的 ☆ 即可收藏</a></div><div class="share-bar"><button class="action-btn copy-link-btn" type="button" onclick="adrCopyIssueLink()">🔗 复制链接</button><button class="action-btn" type="button" onclick="adrPrint('daily')">🖨 打印 / 存为 PDF</button></div><div class="card summary-card">
 <h2 class="summary-title">今日总结 · AI 主编解读<button class="fav-btn" title="收藏" data-t="今日总结 · 2026-11-12" data-u="summary://2026-11-12" data-s="AI 日报总结" data-d="2026-11-12" data-b="今天AI圈两大主线：一是AI代理（Agent）从工具走向系统级应用，浏览器、编程、决策API全面开花；二是大模型价格战和端侧部署加速，华为开源量化工具、国产模型双11五折促销，都在推低成本落地。同时，">☆</button></h2>
 <dl>
 <dt>今日总览</dt><dd>今天AI圈两大主线：一是AI代理（Agent）从工具走向系统级应用，浏览器、编程、决策API全面开花；二是大模型价格战和端侧部署加速，华为开源量化工具、国产模型双11五折促销，都在推低成本落地。同时，AI在垂直场景（考古、农业、机器人）的硬实力开始兑现，不再是纯概念。</dd>
@@ -405,9 +420,8 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../fav-core.js?v=3.3d-16"></script>
-<!-- html2canvas + jsPDF 不在此处引入：由 export_pdf.js 在点击「导出 PDF」时按需加载，
-     避免每个页面白白下载 133KB（gzip）并在 5s+ 内阻塞 DOMContentLoaded。
-     SRI 校验值保留在 export_pdf.js 的 PDF_LIB_SRI 常量中。 -->
-<script src="../export_pdf.js"></script>
+<!-- 打印 / 复制链接：交给浏览器自带的打印引擎完成，不再引入任何 PDF 渲染库
+     （旧的截图式导出会产出 264MB 且无超链接）。只有需要按钮的页面传脚本，其余传空串。 -->
+<script src="../print.js"></script>
 </body>
 </html>
