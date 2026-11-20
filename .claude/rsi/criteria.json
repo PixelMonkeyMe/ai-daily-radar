@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "frozen_note": "这是评判标准。RSI 会话自身禁止修改；任何改动需用户一键批准。triage.py 会比对指纹，改动即阻断。",
+  "recidivism": {
+    "definition": "同类事故复发 = 同一 target_incident 类型在规则加入后再次出现",
+    "window_days": 14,
+    "evidence_required": ["用户原话或 commit sha", "发生时间"]
+  },
+  "budget": {
+    "runs_per_week": 1,
+    "tokens_per_session_max": 1000000,
+    "tokens_per_week_max": 1000000
+  },
+  "approval_required": [
+    "新增规则",
+    "修改阈值",
+    "修改验收口径"
+  ],
+  "auto_allowed": [
+    "改写规则文字",
+    "删除无效规则",
+    "产品代码改动（须过回归清单）"
+  ]
+}

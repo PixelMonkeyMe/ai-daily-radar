@@ -1,0 +1,56 @@
+name: RSI 预筛
+
+# 零 LLM、零成本。只看"该不该跑一次归因会话"，不跑任何模型。
+# GO 时开一个 Issue 作为触发凭据——触发由客观信号决定，不依赖任何人的记性。
+
+on:
+  schedule:
+    - cron: "0 1 * * 1"   # 每周一 09:00 北京时间
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  triage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: 预筛
+        id: triage
+        run: |
+          set +e
+          # memory 信号在 CI 里读不到（memory 不在仓库内），固定传 0；
+          # 会话内复核时由 Lead 调 memory_list 补填。
+          python .claude/rsi/triage.py --memory-feedback 0 > /tmp/rsi-triage.txt 2>&1
+          python .claude/rsi/triage.py --memory-feedback 0 --json > /tmp/rsi-triage.json 2>/dev/null
+          cat /tmp/rsi-triage.txt
+          DECISION=$(python -c "import json;print(json.load(open('/tmp/rsi-triage.json'))['decision'])" 2>/dev/null || echo "NO-GO")
+          echo "decision=$DECISION" >> "$GITHUB_OUTPUT"
+
+      - name: GO 时开 Issue
+        if: steps.triage.outputs.decision == 'GO'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          {
+            echo "RSI 预筛判定值得跑一次复盘。"
+            echo ""
+            echo "注意：CI 里读不到 memory，\`memory_feedback\` 恒为 0。"
+            echo "实际执行前须在会话内调 \`memory_list\` 补填近 7 天 feedback 条数，并**粘贴原始 updatedAt 作为证据**。"
+            echo ""
+            echo '```'
+            cat /tmp/rsi-triage.txt
+            echo '```'
+            echo ""
+            echo "执行：\`python .claude/rsi/triage.py --memory-feedback N --claim\`"
+          } > /tmp/issue.md
+          gh issue create --title "RSI 预筛：本周有信号（$(date -u +%Y-%m-%d)）" --body-file /tmp/issue.md

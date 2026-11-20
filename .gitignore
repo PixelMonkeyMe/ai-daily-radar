@@ -28,3 +28,7 @@ BUG截图/
 
 # 流水线临时产物（每次运行重新生成）
 data/raw.json
+state.json
+.claude/rsi/state.json
+.claude/rsi/_testbin/
+.claude/rsi/__pycache__/
