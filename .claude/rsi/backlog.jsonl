@@ -1,0 +1,1 @@
+{"id":"Q-001","found":"2026-11-20","source":"RSI 主动发现","severity":"medium","title":"RSI 证据流的 memory 信号不可迁移","detail":"memory_feedback 这一路依赖 cindy_memory，位于本机 AppData 且目录名由工作目录绝对路径派生。换机/重装后台账归零，且无任何自动提示，等于把 2026-11-19 那种「漏记」放大成「全部清零」。","not_fixed_reason":"按 RSI 规矩，主动发现只入队不立即修","candidate_fix":"或：提供 memory 导出/快照到仓库；或：triage 检测到 memory 目录缺失时显式告警而不是静默返回 0","status":"queued"}

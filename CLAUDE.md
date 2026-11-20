@@ -208,6 +208,30 @@ ocr delegate rule <本次改动的代码文件>    # 取规则清单，不调 LL
 
 **禁止**：为性能优化引入打包器/新依赖而不先量化收益（measure-first）。
 
+#### 五、可迁移性检查清单（2026-11-20，用户要求「换机不断」）
+
+**任何新增的「状态 / 配置 / 依赖」必须先回答三问，答不上就不许落地：**
+
+| # | 问题 | 反例（本项目真实情况） |
+|---|---|---|
+| ① | 这份状态存在哪：仓库 / 云端 / 本机？ | cindy_memory 在本机 `AppData\Roaming\Cindy` |
+| ② | 换机后靠什么恢复？ | 记忆库没有重建路径，只能手搬 |
+| ③ | 路径是否被硬编码或派生绑定？ | 记忆目录名由工作目录路径派生 |
+
+**规则**：
+- 只在本机、且**无法重建**的东西，必须在 PRD 里写明并附**手工迁移步骤**。
+- 优先选「仓库内可重建」> 「云端托管」> 「本机 + 迁移文档」。
+- 禁止把关键状态放进由绝对路径派生的命名空间（换用户/换目录即失联）。
+- 产品代码内禁止硬编码绝对路径（当前全仓 0 处，保持）。
+
+**换机时必须手搬的清单**（2026-11-20 盘点）：
+1. `cindy_memory`：`%APPDATA%\Cindy\owners\<owner>\maker-memory\C--Users-<用户>-Desktop-ai-daily-radar\`（目录名与 `meta.json.absPath` 均由路径派生）
+2. `.claude/workspace/`（ARCHITECTURE.md、历史 PRD、原型）
+3. `~/.claude/workflow-template.md`
+4. `.claude/settings*.json`
+5. SSH key（remote 为 `git@github.com:...`）
+6. 可重建：`npm install` + `npx playwright install chromium`、`pip install -r requirements.txt`
+
 ---
 
 ### agent-browser 使用规则（2026-11-13 引入，执行层工具）

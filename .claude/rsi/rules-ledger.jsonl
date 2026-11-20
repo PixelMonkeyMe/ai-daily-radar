@@ -2,3 +2,4 @@
 {"id":"R-002","file":"CLAUDE.md","summary":"新需求必先评估全量历史功能影响面","added":"2026-11-04","target_incident":"只测改动点、不评估历史功能","verify_status":"failed","last_checked":"2026-11-19","note":"2026-11-19 影响面表大半行写「不涉及」，被用户指出敷衍"}
 {"id":"R-003","file":".claude/commands/qa.md","summary":"写操作必须验完整链路（点击→提交→状态→刷新）","added":"2026-10-14","target_incident":"弹窗关闭误判为操作成功","verify_status":"valid","last_checked":"2026-11-19","note":"2026-11-19 分享改造回归中按此策略执行，未出现漏测"}
 {"id":"R-004","file":".claude/commands/dev.md","summary":"ocr delegate 规则自查纳入 Dev 门控","added":"2026-11-16","target_incident":"LLM 输出未转义导致 XSS","verify_status":"unverified","last_checked":null,"note":"尚未触发过同类事故，未到期"}
+{"id":"R-005","file":"CLAUDE.md","summary":"可迁移性检查清单（三问：存在哪/怎么恢复/路径是否绑定）+ 换机手搬清单","added":"2026-11-20","target_incident":"换机会丢失记忆库与本地工作产物，且无迁移路径","verify_status":"unverified","last_checked":null,"note":"用户要求「项目后续把可迁移纳入解决方案考虑」；下一次 PRD 若出现只在本机的状态而未给迁移步骤，即判定失效"}
