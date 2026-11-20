@@ -350,7 +350,8 @@ ocr delegate rule <本次改动的代码文件>    # 取规则清单，不调 LL
 ```
 python .claude/rsi/triage.py --memory-feedback N     # N = 近7天 feedback 条数（调 memory_list 得到）
 ```
-- 任一信号命中即 GO：memory 反馈 ≥1 / 近 7 天修复类提交 ≥2 / CI 失败 / 距上次 >14 天且有产品代码变更
+- 任一信号命中即 GO：memory 反馈 ≥1 / 近 7 天修复类提交 ≥2 / CI 失败
+- **按需消耗，不是常态消耗**：不设任何定时 LLM 任务；"每周上限 1 次"是天花板不是配额；距上次多久只作上下文，不参与判定（早先的 long_gap 信号会因为项目日常提交而每 14 天自动亮，已移除）
 - **报告里必须粘贴 `memory_list` 的原始 `updatedAt` 作为证据**，不许只报数字
 
 ### 预算闸（双闸）

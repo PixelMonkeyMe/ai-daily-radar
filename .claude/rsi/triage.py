@@ -102,14 +102,6 @@ def criteria_fingerprint():
     return {"sha256": sha, "last_commit": last or None}
 
 
-def product_changed_since(iso_date):
-    if not iso_date:
-        return True
-    out = sh(["git", "log", "--since=" + iso_date + " 00:00:00", "--pretty=%h",
-              "--", "docs/", "scripts/", "supabase/"])
-    return len(out.splitlines()) > 0
-
-
 def compute(args):
     state = load_json(STATE_PATH, {})
     wk = week_key()
@@ -157,14 +149,6 @@ def compute(args):
         signals.append({"key": "ci_failed", "hit": False,
                         "detail": "最近一次 CI 结论：%s" % ci.get("conclusion")})
 
-    stale = days_since is not None and days_since > 14 and product_changed_since(last_run)
-    if stale:
-        signals.append({"key": "long_gap", "hit": True,
-                        "detail": "距上次复盘 %d 天且期间有产品代码变更" % days_since})
-    else:
-        gap = ("%d 天" % days_since) if days_since is not None else "（从未运行）"
-        signals.append({"key": "long_gap", "hit": False, "detail": "距上次复盘 " + gap})
-
     decision = "GO" if any(s["hit"] for s in signals) else "NO-GO"
 
     blocked = False
@@ -183,6 +167,7 @@ def compute(args):
         "runs_this_week": runs_this_week,
         "budget_remaining_this_week": max(0, 1 - runs_this_week),
         "last_run": last_run,
+        "days_since_last_run": days_since,
         "signals": signals,
         "ci": ci,
         "criteria": crit,
@@ -206,6 +191,9 @@ def render(rep):
         if s.get("evidence"):
             lines.append("      证据：%s" % s["evidence"])
     lines.append("")
+    gap = rep.get("days_since_last_run")
+    lines.append("距上次复盘：%s（仅作上下文，不参与判定）"
+                 % (("%d 天" % gap) if gap is not None else "从未运行"))
     lines.append("评判标准指纹：%s" % (rep["criteria"].get("sha256") or "缺失")[:16])
     lines.append("标准最后改动：%s" % (rep["criteria"].get("last_commit") or "无记录"))
     return "\n".join(lines)
