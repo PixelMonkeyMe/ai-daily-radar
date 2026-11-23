@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta property="og:title" content="AI 日报雷达 · 2026-11-23"><meta property="og:description" content="elementalsouls//Claude-BugHunter"><meta property="og:type" content="article"><meta name="description" content="elementalsouls//Claude-BugHunter">
+<title>AI 日报雷达 · 2026-11-23</title>
+<style>
+  * { box-sizing: border-box; margin: 0; }
+  body { background: #f4f5f7; color: #1f2329; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; line-height: 1.7; }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 24px 16px 60px; background: #fff; }
+  header.top { background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); color: #fff; padding: 36px 16px 30px; }
+  .top-inner { max-width: 860px; margin: 0 auto; }
+  h1 { font-size: 26px; letter-spacing: 1px; }
+  .meta { color: rgba(255,255,255,.75); font-size: 13px; margin-top: 8px; }
+  .badge { display: inline-block; background: rgba(255,255,255,.15); border-radius: 99px; padding: 2px 12px; font-size: 12px; margin-top: 10px; }
+  .nav { margin-top: 14px; font-size: 13px; }
+  .nav a { color: #cfe3ff; text-decoration: none; margin-right: 18px; border-bottom: 1px dashed rgba(255,255,255,.4); }
+  .card { background: #fff; border-radius: 14px; padding: 22px 22px 16px; margin: 18px 0; box-shadow: 0 1px 4px rgba(0,0,0,.05); }
+  .card h2 { font-size: 18px; line-height: 1.4; }
+  .card h2 a { color: #1f2329; text-decoration: none; }
+  .card h2 a:hover { color: #1677ff; }
+  .tags { margin: 8px 0 4px; font-size: 12px; color: #8a919c; }
+  .tag-src { background: #eef3ff; color: #1677ff; border-radius: 6px; padding: 1px 8px; margin-right: 8px; }
+  .tag-star { color: #f5a623; letter-spacing: 2px; }
+  .similar { font-size: 12px; color: #8a919c; margin-top: 4px; }
+  .similar b { color: #1677ff; font-weight: 600; }
+  .story-group { background: #fff; border-radius: 14px; padding: 18px 22px; margin: 18px 0; box-shadow: 0 1px 4px rgba(0,0,0,.05); border-left: 4px solid #1677ff; }
+  .story-group-header { font-size: 12px; color: #1677ff; font-weight: 600; margin-bottom: 10px; }
+  .story-group .card { margin: 10px 0; box-shadow: none; border: 1px solid #e5e8ec; }
+  .story-group .card:first-of-type { margin-top: 0; }
+  .top5-badge { display: inline-block; background: #fff0f0; color: #e63946; border-radius: 6px; padding: 0 8px; font-size: 12px; margin-left: 8px; font-weight: 600; }
+  dl { margin-top: 10px; }
+  dt { font-weight: 700; font-size: 14px; color: #203a43; margin-top: 12px; padding-left: 10px; border-left: 3px solid #2c5364; }
+  dd { font-size: 14.5px; color: #3c434c; margin: 4px 0 0 13px; }
+  .archive { font-size: 14px; margin-top: 26px; }
+  .archive a { color: #1677ff; text-decoration: none; margin-right: 14px; display: inline-block; margin-bottom: 6px; }
+  .raw p { font-size: 14.5px; color: #3c434c; margin-top: 8px; }
+  .stat-chips { margin-top: 12px; }
+  .chip { display: inline-block; background: #fff; border: 1px solid #e5e8ec; border-radius: 99px; padding: 3px 14px; font-size: 13px; color: #3c434c; margin: 0 8px 8px 0; }
+  .trend { background: #f0f7ff; border-radius: 10px; padding: 10px 14px; margin: 8px 0; font-size: 14.5px; }
+  details { margin-top: 10px; }
+  summary { cursor: pointer; color: #1677ff; font-size: 14px; }
+  .item-line { font-size: 13.5px; margin: 6px 0; }
+  .item-line a { color: #1f2329; text-decoration: none; }
+  .item-line a:hover { color: #1677ff; }
+  .brief { font-size: 14.5px; color: #3c434c; margin-top: 8px; }
+  .summary-card { border: 2px solid #2c5364; background: linear-gradient(180deg, #f7fbfc, #ffffff); }
+  .summary-title { font-size: 20px; color: #203a43; }
+  h3.group { margin: 22px 0 6px; font-size: 16px; color: #203a43; }
+  footer { text-align: center; color: #a0a6ad; font-size: 12px; margin-top: 40px; }
+  .fav-btn { background: none; border: none; cursor: pointer; font-size: 16px; color: #c8ccd2; vertical-align: middle; margin-left: 6px; padding: 0 2px; }
+  .fav-btn.on { color: #f5a623; }
+  .fav-link-box { background: #f0f7ff; border: 1px dashed #1677ff; border-radius: 10px; padding: 12px 14px; margin: 14px 0; font-size: 13px; word-break: break-all; }
+  .fav-link-box .lnk { color: #1677ff; }
+  .copy-btn { display: inline-block; margin-top: 8px; background: #1677ff; color: #fff; border: none; border-radius: 8px; padding: 6px 16px; font-size: 13px; cursor: pointer; }
+  .fav-toolbar { margin: 14px 0; display: flex; gap: 10px; flex-wrap: wrap; }
+  .fav-search { flex: 1; min-width: 200px; max-width: 420px; padding: 8px 12px; border: 1px solid #d9dde3; border-radius: 8px; font-size: 14px; }
+  .fav-search-label { font-size: 14px; color: #3c434c; font-weight: 600; white-space: nowrap; display: flex; align-items: center; gap: 4px; }
+  .sort-btn { padding: 8px 14px; border: 1px solid #d9dde3; background: #fff; border-radius: 8px; font-size: 13px; cursor: pointer; }
+  .fav-date-filter { margin: 10px 0; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; font-size: 13px; color: #3c434c; }
+  .fav-date-filter label { display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+  .fav-date-filter input[type="date"] { padding: 6px 10px; border: 1px solid #d9dde3; border-radius: 8px; font-size: 13px; color: #1f2329; }
+  .fav-date-reset { padding: 6px 14px; border: 1px solid #d9dde3; background: #fff; border-radius: 8px; font-size: 13px; cursor: pointer; color: #8a919c; }
+  .fav-date-reset:hover { background: #f4f5f7; }
+  .fav-bar { margin-top: 16px; }
+  .fav-bar a { display: block; background: #fff7e8; border: 1px solid #f5c26b; border-radius: 12px; padding: 12px 16px; color: #8a5a00; text-decoration: none; font-size: 14.5px; }
+  .fav-bar a:hover { background: #ffefc9; }
+  .fav-chip { display: inline-block; background: #f5a623; color: #fff; border-radius: 99px; padding: 0 10px; font-size: 13px; margin: 0 4px; }
+  /* ===== 回到顶部（动效: UI/UE 设计方案，visibility 可过渡替代 display 硬切） ===== */
+  .back-to-top {
+    display: flex;
+    position: fixed;
+    right: 18px;
+    bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+    width: 44px;
+    height: 44px;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 50%;
+    background: rgba(22, 119, 255, .85);
+    color: #fff;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    z-index: 500;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, .18);
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    user-select: none;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(8px) scale(.94);
+    transition:
+      opacity          140ms cubic-bezier(.4, 0, 1, 1),
+      transform        140ms cubic-bezier(.4, 0, 1, 1),
+      box-shadow       140ms cubic-bezier(.4, 0, 1, 1),
+      background-color .2s   ease,
+      visibility       0s    linear 140ms;
+  }
+  .back-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: none;
+    transition:
+      opacity          200ms cubic-bezier(.16, 1, .3, 1),
+      transform        260ms cubic-bezier(.16, 1, .3, 1),
+      box-shadow       200ms cubic-bezier(.16, 1, .3, 1),
+      background-color .2s   ease,
+      visibility       0s    linear 0s;
+  }
+  .btt-icon { display: block; line-height: 1; transition: transform 180ms cubic-bezier(.4, 0, .2, 1); }
+  @media (hover: hover) and (pointer: fine) {
+    .back-to-top:hover { background: rgba(22, 119, 255, 1); box-shadow: 0 6px 18px rgba(22, 119, 255, .28); }
+    .back-to-top:hover .btt-icon { transform: translateY(-2px); }
+  }
+  .back-to-top:active, .back-to-top.is-pressed {
+    background: rgba(22, 119, 255, 1);
+    box-shadow: 0 1px 6px rgba(0, 0, 0, .22);
+    transform: scale(.92);
+    transition-duration: 90ms;
+  }
+  .back-to-top:active .btt-icon, .back-to-top.is-pressed .btt-icon { transform: translateY(0); }
+  .back-to-top:focus-visible { outline: 2px solid #1677ff; outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) {
+    .back-to-top { transform: none; transition: opacity 100ms linear, visibility 0s linear 100ms; }
+    .back-to-top.visible { transform: none; transition: opacity 100ms linear, visibility 0s linear 0s; }
+    .back-to-top:hover .btt-icon, .back-to-top:active .btt-icon, .back-to-top.is-pressed .btt-icon { transform: none; }
+    .back-to-top:active, .back-to-top.is-pressed { transform: none; }
+  }
+  @media print { .back-to-top { display: none !important; } }
+  /* ===== 备注原地展示（已收藏且有备注的条目，卡片下方直接显示） ===== */
+  .inline-note { margin-top: 10px; background: #fffbe6; border-left: 3px solid #faad14; border-radius: 6px; padding: 10px 12px; font-size: 13px; color: #555; line-height: 1.55; }
+  .context-note-display { margin-top: 10px; background: #fffbe6; border-left: 3px solid #faad14; border-radius: 6px; padding: 10px 12px; }
+  .inline-note-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 6px; }
+  .inline-note-tags span { font-size: 11px; color: #8a7d00; background: #fff1b8; border-radius: 10px; padding: 1px 9px; }
+  .inline-note-body { overflow-wrap: anywhere; }
+  .inline-note-body b { color: #8a7d00; margin-right: 4px; }
+  .inline-note-edit { margin-top: 8px; border: 1px solid #faad14; background: #fff; color: #8a7d00; border-radius: 6px; padding: 3px 12px; font-size: 12px; cursor: pointer; }
+  .inline-note-edit:hover { background: #fff7d6; }
+  @media print { .inline-note-edit { display: none !important; } }
+  /* ===== 备注 Markdown 排版（首页 .inline-note 与收藏页 .context-note-display 共用） ===== */
+  .note-label { font-size: 12px; font-weight: 600; color: #8a7d00; margin-bottom: 6px; }
+  .note-md { font-size: 13px; line-height: 1.7; color: #4a4a4a; overflow-wrap: anywhere; word-break: break-word; }
+  .note-md.collapsed { max-height: calc(1.7em * 3); overflow: hidden; position: relative; }
+  .note-md.collapsed::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 24px; background: linear-gradient(to bottom, rgba(255,251,230,0), #fffbe6); pointer-events: none; }
+  .note-md > *:first-child { margin-top: 0; }
+  .note-md > *:last-child { margin-bottom: 0; }
+  .note-md p.note-p { margin: 0 0 8px; }
+  .note-md p.note-h { margin: 8px 0 4px; font-size: 14px; font-weight: 600; color: #3a3a1a; }
+  .note-md blockquote.note-quote { margin: 6px 0; padding: 2px 0 2px 10px; border-left: 2px solid #e8c766; color: #4a4a4a; }
+  .note-md ul.note-ul, .note-md ol.note-ol { margin: 4px 0 8px; padding-left: 18px; }
+  .note-md ul.note-ul li, .note-md ol.note-ol li { margin: 2px 0; }
+  .note-md ul.note-ul ul, .note-md ol.note-ol ol { margin: 2px 0; }
+  .note-md pre.note-pre { margin: 6px 0; padding: 8px 10px; background: rgba(0,0,0,.055); border-radius: 4px; overflow-x: auto; font-size: 12px; line-height: 1.55; }
+  .note-md pre.note-pre code { background: none; padding: 0; font-size: inherit; }
+  .note-md code.note-code { font-size: 12px; background: rgba(0,0,0,.055); border-radius: 3px; padding: 1px 4px; }
+  /* ===== 备注表格（横滚 + sticky 首列；评审确认的四个要点） ===== */
+  .note-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 8px 0; overscroll-behavior-x: contain; touch-action: pan-x pan-y; }
+  /* ③ 必须 separate：border-collapse:collapse 会让 sticky 单元格边框在滚动时消失（Chromium 已知问题） */
+  /* 表格宽度：min-width:100% 保证短表格撑满容器；每列 min-width 让多列表格自然溢出触发横滚
+     （中文可在任意字符换行，max-content 无法撑开，故用列最小宽度而非内容宽度） */
+  .note-table { border-collapse: separate; border-spacing: 0; font-size: 12.5px; line-height: 1.5; min-width: 100%; }
+  .note-table th, .note-table td { min-width: 96px; }
+  /* ④ 必须覆盖 .note-md 的 overflow-wrap:anywhere，否则长内容撑爆行高、横滚永不出现 */
+  .note-table th, .note-table td { border-right: 1px solid rgba(0,0,0,.1); border-bottom: 1px solid rgba(0,0,0,.1); padding: 6px 10px; vertical-align: top; overflow-wrap: normal; word-break: normal; text-align: left; }
+  .note-table thead th { border-top: 1px solid rgba(0,0,0,.1); background: rgba(0,0,0,.05); font-weight: 600; white-space: nowrap; }
+  .note-table tr > *:first-child { border-left: 1px solid rgba(0,0,0,.1); }
+  /* ② sticky 单元格必须不透明背景，否则滚动时底下内容透出来 */
+  .note-table th:first-child, .note-table td:first-child { position: sticky; left: 0; z-index: 1; background: #fffbe6; box-shadow: 2px 0 4px rgba(0,0,0,.06); }
+  .note-table thead th:first-child { background: linear-gradient(rgba(0,0,0,.05), rgba(0,0,0,.05)), #fffbe6; }
+  .note-table-det { margin: 8px 0; }
+  .note-table-sum { cursor: pointer; font-size: 12.5px; color: #8a7d00; padding: 4px 0; }
+  @media print { .note-table-wrap { overflow: visible; } .note-table th:first-child, .note-table td:first-child { position: static; box-shadow: none; } }
+  .note-md strong { font-weight: 600; }
+  /* 折叠条：整行可点 36px，左侧主色、右侧字数 */
+  .note-bar { display: none; align-items: center; gap: 8px; margin-top: 6px; }
+  .note-toggle { flex: 1 1 auto; min-height: 32px; text-align: left; background: none; border: none; border-top: 1px dashed rgba(138,125,0,.25); padding: 6px 0 0; font-size: 13px; color: #b8860b; cursor: pointer; }
+  .note-toggle:hover { color: #8a7d00; }
+  .note-meta { font-size: 11px; color: #aaa08a; flex: 0 0 auto; }
+  .note-edit { flex: 0 0 auto; border: 1px solid #faad14; background: #fff; color: #8a7d00; border-radius: 6px; padding: 3px 12px; font-size: 12px; cursor: pointer; }
+  .note-edit:hover { background: #fff7d6; }
+  .note-tidy-tip { user-select: none; }
+  @media print { .note-toggle, .note-meta, .note-edit { display: none !important; } .note-md.collapsed { max-height: none; overflow: visible; } .note-md.collapsed::after { display: none; } }
+  /* ===== 日期导航（PRD v2.2：置顶、两行胶囊、默认最新一期） ===== */
+  .issue-nav { margin: 18px 0 14px; }
+  .date-bar { display: flex; align-items: stretch; gap: 10px; background: #f8fbff; border: 1px solid #dbe9ff; border-radius: 12px; padding: 12px; }
+  .date-prev, .date-next { width: 46px; min-height: 48px; flex: 0 0 auto; border: 1px solid #1677ff; background: #fff; color: #1677ff; border-radius: 10px; font-size: 20px; line-height: 1; cursor: pointer; }
+  .date-prev:disabled, .date-next:disabled { border-color: #e5e8ec; color: #c9ced6; cursor: not-allowed; background: #fafbfc; }
+  .date-display { position: relative; flex: 1 1 auto; min-height: 48px; border: 1.5px solid #1677ff; background: #fff; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer; padding: 4px 8px; }
+  .date-main { font-size: 15px; font-weight: 600; color: #1677ff; line-height: 1.2; }
+  .date-sub { font-size: 11px; color: #8a919c; line-height: 1.2; }
+  .date-select { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; border: none; }
+  /* 历史态：中性配色，「今天/最新」徽标变出口按钮 */
+  .date-bar.is-history { background: #fafbfc; border-color: #e5e8ec; }
+  .date-bar.is-history .date-display { border-color: #d9d9d9; }
+  .date-bar.is-history .date-main { color: #1f2733; }
+  .date-back-today { background: #52c41a !important; color: #fff !important; border-color: #52c41a !important; }
+  .issue-live { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .issue-nav { position: relative; }
+
+  /* ===== 期次内容区状态 ===== */
+  .issue-status { padding: 28px 16px; text-align: center; color: #8a919c; font-size: 14px; }
+  .issue-status button { margin-top: 10px; border: 1px solid #1677ff; background: #fff; color: #1677ff; border-radius: 6px; padding: 6px 16px; font-size: 13px; cursor: pointer; }
+  .issue-status .issue-jump { display: inline-flex; gap: 8px; margin-top: 12px; }
+  .issue-status .issue-jump button { border-color: #d9d9d9; color: #57606f; }
+  .issue-loading { opacity: .5; transition: opacity .15s; }
+
+  /* ===== 底部翻页条（读完一期手指在底部，直接翻相邻期） ===== */
+  .issue-pager { display: flex; align-items: stretch; gap: 10px; margin: 18px 0 10px; }
+  .issue-pager button { flex: 1 1 0; min-height: 48px; border: 1px solid #e5e8ec; background: #fff; border-radius: 10px; padding: 8px 12px; font-size: 13px; color: #1f2733; cursor: pointer; text-align: left; line-height: 1.35; }
+  .issue-pager button:hover { border-color: #1677ff; }
+  .issue-pager button .pg-dir { display: block; font-size: 11px; color: #8a919c; margin-bottom: 2px; }
+  .issue-pager button.pg-next { text-align: right; }
+  .issue-pager button:disabled { color: #c9ced6; border-color: #eef1f5; cursor: not-allowed; }
+  .issue-footer { text-align: center; font-size: 12px; color: #8a919c; margin: 6px 0 18px; }
+  .issue-footer a { color: #1677ff; text-decoration: none; }
+  /* ===== 历史期次态（UI 评审阻塞 2）：sticky 定位 + 期次标签 + 标题锚点 ===== */
+  .issue-nav { position: sticky; top: 0; z-index: 30; background: #fff; padding-top: 6px; padding-bottom: 2px; }
+  .issue-nav .group { margin-bottom: 6px; }
+  .hist-tag { display: inline-block; margin-top: 8px; font-size: 11px; color: #57606f; background: #eef1f5; border-radius: 10px; padding: 2px 10px; }
+  .date-bar.is-history { background: #f7f8fa; border-color: #dfe3e9; }
+
+  /* ===== 无 AI 解读的早期期次：中性说明条（非警告色，占总览位） ===== */
+  .no-ai-note { background: #f8f9fa; border-left: 3px solid #c9ced6; }
+  .no-ai-text { font-size: 13px; color: #8a919c; line-height: 1.6; }
+  @media (max-width: 520px) {
+    .date-bar { padding: 10px; gap: 8px; }
+    .date-prev, .date-next { width: 44px; }
+    .date-main { font-size: 15px; }
+    .issue-pager { flex-direction: column; }
+    .issue-pager button.pg-next { text-align: left; }
+  }
+  @media print { .issue-nav, .issue-pager, .issue-footer { display: none !important; } }
+  .history-day { padding: 8px 0 12px; }
+  .history-day .item-line { padding: 4px 0; border-bottom: 1px dashed #e5e8ec; }
+  .history-day .item-line:last-child { border-bottom: none; }
+  .history-date { font-weight: 600; color: #203a43; }
+  .already-fav { display: inline-block; background: #fff7e8; color: #8a5a00; border-radius: 6px; padding: 0 8px; font-size: 12px; margin-left: 6px; font-weight: 600; }
+  .action-btn { display: inline-block; background: #e63946; color: #fff; border: none; border-radius: 8px; padding: 8px 18px; font-size: 14px; cursor: pointer; margin: 0; font-weight: 600; }
+  .action-btn:hover { background: #c1121f; }
+  .action-btn:disabled { background: #ccc; cursor: not-allowed; }
+  .share-bar { display: flex; gap: 10px; flex-wrap: wrap; margin: 10px 0; }
+  .copy-link-btn { background: #1677ff; }
+  .copy-link-btn:hover { background: #0e5fcc; }
+  /* 打印前由 print.js 注入的今日总结全文 */
+  .summary-full-content { margin-top: 12px; padding: 12px; background: #f7fbfc; border-radius: 8px; font-size: 13px; }
+  /* ── 登录弹窗 ── */
+  .adr-modal-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,.45); z-index:9999; justify-content:center; align-items:center; }
+  .adr-modal { background:#fff; border-radius:16px; padding:32px 28px 24px; max-width:400px; width:90%; box-shadow:0 8px 30px rgba(0,0,0,.15); text-align:center; }
+  .adr-modal h3 { font-size:20px; color:#203a43; margin-bottom:8px; }
+  .adr-modal p { font-size:14px; color:#8a919c; margin-bottom:18px; }
+  .adr-modal input[type="email"], .adr-modal input[type="password"] { width:100%; padding:10px 14px; border:1px solid #d9dde3; border-radius:10px; font-size:15px; margin-bottom:12px; box-sizing:border-box; }
+  .adr-modal input[type="email"]:focus, .adr-modal input[type="password"]:focus { outline:none; border-color:#1677ff; }
+  .adr-auth-tabs { display:flex; gap:0; margin-bottom:16px; border-bottom:2px solid #e5e8ec; }
+  .adr-auth-tab { flex:1; padding:10px 0; text-align:center; font-size:14px; color:#8a919c; cursor:pointer; background:none; border:none; border-bottom:2px solid transparent; margin-bottom:-2px; transition:all .15s; }
+  .adr-auth-tab.active { color:#1677ff; border-bottom-color:#1677ff; font-weight:600; }
+  .adr-forgot-link { display:inline-block; margin-top:8px; font-size:13px; color:#1677ff; cursor:pointer; background:none; border:none; padding:0; }
+  .adr-modal-btn { width:100%; padding:10px; background:#1677ff; color:#fff; border:none; border-radius:10px; font-size:15px; cursor:pointer; font-weight:600; }
+  .adr-modal-btn:hover { background:#0e5fcc; }
+  .adr-modal-btn:disabled { background:#ccc; cursor:not-allowed; }
+  .adr-modal-close { position:absolute; top:12px; right:16px; background:none; border:none; font-size:22px; color:#8a919c; cursor:pointer; }
+  .adr-modal-msg { font-size:13px; color:#e63946; margin-top:10px; min-height:20px; }
+  .adr-nav-auth { margin-left:auto; display:flex; align-items:center; gap:8px; font-size:13px; }
+  .adr-nav-auth .adr-login-btn { color:#cfe3ff; border-bottom:1px dashed rgba(255,255,255,.4); cursor:pointer; background:none; border-top:none; border-left:none; border-right:none; font-size:13px; }
+  .adr-nav-auth .adr-logout-btn { color:#cfe3ff; border-bottom:1px dashed rgba(255,255,255,.4); cursor:pointer; background:none; border-top:none; border-left:none; border-right:none; font-size:13px; display:none; }
+  .adr-nav-auth .adr-user-email { color:rgba(255,255,255,.7); font-size:12px; display:none; max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  /* ── 时段分析 ── */
+  .range-analyzer { background: linear-gradient(135deg, #f0f7ff, #e8f4ff); border: 1px solid #b3d7ff; border-radius: 14px; padding: 20px 24px; margin: 20px 0; }
+  .range-analyzer h3 { font-size: 16px; color: #203a43; margin-bottom: 12px; }
+  .range-analyzer .range-inputs { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .range-analyzer input[type="date"] { padding: 8px 12px; border: 1px solid #d9dde3; border-radius: 8px; font-size: 14px; color: #1f2329; }
+  .range-analyzer .analyze-btn { padding: 8px 20px; background: #1677ff; color: #fff; border: none; border-radius: 8px; font-size: 14px; cursor: pointer; font-weight: 600; }
+  .range-analyzer .analyze-btn:hover { background: #0e5fcc; }
+  .range-analyzer .analyze-btn:disabled { background: #ccc; cursor: not-allowed; }
+  .range-analyzer #range-result { margin-top: 16px; }
+  .range-quick-btns { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+  .range-quick-btn { padding: 6px 14px; background: #fff; border: 1px solid #b3d7ff; border-radius: 16px; font-size: 13px; color: #1677ff; cursor: pointer; transition: all .15s; }
+  .range-quick-btn:hover { background: #e8f4ff; }
+  .range-quick-btn.active { background: #1677ff; color: #fff; border-color: #1677ff; }
+  .range-quick-btn:disabled { opacity: .5; cursor: not-allowed; }
+  @media print {
+    /* 交互控件一律不打印。收藏页的工具栏/筛选/复制/条数此前靠 JS 临时隐藏，
+       改走浏览器打印后必须在 CSS 里声明，否则会被一起印出来。 */
+    .action-btn, .share-bar, .pdf-loading, .fav-btn, .fav-bar, .nav, header.top .badge,
+    .fav-toolbar, .fav-date-filter, .fav-date-reset, .copy-btn, .fav-link-box,
+    #fav-count, .fav-cat-tab, .back-to-top, .issue-nav, .issue-pager, .issue-footer,
+    .note-toggle, .note-meta, .note-edit, .inline-note-edit { display: none !important; }
+    body { background: #fff; }
+    .wrap { max-width: 100%; padding: 0; }
+    .card { box-shadow: none; border: 1px solid #ddd; page-break-inside: avoid; }
+    /* 折叠备注在打印时全展开 */
+    .note-md.collapsed { max-height: none; overflow: visible; }
+    .note-md.collapsed::after { display: none; }
+    .note-table-wrap { overflow: visible; }
+    .note-table th:first-child, .note-table td:first-child { position: static; box-shadow: none; }
+  }
+  /* ── 响应式布局（仅屏幕设备，打印/PDF 导出时不生效） ── */
+  @media screen and (max-width: 768px) {
+    .wrap { padding: 16px 12px 40px; }
+    .top-inner { padding: 0 4px; }
+    h1 { font-size: 22px; }
+    .nav { flex-wrap: wrap; gap: 6px; }
+    .nav a { margin-right: 10px; font-size: 13px; white-space: nowrap; }
+    .card { padding: 16px 16px 12px; margin: 12px 0; }
+    .card h2 { font-size: 16px; }
+    .story-group { padding: 14px 16px; }
+    .fav-bar a { font-size: 13.5px; padding: 10px 12px; }
+    .fav-search { min-width: 140px; max-width: 280px; font-size: 13px; }
+    .fav-date-filter { font-size: 12px; }
+    .range-analyzer { padding: 14px 16px; }
+    .adr-modal { padding: 24px 20px 18px; }
+    .adr-modal h3 { font-size: 18px; }
+  }
+  @media screen and (max-width: 480px) {
+    header.top { padding: 24px 12px 20px; }
+    h1 { font-size: 19px; }
+    .meta { font-size: 12px; }
+    .badge { font-size: 11px; padding: 2px 8px; }
+    .nav a { font-size: 12px; margin-right: 8px; }
+    .adr-nav-auth { font-size: 12px; }
+    .card { padding: 12px 12px 10px; margin: 10px 0; border-radius: 10px; }
+    .card h2 { font-size: 15px; }
+    .brief, dt, dd, .trend, .item-line { font-size: 13px !important; }
+    .fav-btn { font-size: 14px; }
+    .fav-bar a { font-size: 12.5px; padding: 8px 10px; }
+    .fav-chip { font-size: 11px; padding: 0 7px; }
+    .archive a { font-size: 13px; margin-right: 10px; }
+    .adr-modal { width: 96%; padding: 20px 16px 14px; }
+    .summary-title { font-size: 17px !important; }
+    .action-btn { font-size: 13px; padding: 6px 14px; }
+  }
+</style>
+</head>
+<body data-page="archive">
+<header class="top"><div class="top-inner">
+  <h1>AI 日报雷达</h1>
+  <div class="meta">数据抓取时间：2026-11-23 15:07 (北京时间) · 共 35 条</div>
+  <span class="badge">AI 深度解读</span>
+  <div class="nav" style="display:flex;align-items:center"><a href="../index.html">最新日报</a><a href="../digests/index.html">周期汇总（周/月/季）</a><a href="../favorites.html">我的收藏夹</a><div class="adr-nav-auth"><span class="adr-user-email" id="adr-user-info"></span><button class="adr-login-btn" id="adr-login-btn" onclick="document.getElementById('adr-login-modal').style.display='flex'">登录</button><button class="adr-logout-btn" id="adr-logout-btn" onclick="adrLogout()">登出</button></div></div>
+</div></header>
+<div class="wrap">
+<script>sessionStorage.setItem("adr_report","archive/2026-11-23.html");window.ADR_SHARE_DATE="2026-11-23";</script><div class="fav-bar"><a href="../favorites.html">★ 我的收藏夹（<span class="fav-chip" id="fav-chip">0</span>条）· 点条目旁的 ☆ 即可收藏</a></div><div class="share-bar"><button class="action-btn copy-link-btn" type="button" onclick="adrCopyIssueLink()">🔗 复制链接</button><button class="action-btn" type="button" onclick="adrPrint('daily')">🖨 打印 / 存为 PDF</button></div><div class="card summary-card">
+<h2 class="summary-title">今日总结 · AI 主编解读<button class="fav-btn" title="收藏" data-t="今日总结 · 2026-11-23" data-u="summary://2026-11-23" data-s="AI 日报总结" data-d="2026-11-23" data-b="今天AI圈最热闹的是&#x27;让AI自己干活&#x27;的工具链爆发，从命令行到数据源接入都在搞标准化；同时本地跑小模型越来越成熟，几家公司和个人都在推能看图说话的轻量模型。另一边，游戏逆向和娱乐向内容占了GitHub">☆</button></h2>
+<dl>
+<dt>今日总览</dt><dd>今天AI圈最热闹的是&#x27;让AI自己干活&#x27;的工具链爆发，从命令行到数据源接入都在搞标准化；同时本地跑小模型越来越成熟，几家公司和个人都在推能看图说话的轻量模型。另一边，游戏逆向和娱乐向内容占了GitHub新星不少位置，正经企业级开源反而相对平淡。</dd>
+<dt>核心结论</dt><dd><div class="trend">AI代理的基础设施正在快速模块化，&#x27;AI调用一切&#x27;的协议层竞争比应用层更值得观察</div><div class="trend">本地轻量化多模态模型已成红海，Inkling-2-Mini系列一天出现多个衍生版本，说明&#x27;小而快&#x27;比&#x27;大而全&#x27;更吸引开发者</div><div class="trend">腾讯在轻量图文模型上的布局（Hy4-flash+群聊记忆基准）显示其正瞄准&#x27;微信生态内的AI助手&#x27;场景</div><div class="trend">施工成本管控这类B端系统，短期内很难直接套用今天这些消费级AI工具，但&#x27;AI代理串联多个数据源&#x27;的思路对打破工程数据孤岛有参考价值</div><div class="trend">量子位两条高热度报道（千禧难题、月交3000PR）均属夸张或娱乐性质，需警惕AI媒体对非技术读者的认知干扰</div></dd>
+<dt>今日重点关注</dt><dd><div class="trend"><a href="https://github.com/HKUDS/CLI-Anything" target="_blank" rel="noopener"><b>HKUDS//CLI-Anything</b></a><br>把&#x27;AI能调用任何命令行工具&#x27;做成通用协议，意味着未来企业存量IT系统（包括交通行业的 legacy 系统）可能被AI逐步接管，而不必全部推倒重建</div><div class="trend"><a href="https://github.com/firecrawl/firecrawl" target="_blank" rel="noopener"><b>firecrawl//firecrawl</b></a><br>550+数据源统一接入，对施工成本管控中分散在造价软件、ERP、Excel表里的数据整合有启发，但企业版合规和安全需要额外评估</div><div class="trend"><a href="https://github.com/openvinotoolkit/openvino" target="_blank" rel="noopener"><b>openvinotoolkit//openvino</b></a><br>英特尔持续押注本地AI推理，智慧高速的边缘计算场景（如收费站、隧道机电设备）未来跑AI模型可能不再需要强依赖云端</div></dd>
+<dt>对我的行业有什么用？</dt><dd>智慧交通和施工成本管控领域今天没有直接可用的产品，但两个动向值得记一笔：一是&#x27;AI代理串联异构系统&#x27;的框架成熟后，工程造价领域分散在广联达、Excel、项目管理系统里的数据有望被自动打通；二是本地轻量化模型进步，未来高速收费站、隧道口等边缘设备跑AI（如车牌识别、异常事件检测）的硬件成本会进一步降低。智慧消防暂无直接关联。</dd>
+<dt>风险提示</dt><dd>部分媒体报道存在明显夸大或虚构（如&#x27;AI证明千禧难题&#x27;&#x27;月交3000个PR&#x27;），非技术读者容易误将娱乐内容当作技术突破；&#x27;无审查模型&#x27;（Uncensored-GGUF）在公共基础设施领域的合规风险极高，企业采购需严格规避。</dd>
+</dl></div><div class='card'><h2><a href="https://github.com/elementalsouls/Claude-BugHunter" target="_blank" rel="noopener">elementalsouls//Claude-BugHunter</a><button class="fav-btn" title="收藏" data-t="elementalsouls//Claude-BugHunter" data-u="https://github.com/elementalsouls/Claude-BugHunter" data-s="GitHub 趋势榜" data-d="2026-11-23" data-b="一套专为网络安全红队和漏洞挖掘设计的 Claude 编程助手技能包。" data-what="这是一个给AI编程助手（Claude）用的工具集，帮安全人员自动找软件漏洞、模拟攻击。" data-industry-use="与智慧交通、施工成本管控等业务无直接关联，属于专业网络安全领域，当前不适用。" data-capability="能自动化识别24类常见漏洞、生成渗透测试报告、辅助基础设施和身份系统风险评估。" data-assessment="项目热度高（1.8万星），但高度垂直于攻防场景，非安全团队难以复用；技术细节未公开验证，成熟度存疑。" data-risk="仅适用于有专业红队能力的组织；误用可能引发合规与系统稳定性风险；不建议交通或工程类企业尝试。" data-importance="2">☆</button></h2><div class="tags"><span class="tag-src">GitHub 趋势榜</span><span class="tag-star">★★☆☆☆</span> Python | 18,371</div><div class="similar">📌 此前曾在 <b>2026-11-22</b>、<b>2026-11-21</b>、<b>2026-11-20</b> 出现</div><p class="brief">一套专为网络安全红队和漏洞挖掘设计的 Claude 编程助手技能包。</p><details><summary>展开完整分析</summary><dl><dt>这是什么？</dt><dd>这是一个给AI编程助手（Claude）用的工具集，帮安全人员自动找软件漏洞、模拟攻击。</dd><dt>对我的行业有什么用？</dt><dd>与智慧交通、施工成本管控等业务无直接关联，属于专业网络安全领域，当前不适用。</dd><dt>这能干什么？</dt><dd>能自动化识别24类常见漏洞、生成渗透测试报告、辅助基础设施和身份系统风险评估。</dd><dt>评估与判断</dt><dd>项目热度高（1.8万星），但高度垂直于攻防场景，非安全团队难以复用；技术细节未公开验证，成熟度存疑。</dd><dt>风险与应用场景</dt><dd>仅适用于有专业红队能力的组织；误用可能引发合规与系统稳定性风险；不建议交通或工程类企业尝试。</dd></dl></details></div>
+<div class='card'><h2><a href="https://github.com/obra/superpowers" target="_blank" rel="noopener">obra//superpowers</a><button class="fav-btn" title="收藏" data-t="obra//superpowers" data-u="https://github.com/obra/superpowers" data-s="GitHub 趋势榜" data-d="2026-11-23" data-b="一个让AI代理能自主调用技能、完成复杂开发任务的框架。" data-what="它把软件开发拆成可组合的‘技能’，让AI像工程师一样分步执行编码、测试、部署等动作。" data-industry-use="对施工成本系统无直接价值；若未来需自建低代码配置平台或AI流程引擎，可长期关注其方法论。" data-capability="解决AI在复杂业务系统中‘只会回答、不会做事’的问题，支持多步骤自动化开发任务。" data-assessment="星数极高（32万），社区活跃，但属前沿实验性框架；尚无行业落地案例，工程化程度不明。" data-risk="目前不适合生产环境；需较强AI工程能力支撑；交通行业暂无适配场景，建议观望而非投入。" data-importance="3">☆</button></h2><div class="tags"><span class="tag-src">GitHub 趋势榜</span><span class="tag-star">★★★☆☆</span> Shell | 324,403</div><div class="similar">📌 此前曾在 <b>2026-11-22</b>、<b>2026-11-21</b>、<b>2026-11-20</b> 出现</div><p class="brief">一个让AI代理能自主调用技能、完成复杂开发任务的框架。</p><details><summary>展开完整分析</summary><dl><dt>这是什么？</dt><dd>它把软件开发拆成可组合的‘技能’，让AI像工程师一样分步执行编码、测试、部署等动作。</dd><dt>对我的行业有什么用？</dt><dd>对施工成本系统无直接价值；若未来需自建低代码配置平台或AI流程引擎，可长期关注其方法论。</dd><dt>这能干什么？</dt><dd>解决AI在复杂业务系统中‘只会回答、不会做事’的问题，支持多步骤自动化开发任务。</dd><dt>评估与判断</dt><dd>星数极高（32万），社区活跃，但属前沿实验性框架；尚无行业落地案例，工程化程度不明。</dd><dt>风险与应用场景</dt><dd>目前不适合生产环境；需较强AI工程能力支撑；交通行业暂无适配场景，建议观望而非投入。</dd></dl></details></div>
+<div class='card'><h2><a href="https://github.com/HKUDS/CLI-Anything" target="_blank" rel="noopener">HKUDS//CLI-Anything</a><button class="fav-btn" title="收藏" data-t="HKUDS//CLI-Anything" data-u="https://github.com/HKUDS/CLI-Anything" data-s="GitHub 趋势榜" data-d="2026-11-23" data-b="让任何命令行工具都能被AI代理直接调用的通用接口协议。" data-what="它像一个‘翻译器’，让AI能听懂并操作各种传统命令行程序（如Excel处理脚本、数据库命令等）。" data-industry-use="潜在有用：若施工成本系统依赖大量本地脚本（如Excel报表生成、数据校验），未来可降低AI集成门槛。" data-capability="让AI代理无需重写就能调用现有命令行工具，提升旧系统智能化改造效率。" data-assessment="项目较新但理念清晰（6.3万星），已有官网CLI-Hub生态雏形；实用性较强，但需配套工具适配。" data-risk="需IT团队具备CLI运维基础；当前无交通行业专用插件；适合试点探索，不宜直接用于核心成本系统。" data-importance="3">☆</button></h2><div class="tags"><span class="tag-src">GitHub 趋势榜</span><span class="tag-star">★★★☆☆</span> Python | 62,995</div><div class="similar">📌 此前曾在 <b>2026-11-22</b>、<b>2026-11-21</b>、<b>2026-11-20</b> 出现</div><p class="brief">让任何命令行工具都能被AI代理直接调用的通用接口协议。</p><details><summary>展开完整分析</summary><dl><dt>这是什么？</dt><dd>它像一个‘翻译器’，让AI能听懂并操作各种传统命令行程序（如Excel处理脚本、数据库命令等）。</dd><dt>对我的行业有什么用？</dt><dd>潜在有用：若施工成本系统依赖大量本地脚本（如Excel报表生成、数据校验），未来可降低AI集成门槛。</dd><dt>这能干什么？</dt><dd>让AI代理无需重写就能调用现有命令行工具，提升旧系统智能化改造效率。</dd><dt>评估与判断</dt><dd>项目较新但理念清晰（6.3万星），已有官网CLI-Hub生态雏形；实用性较强，但需配套工具适配。</dd><dt>风险与应用场景</dt><dd>需IT团队具备CLI运维基础；当前无交通行业专用插件；适合试点探索，不宜直接用于核心成本系统。</dd></dl></details></div>
+<div class='card'><h2><a href="https://github.com/jingyaogong/minimind" target="_blank" rel="noopener">jingyaogong//minimind</a><button class="fav-btn" title="收藏" data-t="jingyaogong//minimind" data-u="https://github.com/jingyaogong/minimind" data-s="GitHub 趋势榜" data-d="2026-11-23" data-b="一个极简教程：两小时从零训练出64M参数的小型语言模型。" data-what="教人用普通电脑快速训练一个轻量级AI模型，强调动手实操和资源可控。" data-industry-use="对业务人员无直接用途；若单位计划培养内部AI训练能力或做轻量知识蒸馏，可作入门参考。" data-capability="解决小团队缺乏算力却想定制AI模型的问题，适合构建专属术语理解模型（如施工规范问答）。" data-assessment="热度高（6.9万星），但属教学导向项目；未提供预训练模型或行业适配，实际训练效果不确定。" data-risk="需Python和深度学习基础；训练结果质量依赖数据和调参经验；不建议业务部门自行尝试。" data-importance="2">☆</button></h2><div class="tags"><span class="tag-src">GitHub 趋势榜</span><span class="tag-star">★★☆☆☆</span> Python | 68,983</div><div class="similar">📌 此前曾在 <b>2026-11-22</b>、<b>2026-11-21</b>、<b>2026-11-20</b> 出现</div><p class="brief">一个极简教程：两小时从零训练出64M参数的小型语言模型。</p><details><summary>展开完整分析</summary><dl><dt>这是什么？</dt><dd>教人用普通电脑快速训练一个轻量级AI模型，强调动手实操和资源可控。</dd><dt>对我的行业有什么用？</dt><dd>对业务人员无直接用途；若单位计划培养内部AI训练能力或做轻量知识蒸馏，可作入门参考。</dd><dt>这能干什么？</dt><dd>解决小团队缺乏算力却想定制AI模型的问题，适合构建专属术语理解模型（如施工规范问答）。</dd><dt>评估与判断</dt><dd>热度高（6.9万星），但属教学导向项目；未提供预训练模型或行业适配，实际训练效果不确定。</dd><dt>风险与应用场景</dt><dd>需Python和深度学习基础；训练结果质量依赖数据和调参经验；不建议业务部门自行尝试。</dd></dl></details></div>
+<div class='card'><h2><a href="https://github.com/cursor/plugins" target="_blank" rel="noopener">cursor//plugins</a><button class="fav-btn" title="收藏" data-t="cursor//plugins" data-u="https://github.com/cursor/plugins" data-s="GitHub 趋势榜" data-d="2026-11-23" data-b="Cursor编辑器官方插件规范与示例集合。" data-what="Cursor是面向程序员的AI编程编辑器，这个仓库是它支持第三方功能扩展的标准和模板。" data-industry-use="与施工成本系统建设无关；除非团队正用Cursor开发该系统，否则无实际意义。" data-capability="帮助开发者为Cursor添加新能力，比如对接造价软件API、解析工程量清单PDF等。" data-assessment="属工具链配套资源，成熟稳定但高度依附Cursor生态；无独立业务价值。" data-risk="仅对使用Cursor的开发团队有价值；交通行业几乎不用此类编辑器；无需特别关注。" data-importance="2">☆</button></h2><div class="tags"><span class="tag-src">GitHub 趋势榜</span><span class="tag-star">★★☆☆☆</span> TypeScript | 18,566</div><div class="similar">📌 此前曾在 <b>2026-11-22</b>、<b>2026-11-21</b>、<b>2026-11-20</b> 出现</div><p class="brief">Cursor编辑器官方插件规范与示例集合。</p><details><summary>展开完整分析</summary><dl><dt>这是什么？</dt><dd>Cursor是面向程序员的AI编程编辑器，这个仓库是它支持第三方功能扩展的标准和模板。</dd><dt>对我的行业有什么用？</dt><dd>与施工成本系统建设无关；除非团队正用Cursor开发该系统，否则无实际意义。</dd><dt>这能干什么？</dt><dd>帮助开发者为Cursor添加新能力，比如对接造价软件API、解析工程量清单PDF等。</dd><dt>评估与判断</dt><dd>属工具链配套资源，成熟稳定但高度依附Cursor生态；无独立业务价值。</dd><dt>风险与应用场景</dt><dd>仅对使用Cursor的开发团队有价值；交通行业几乎不用此类编辑器；无需特别关注。</dd></dl></details></div>
+<div class='card'><h2><a href="https://github.com/firecrawl/firecrawl" target="_blank" rel="noopener">firecrawl//firecrawl</a><button class="fav-btn" title="收藏" data-t="firecrawl//firecrawl" data-u="https://github.com/firecrawl/firecrawl" data-s="GitHub 趋势榜" data-d="2026-11-23" data-b="一个统一接口，让AI代理能自动搜索、爬取和接入550+种外部数据源。" data-what="它像AI的‘数据接线员’，让程序一键获取网页、文档、数据库甚至API里的信息。" data-industry-use="有一定潜力：可用于自动抓取地方造价信息网、招标公告、材料价格平台等公开数据，辅助成本动态分析。" data-capability="解决施工成本系统中外部数据接入繁琐、格式不一的问题，支持自动化情报收集。" data-assessment="星数很高（20.7万），已商用（官网提供API服务），文档较全；真实热度与可用性较可信。" data-risk="涉及网络爬虫合规性（如地方政府网站禁止爬取）；需IT团队配置和维护；建议先做小范围合规试点。" data-importance="3">☆</button></h2><div class="tags"><span class="tag-src">GitHub 趋势榜</span><span class="tag-star">★★★☆☆</span> TypeScript | 207,274</div><div class="similar">📌 此前曾在 <b>2026-11-22</b>、<b>2026-11-21</b>、<b>2026-11-20</b> 出现</div><p class="brief">一个统一接口，让AI代理能自动搜索、爬取和接入550+种外部数据源。</p><details><summary>展开完整分析</summary><dl><dt>这是什么？</dt><dd>它像AI的‘数据接线员’，让程序一键获取网页、文档、数据库甚至API里的信息。</dd><dt>对我的行业有什么用？</dt><dd>有一定潜力：可用于自动抓取地方造价信息网、招标公告、材料价格平台等公开数据，辅助成本动态分析。</dd><dt>这能干什么？</dt><dd>解决施工成本系统中外部数据接入繁琐、格式不一的问题，支持自动化情报收集。</dd><dt>评估与判断</dt><dd>星数很高（20.7万），已商用（官网提供API服务），文档较全；真实热度与可用性较可信。</dd><dt>风险与应用场景</dt><dd>涉及网络爬虫合规性（如地方政府网站禁止爬取）；需IT团队配置和维护；建议先做小范围合规试点。</dd></dl></details></div>
+<div class='card'><h2><a href="https://github.com/nginx/nginx" target="_blank" rel="noopener">nginx//nginx</a><button class="fav-btn" title="收藏" data-t="nginx//nginx" data-u="https://github.com/nginx/nginx" data-s="GitHub 趋势榜" data-d="2026-11-23" data-b="全球最主流的开源Web服务器软件官方代码库。" data-what="一个老牌、稳定、高性能的网站和应用服务器，常用来托管系统前端或反向代理。" data-industry-use="施工成本系统若需上线部署，nginx几乎是必选组件之一，用于负载均衡、HTTPS和静态资源服务。" data-capability="保障系统访问稳定、安全、快速；可配合实现多租户隔离、访问日志审计等运维需求。" data-assessment="工业级成熟项目（3.3万星），20年持续维护，业界事实标准；热度反映其不可替代性。" data-risk="技术本身极低风险；但需专业运维人员配置；业务方只需确认IT团队是否已纳入标准技术栈。" data-importance="3">☆</button></h2><div class="tags"><span class="tag-src">GitHub 趋势榜</span><span class="tag-star">★★★☆☆</span> C | 32,936</div><div class="similar">📌 此前曾在 <b>2026-11-22</b>、<b>2026-11-21</b>、<b>2026-11-20</b> 出现</div><p class="brief">全球最主流的开源Web服务器软件官方代码库。</p><details><summary>展开完整分析</summary><dl><dt>这是什么？</dt><dd>一个老牌、稳定、高性能的网站和应用服务器，常用来托管系统前端或反向代理。</dd><dt>对我的行业有什么用？</dt><dd>施工成本系统若需上线部署，nginx几乎是必选组件之一，用于负载均衡、HTTPS和静态资源服务。</dd><dt>这能干什么？</dt><dd>保障系统访问稳定、安全、快速；可配合实现多租户隔离、访问日志审计等运维需求。</dd><dt>评估与判断</dt><dd>工业级成熟项目（3.3万星），20年持续维护，业界事实标准；热度反映其不可替代性。</dd><dt>风险与应用场景</dt><dd>技术本身极低风险；但需专业运维人员配置；业务方只需确认IT团队是否已纳入标准技术栈。</dd></dl></details></div>
+<div class='card'><h2><a href="https://github.com/openvinotoolkit/openvino" target="_blank" rel="noopener">openvinotoolkit//openvino</a><button class="fav-btn" title="收藏" data-t="openvinotoolkit//openvino" data-u="https://github.com/openvinotoolkit/openvino" data-s="GitHub 趋势榜" data-d="2026-11-23" data-b="英特尔推出的开源AI推理优化工具包，用于加速模型在本地设备运行。" data-what="它让AI模型（尤其是视觉类）能在普通服务器或工控机上跑得更快、更省资源。" data-industry-use="若系统未来需接入视频分析（如工地AI巡检、消防通道占道识别），OpenVINO可提升边缘端推理效率。" data-capability="解决AI模型在国产硬件或老旧服务器上运行慢、功耗高的问题，支持离线部署。" data-assessment="由英特尔主导，企业级支持完善（1.2万星）；在智能交通视觉项目中有较多落地案例。" data-risk="主要适配Intel CPU/GPU，对ARM或国产芯片支持有限；需一定AI部署经验；建议按需引入，非当前必需。" data-importance="4">☆</button></h2><div class="tags"><span class="tag-src">GitHub 趋势榜</span><span class="tag-star">★★★★☆</span> C++ | 12,150</div><div class="similar">📌 此前曾在 <b>2026-11-22</b>、<b>2026-11-21</b>、<b>2026-11-20</b> 出现</div><p class="brief">英特尔推出的开源AI推理优化工具包，用于加速模型在本地设备运行。</p><details><summary>展开完整分析</summary><dl><dt>这是什么？</dt><dd>它让AI模型（尤其是视觉类）能在普通服务器或工控机上跑得更快、更省资源。</dd><dt>对我的行业有什么用？</dt><dd>若系统未来需接入视频分析（如工地AI巡检、消防通道占道识别），OpenVINO可提升边缘端推理效率。</dd><dt>这能干什么？</dt><dd>解决AI模型在国产硬件或老旧服务器上运行慢、功耗高的问题，支持离线部署。</dd><dt>评估与判断</dt><dd>由英特尔主导，企业级支持完善（1.2万星）；在智能交通视觉项目中有较多落地案例。</dd><dt>风险与应用场景</dt><dd>主要适配Intel CPU/GPU，对ARM或国产芯片支持有限；需一定AI部署经验；建议按需引入，非当前必需。</dd></dl></details></div>
+<div class='card'><h2><a href="https://github.com/ItsNotRexed/Leonida" target="_blank" rel="noopener">ItsNotRexed/Leonida</a><button class="fav-btn" title="收藏" data-t="ItsNotRexed/Leonida" data-u="https://github.com/ItsNotRexed/Leonida" data-s="GitHub 新星项目" data-d="2026-11-23" data-b="将《GTA VI》Xbox版逆向重编译为PC可运行版本的实验性项目。" data-what="一个游戏破解爱好者做的技术实验，目标是让主机游戏在电脑上运行。" data-industry-use="与智慧交通、施工成本系统完全无关，纯娱乐/逆向工程领域，无需关注。" data-capability="无业务相关能力；仅体现二进制重编译技术探索。" data-assessment="项目时间明显异常（标注新建于2026年），疑似虚构或测试数据；真实性存疑，热度不可信。" data-risk="信息不可靠，存在误导风险；绝对不建议任何形式的参考或引用。" data-importance="1">☆</button></h2><div class="tags"><span class="tag-src">GitHub 新星项目</span><span class="tag-star">★☆☆☆☆</span> Python | ⭐ 17057 | 新建于 2026-11-20</div><div class="similar">📌 此前曾在 <b>2026-11-22</b> 出现</div><p class="brief">将《GTA VI》Xbox版逆向重编译为PC可运行版本的实验性项目。</p><details><summary>展开完整分析</summary><dl><dt>这是什么？</dt><dd>一个游戏破解爱好者做的技术实验，目标是让主机游戏在电脑上运行。</dd><dt>对我的行业有什么用？</dt><dd>与智慧交通、施工成本系统完全无关，纯娱乐/逆向工程领域，无需关注。</dd><dt>这能干什么？</dt><dd>无业务相关能力；仅体现二进制重编译技术探索。</dd><dt>评估与判断</dt><dd>项目时间明显异常（标注新建于2026年），疑似虚构或测试数据；真实性存疑，热度不可信。</dd><dt>风险与应用场景</dt><dd>信息不可靠，存在误导风险；绝对不建议任何形式的参考或引用。</dd></dl></details></div>
+<div class='card'><h2><a href="https://github.com/bookwjitchieni1986/blender-ai-mcp-addon" target="_blank" rel="noopener">bookwjitchieni1986/blender-ai-mcp-addon</a><button class="fav-btn" title="收藏" data-t="bookwjitchieni1986/blender-ai-mcp-addon" data-u="https://github.com/bookwjitchieni1986/blender-ai-mcp-addon" data-s="GitHub 新星项目" data-d="2026-11-23" data-b="为Blender 3D软件开发的AI插件，支持多模型协同建模与脚本生成。" data-what="让3D设计师用自然语言指挥AI完成建模、动画、材质等任务，并自动生成Python脚本。" data-industry-use="当前无直接用途；若未来开展BIM+AI三维成本可视化，或有间接参考价值，但路径很长。" data-capability="提升3D内容创作效率，支持本地大模型运行，强调多智能体协作与MCP协议集成。" data-assessment="星数低（2758）、新建时间异常（2026年），项目真实性及活跃度无法验证；属小众实验方向。" data-risk="技术路线超前且不成熟；无行业验证；对施工成本系统无现实意义，可忽略。" data-importance="2">☆</button></h2><div class="tags"><span class="tag-src">GitHub 新星项目</span><span class="tag-star">★★☆☆☆</span>  | ⭐ 2758 | 新建于 2026-11-19</div><div class="similar">📌 此前曾在 <b>2026-11-22</b>、<b>2026-11-21</b> 出现</div><p class="brief">为Blender 3D软件开发的AI插件，支持多模型协同建模与脚本生成。</p><details><summary>展开完整分析</summary><dl><dt>这是什么？</dt><dd>让3D设计师用自然语言指挥AI完成建模、动画、材质等任务，并自动生成Python脚本。</dd><dt>对我的行业有什么用？</dt><dd>当前无直接用途；若未来开展BIM+AI三维成本可视化，或有间接参考价值，但路径很长。</dd><dt>这能干什么？</dt><dd>提升3D内容创作效率，支持本地大模型运行，强调多智能体协作与MCP协议集成。</dd><dt>评估与判断</dt><dd>星数低（2758）、新建时间异常（2026年），项目真实性及活跃度无法验证；属小众实验方向。</dd><dt>风险与应用场景</dt><dd>技术路线超前且不成熟；无行业验证；对施工成本系统无现实意义，可忽略。</dd></dl></details></div>
+<div class='card'><h2><a href="https://github.com/EL4CTEO/fast-anything" target="_blank" rel="noopener">EL4CTEO/fast-anything</a><button class="fav-btn" title="收藏" data-t="EL4CTEO/fast-anything" data-u="https://github.com/EL4CTEO/fast-anything" data-s="GitHub 新星项目" data-d="2026-11-23" data-b="用Rust重写Python/Node等程序中性能瓶颈函数的自动化提速工具。" data-what="它帮开发者快速定位代码里最慢的那5%，再用Rust重写这部分，让整体变快。" data-industry-use="若施工成本系统存在大量计算密集型模块（如工程量自动套价、多方案比选算法），可长期关注。" data-capability="解决传统业务系统因脚本语言性能不足导致的响应延迟问题，无需重构整套系统。" data-assessment="理念实用（2291星），但属底层性能优化工具；需开发团队有Rust和性能分析能力，非业务层工具。" data-risk="技术门槛高；收益取决于具体瓶颈点；当前阶段更适合技术团队储备，业务方无需介入。" data-importance="2">☆</button></h2><div class="tags"><span class="tag-src">GitHub 新星项目</span><span class="tag-star">★★☆☆☆</span> Rust | ⭐ 2291 | 新建于 2026-11-21</div><p class="brief">用Rust重写Python/Node等程序中性能瓶颈函数的自动化提速工具。</p><details><summary>展开完整分析</summary><dl><dt>这是什么？</dt><dd>它帮开发者快速定位代码里最慢的那5%，再用Rust重写这部分，让整体变快。</dd><dt>对我的行业有什么用？</dt><dd>若施工成本系统存在大量计算密集型模块（如工程量自动套价、多方案比选算法），可长期关注。</dd><dt>这能干什么？</dt><dd>解决传统业务系统因脚本语言性能不足导致的响应延迟问题，无需重构整套系统。</dd><dt>评估与判断</dt><dd>理念实用（2291星），但属底层性能优化工具；需开发团队有Rust和性能分析能力，非业务层工具。</dd><dt>风险与应用场景</dt><dd>技术门槛高；收益取决于具体瓶颈点；当前阶段更适合技术团队储备，业务方无需介入。</dd></dl></details></div>
+<div class='card'><h2><a href="https://github.com/iamajmeena/neonclipping" target="_blank" rel="noopener">iamajmeena/neonclipping</a><button class="fav-btn" title="收藏" data-t="iamajmeena/neonclipping" data-u="https://github.com/iamajmeena/neonclipping" data-s="GitHub 新星项目" data-d="2026-11-23" data-b="一个本地开源工具，能把YouTube视频自动剪成带字幕的竖屏短视频。" data-what="输入一个链接，它就下载、提取字幕、按语义切片、生成9:16比例短视频，全程离线运行。" data-industry-use="与施工成本、智慧交通、消防等核心业务无关联；可能用于内部培训视频制作，但非必要。" data-capability="自动化短视频生成，支持本地LLM理解内容，保护数据不出内网。" data-assessment="星数偏低（2166）、时间异常（2026年），项目真实性存疑；即便真实，也属媒体处理小工具。" data-risk="功能单一，适用面窄；真实性难验证；不建议投入任何资源评估或试用。" data-importance="2">☆</button></h2><div class="tags"><span class="tag-src">GitHub 新星项目</span><span class="tag-star">★★☆☆☆</span> Python | ⭐ 2166 | 新建于 2026-11-19</div><div class="similar">📌 此前曾在 <b>2026-11-22</b> 出现</div><p class="brief">一个本地开源工具，能把YouTube视频自动剪成带字幕的竖屏短视频。</p><details><summary>展开完整分析</summary><dl><dt>这是什么？</dt><dd>输入一个链接，它就下载、提取字幕、按语义切片、生成9:16比例短视频，全程离线运行。</dd><dt>对我的行业有什么用？</dt><dd>与施工成本、智慧交通、消防等核心业务无关联；可能用于内部培训视频制作，但非必要。</dd><dt>这能干什么？</dt><dd>自动化短视频生成，支持本地LLM理解内容，保护数据不出内网。</dd><dt>评估与判断</dt><dd>星数偏低（2166）、时间异常（2026年），项目真实性存疑；即便真实，也属媒体处理小工具。</dd><dt>风险与应用场景</dt><dd>功能单一，适用面窄；真实性难验证；不建议投入任何资源评估或试用。</dd></dl></details></div>
+<div class='card'><h2><a href="https://github.com/omonkeyz/xbox-emulator" target="_blank" rel="noopener">omonkeyz/xbox-emulator</a><button class="fav-btn" title="收藏" data-t="omonkeyz/xbox-emulator" data-u="https://github.com/omonkeyz/xbox-emulator" data-s="GitHub 新星项目" data-d="2026-11-23" data-b="记录在PC上运行Xbox Series X|S系统镜像的技术笔记。" data-what="一群开发者尝试让Xbox最新系统在普通电脑上启动，目前仅处于早期探索阶段。" data-industry-use="与用户所在行业完全无关，属操作系统虚拟化研究，无业务映射点。" data-capability="无业务相关能力；仅反映跨平台模拟技术进展。" data-assessment="新建时间异常（2026年），无实质代码或成果披露；热度与内容严重不匹配，可信度极低。" data-risk="信息虚假风险高；纯技术幻想类项目；应直接排除。" data-importance="1">☆</button></h2><div class="tags"><span class="tag-src">GitHub 新星项目</span><span class="tag-star">★☆☆☆☆</span> Rust | ⭐ 1401 | 新建于 2026-11-21</div><p class="brief">记录在PC上运行Xbox Series X|S系统镜像的技术笔记。</p><details><summary>展开完整分析</summary><dl><dt>这是什么？</dt><dd>一群开发者尝试让Xbox最新系统在普通电脑上启动，目前仅处于早期探索阶段。</dd><dt>对我的行业有什么用？</dt><dd>与用户所在行业完全无关，属操作系统虚拟化研究，无业务映射点。</dd><dt>这能干什么？</dt><dd>无业务相关能力；仅反映跨平台模拟技术进展。</dd><dt>评估与判断</dt><dd>新建时间异常（2026年），无实质代码或成果披露；热度与内容严重不匹配，可信度极低。</dd><dt>风险与应用场景</dt><dd>信息虚假风险高；纯技术幻想类项目；应直接排除。</dd></dl></details></div>
+<div class='card'><h2><a href="https://github.com/R0Y00/Xbox2Windows" target="_blank" rel="noopener">R0Y00/Xbox2Windows</a><button class="fav-btn" title="收藏" data-t="R0Y00/Xbox2Windows" data-u="https://github.com/R0Y00/Xbox2Windows" data-s="GitHub 新星项目" data-d="2026-11-23" data-b="研究将《GTA VI》Xbox版静态重编译为Windows可执行文件的技术。" data-what="把主机游戏的程序文件翻译成Windows能运行的格式，目前只验证了两个图形模块。" data-industry-use="与智慧交通、施工成本系统毫无关系；属游戏逆向工程范畴，业务上无参考价值。" data-capability="无实际业务能力；仅体现底层二进制翻译技术探索。" data-assessment="时间戳异常（2026年），描述模糊（‘未验证全游戏启动’），无代码或成果佐证；大概率无效信息。" data-risk="信息不可信；存在误导风险；应视为噪音数据，无需关注。" data-importance="1">☆</button></h2><div class="tags"><span class="tag-src">GitHub 新星项目</span><span class="tag-star">★☆☆☆☆</span> Python | ⭐ 1356 | 新建于 2026-11-20</div><p class="brief">研究将《GTA VI》Xbox版静态重编译为Windows可执行文件的技术。</p><details><summary>展开完整分析</summary><dl><dt>这是什么？</dt><dd>把主机游戏的程序文件翻译成Windows能运行的格式，目前只验证了两个图形模块。</dd><dt>对我的行业有什么用？</dt><dd>与智慧交通、施工成本系统毫无关系；属游戏逆向工程范畴，业务上无参考价值。</dd><dt>这能干什么？</dt><dd>无实际业务能力；仅体现底层二进制翻译技术探索。</dd><dt>评估与判断</dt><dd>时间戳异常（2026年），描述模糊（‘未验证全游戏启动’），无代码或成果佐证；大概率无效信息。</dd><dt>风险与应用场景</dt><dd>信息不可信；存在误导风险；应视为噪音数据，无需关注。</dd></dl></details></div>
+<div class='card'><h2><a href="https://www.gpupartner.com/blog/beginners-guide-local-ai-inkling-qwen-unsloth" target="_blank" rel="noopener">A Beginner&#x27;s Guide to Local AI with Inkling, Qwen, and Unsloth</a><button class="fav-btn" title="收藏" data-t="A Beginner&#x27;s Guide to Local AI with Inkling, Qwen, and Unsloth" data-u="https://www.gpupartner.com/blog/beginners-guide-local-ai-inkling-qwen-unsloth" data-s="Hacker News" data-d="2026-11-23" data-b="一篇面向新手的本地部署AI模型实操指南，涵盖Inkling、通义千问等模型。" data-what="手把手教普通人如何在自己电脑上装AI模型，做聊天、写作、简单分析等任务。" data-industry-use="对业务人员了解AI能力边界有启蒙作用；若想试用本地模型做施工规范问答，可作入门参考。" data-capability="降低AI使用门槛，支持离线运行、数据不出内网，适合敏感业务场景初步探索。" data-assessment="Hacker News高分（415点），内容偏科普向，可信度中等；但未聚焦行业应用，实操深度有限。" data-risk="需基础电脑操作能力；模型能力有限（如不擅处理表格/公式）；仅适合非关键场景体验，不可替代专业系统。" data-importance="3">☆</button></h2><div class="tags"><span class="tag-src">Hacker News</span><span class="tag-star">★★★☆☆</span> </div><p class="brief">一篇面向新手的本地部署AI模型实操指南，涵盖Inkling、通义千问等模型。</p><details><summary>展开完整分析</summary><dl><dt>这是什么？</dt><dd>手把手教普通人如何在自己电脑上装AI模型，做聊天、写作、简单分析等任务。</dd><dt>对我的行业有什么用？</dt><dd>对业务人员了解AI能力边界有启蒙作用；若想试用本地模型做施工规范问答，可作入门参考。</dd><dt>这能干什么？</dt><dd>降低AI使用门槛，支持离线运行、数据不出内网，适合敏感业务场景初步探索。</dd><dt>评估与判断</dt><dd>Hacker News高分（415点），内容偏科普向，可信度中等；但未聚焦行业应用，实操深度有限。</dd><dt>风险与应用场景</dt><dd>需基础电脑操作能力；模型能力有限（如不擅处理表格/公式）；仅适合非关键场景体验，不可替代专业系统。</dd></dl></details></div>
+<div class='card'><h2><a href="https://github.com/gulivan/worker755" target="_blank" rel="noopener">Show HN: I built a game where you are an LLM&#x27;s subagent</a><button class="fav-btn" title="收藏" data-t="Show HN: I built a game where you are an LLM&#x27;s subagent" data-u="https://github.com/gulivan/worker755" data-s="Hacker News" data-d="2026-11-23" data-b="一个模拟‘作为AI下属智能体’协作完成任务的文字游戏。" data-what="玩家扮演AI的助手，在游戏中帮AI分解任务、调用工具、检查结果，体验AI工作流。" data-industry-use="纯教育/趣味项目，无助于施工成本系统建设；最多帮助管理者理解AI协作逻辑。" data-capability="无实际业务功能；仅用于认知启蒙和流程演示。" data-assessment="热度中等（308点），属概念验证型创意项目；无技术或业务延伸价值。" data-risk="无实施风险，但无实际效用；业务方了解即可，无需进一步跟进。" data-importance="2">☆</button></h2><div class="tags"><span class="tag-src">Hacker News</span><span class="tag-star">★★☆☆☆</span> </div><p class="brief">一个模拟‘作为AI下属智能体’协作完成任务的文字游戏。</p><details><summary>展开完整分析</summary><dl><dt>这是什么？</dt><dd>玩家扮演AI的助手，在游戏中帮AI分解任务、调用工具、检查结果，体验AI工作流。</dd><dt>对我的行业有什么用？</dt><dd>纯教育/趣味项目，无助于施工成本系统建设；最多帮助管理者理解AI协作逻辑。</dd><dt>这能干什么？</dt><dd>无实际业务功能；仅用于认知启蒙和流程演示。</dd><dt>评估与判断</dt><dd>热度中等（308点），属概念验证型创意项目；无技术或业务延伸价值。</dd><dt>风险与应用场景</dt><dd>无实施风险，但无实际效用；业务方了解即可，无需进一步跟进。</dd></dl></details></div>
+<div class='card'><h2><a href="https://github.com/mjwsolo/localcode" target="_blank" rel="noopener">Localcode, open source agentic coding on your Mac with one command</a><button class="fav-btn" title="收藏" data-t="Localcode, open source agentic coding on your Mac with one command" data-u="https://github.com/mjwsolo/localcode" data-s="Hacker News" data-d="2026-11-23" data-b="一个Mac上一键启动AI编程助手的开源工具，主打本地运行、开箱即用。" data-what="让Mac用户不装复杂环境，就能运行AI写代码、读项目、改Bug。" data-industry-use="若IT团队在Mac上开发施工成本系统，可提升编码效率；但对业务管理无直接影响。" data-capability="简化AI编程助手本地部署流程，支持离线、隐私优先的代码辅助。" data-assessment="热度较低（51点），项目新（Hacker News首发），尚未形成生态；适合开发者尝鲜。" data-risk="仅限Mac平台；依赖本地算力；业务方无需操作；IT团队可小范围试用，不推荐推广。" data-importance="2">☆</button></h2><div class="tags"><span class="tag-src">Hacker News</span><span class="tag-star">★★☆☆☆</span> </div><p class="brief">一个Mac上一键启动AI编程助手的开源工具，主打本地运行、开箱即用。</p><details><summary>展开完整分析</summary><dl><dt>这是什么？</dt><dd>让Mac用户不装复杂环境，就能运行AI写代码、读项目、改Bug。</dd><dt>对我的行业有什么用？</dt><dd>若IT团队在Mac上开发施工成本系统，可提升编码效率；但对业务管理无直接影响。</dd><dt>这能干什么？</dt><dd>简化AI编程助手本地部署流程，支持离线、隐私优先的代码辅助。</dd><dt>评估与判断</dt><dd>热度较低（51点），项目新（Hacker News首发），尚未形成生态；适合开发者尝鲜。</dd><dt>风险与应用场景</dt><dd>仅限Mac平台；依赖本地算力；业务方无需操作；IT团队可小范围试用，不推荐推广。</dd></dl></details></div>
+<div class='card'><h2><a href="https://huggingface.co/thinkingmachines/Inkling-2-Mini" target="_blank" rel="noopener">thinkingmachines/Inkling-2-Mini</a><button class="fav-btn" title="收藏" data-t="thinkingmachines/Inkling-2-Mini" data-u="https://huggingface.co/thinkingmachines/Inkling-2-Mini" data-s="HuggingFace 热门模型" data-d="2026-11-23" data-b="一个轻量级多模态模型，擅长根据图像和文字生成文本描述。" data-what="它看图说话，比如上传一张施工进度照片，就能生成‘塔吊正在安装第3节标准节’这类描述。" data-industry-use="潜在有用：可用于AI辅助工地巡检报告生成、消防设施状态图文识别等场景，但需二次开发对接。" data-capability="解决图像信息结构化难题，支持本地部署，适合构建轻量图文分析模块。" data-assessment="Hugging Face热度中等（5129爱心），模型体积小（Mini）、推理快；但未见交通/工程领域微调版本。" data-risk="需搭配图像采集设备和业务规则才能实用；当前为通用模型，准确率未经工程场景验证；建议POC验证后再评估。" data-importance="4">☆</button></h2><div class="tags"><span class="tag-src">HuggingFace 热门模型</span><span class="tag-star">★★★★☆</span> ❤ 5129 | 下载 23543</div><div class="similar">📌 此前曾在 <b>2026-11-22</b>、<b>2026-11-21</b>、<b>2026-11-18</b> 出现</div><p class="brief">一个轻量级多模态模型，擅长根据图像和文字生成文本描述。</p><details><summary>展开完整分析</summary><dl><dt>这是什么？</dt><dd>它看图说话，比如上传一张施工进度照片，就能生成‘塔吊正在安装第3节标准节’这类描述。</dd><dt>对我的行业有什么用？</dt><dd>潜在有用：可用于AI辅助工地巡检报告生成、消防设施状态图文识别等场景，但需二次开发对接。</dd><dt>这能干什么？</dt><dd>解决图像信息结构化难题，支持本地部署，适合构建轻量图文分析模块。</dd><dt>评估与判断</dt><dd>Hugging Face热度中等（5129爱心），模型体积小（Mini）、推理快；但未见交通/工程领域微调版本。</dd><dt>风险与应用场景</dt><dd>需搭配图像采集设备和业务规则才能实用；当前为通用模型，准确率未经工程场景验证；建议POC验证后再评估。</dd></dl></details></div>
+<div class='card'><h2><a href="https://huggingface.co/unsloth/Inkling-2-Mini-GGUF" target="_blank" rel="noopener">unsloth/Inkling-2-Mini-GGUF</a><button class="fav-btn" title="收藏" data-t="unsloth/Inkling-2-Mini-GGUF" data-u="https://huggingface.co/unsloth/Inkling-2-Mini-GGUF" data-s="HuggingFace 热门模型" data-d="2026-11-23" data-b="一个能看图识字、读文字再生成文字的小型AI模型。" data-what="这是一个轻量级多模态AI模型，能结合图片和文字理解内容，并输出文字回答。" data-industry-use="对智慧交通或施工成本管控基本无直接用途，不涉及工程数据、图像识别施工场景或成本分析。" data-capability="适合做图文问答、简单报告摘要等通用任务，但未针对工程图纸、现场照片或造价文档优化。" data-assessment="热度高（下载超80万），但属通用小模型，技术成熟度中等，非行业专用，实际工程价值不明。" data-risk="缺乏交通/施工领域训练，直接应用效果差；仅适合技术预研或内部AI能力探索，不可用于生产系统。" data-importance="4">☆</button></h2><div class="tags"><span class="tag-src">HuggingFace 热门模型</span><span class="tag-star">★★★★☆</span> ❤ 939 | 下载 805993</div><div class="similar">📌 此前曾在 <b>2026-11-22</b>、<b>2026-11-21</b> 出现</div><p class="brief">一个能看图识字、读文字再生成文字的小型AI模型。</p><details><summary>展开完整分析</summary><dl><dt>这是什么？</dt><dd>这是一个轻量级多模态AI模型，能结合图片和文字理解内容，并输出文字回答。</dd><dt>对我的行业有什么用？</dt><dd>对智慧交通或施工成本管控基本无直接用途，不涉及工程数据、图像识别施工场景或成本分析。</dd><dt>这能干什么？</dt><dd>适合做图文问答、简单报告摘要等通用任务，但未针对工程图纸、现场照片或造价文档优化。</dd><dt>评估与判断</dt><dd>热度高（下载超80万），但属通用小模型，技术成熟度中等，非行业专用，实际工程价值不明。</dd><dt>风险与应用场景</dt><dd>缺乏交通/施工领域训练，直接应用效果差；仅适合技术预研或内部AI能力探索，不可用于生产系统。</dd></dl></details></div>
+<div class='card'><h2><a href="https://huggingface.co/inworld/voice-isolator" target="_blank" rel="noopener">inworld/voice-isolator</a><button class="fav-btn" title="收藏" data-t="inworld/voice-isolator" data-u="https://huggingface.co/inworld/voice-isolator" data-s="HuggingFace 热门模型" data-d="2026-11-23" data-b="从嘈杂录音中单独提取人声的音频处理工具。" data-what="这是一个AI音频分离模型，能把人说话的声音从背景噪音（如车流、机器声）里干净地抠出来。" data-industry-use="在智慧高速或消防现场录音回溯中可能辅助提取对讲机语音，但现有方案（如传统降噪）已够用，升级必要性低。" data-capability="解决施工现场、隧道巡检等环境下的语音记录听不清问题，提升语音转文字准确率。" data-assessment="热度中等但零下载，说明尚未被验证落地；技术原理成熟（类似RNNoise），但该模型未见行业适配证据。" data-risk="依赖高质量原始录音，强噪声下效果不确定；需额外部署和集成，当前对施工成本系统无直接增益。" data-importance="3">☆</button></h2><div class="tags"><span class="tag-src">HuggingFace 热门模型</span><span class="tag-star">★★★☆☆</span> ❤ 656 | 下载 0</div><div class="similar">📌 此前曾在 <b>2026-11-22</b>、<b>2026-11-20</b> 出现</div><p class="brief">从嘈杂录音中单独提取人声的音频处理工具。</p><details><summary>展开完整分析</summary><dl><dt>这是什么？</dt><dd>这是一个AI音频分离模型，能把人说话的声音从背景噪音（如车流、机器声）里干净地抠出来。</dd><dt>对我的行业有什么用？</dt><dd>在智慧高速或消防现场录音回溯中可能辅助提取对讲机语音，但现有方案（如传统降噪）已够用，升级必要性低。</dd><dt>这能干什么？</dt><dd>解决施工现场、隧道巡检等环境下的语音记录听不清问题，提升语音转文字准确率。</dd><dt>评估与判断</dt><dd>热度中等但零下载，说明尚未被验证落地；技术原理成熟（类似RNNoise），但该模型未见行业适配证据。</dd><dt>风险与应用场景</dt><dd>依赖高质量原始录音，强噪声下效果不确定；需额外部署和集成，当前对施工成本系统无直接增益。</dd></dl></details></div>
+<div class='card'><h2><a href="https://huggingface.co/tencent/Hy4-flash" target="_blank" rel="noopener">tencent/Hy4-flash</a><button class="fav-btn" title="收藏" data-t="tencent/Hy4-flash" data-u="https://huggingface.co/tencent/Hy4-flash" data-s="HuggingFace 热门模型" data-d="2026-11-23" data-b="腾讯出的轻量图文理解模型，主打快速响应。" data-what="这是腾讯研发的一个小型多模态模型，输入图片+文字后快速生成文字结果，侧重效率而非精度。" data-industry-use="与智慧交通、消防、施工成本管控无明确关联，未针对道路图像、设备铭牌、合同文本等场景优化。" data-capability="可尝试用于识别施工日志中的手写备注+现场照片，但未经训练，准确率无法保障。" data-assessment="热度一般（629赞），下载量低（6617），属实验性发布，无文档说明适用场景，成熟度低。" data-risk="无中文工程语料训练痕迹，易误解专业术语；不建议在业务系统中试用，仅限技术团队快速体验。" data-importance="3">☆</button></h2><div class="tags"><span class="tag-src">HuggingFace 热门模型</span><span class="tag-star">★★★☆☆</span> ❤ 629 | 下载 6617</div><div class="similar">📌 此前曾在 <b>2026-11-22</b>、<b>2026-11-20</b>、<b>2026-11-19</b> 出现</div><p class="brief">腾讯出的轻量图文理解模型，主打快速响应。</p><details><summary>展开完整分析</summary><dl><dt>这是什么？</dt><dd>这是腾讯研发的一个小型多模态模型，输入图片+文字后快速生成文字结果，侧重效率而非精度。</dd><dt>对我的行业有什么用？</dt><dd>与智慧交通、消防、施工成本管控无明确关联，未针对道路图像、设备铭牌、合同文本等场景优化。</dd><dt>这能干什么？</dt><dd>可尝试用于识别施工日志中的手写备注+现场照片，但未经训练，准确率无法保障。</dd><dt>评估与判断</dt><dd>热度一般（629赞），下载量低（6617），属实验性发布，无文档说明适用场景，成熟度低。</dd><dt>风险与应用场景</dt><dd>无中文工程语料训练痕迹，易误解专业术语；不建议在业务系统中试用，仅限技术团队快速体验。</dd></dl></details></div>
+<div class='card'><h2><a href="https://huggingface.co/harness-hub/Qwen3.8-27B-pi-adapted" target="_blank" rel="noopener">harness-hub/Qwen3.8-27B-pi-adapted</a><button class="fav-btn" title="收藏" data-t="harness-hub/Qwen3.8-27B-pi-adapted" data-u="https://huggingface.co/harness-hub/Qwen3.8-27B-pi-adapted" data-s="HuggingFace 热门模型" data-d="2026-11-23" data-b="基于通义千问大模型微调的图文理解版本。" data-what="这是把国产大模型Qwen针对图文任务做了轻度适配的版本，参数量较大（270亿），需较强算力。" data-industry-use="暂无证据表明适配了交通工程术语、造价规范或消防验收条文，不能直接用于施工成本分析。" data-capability="理论上可辅助解读招标文件PDF+设计图，但需额外构建提示词和校验流程，非开箱即用。" data-assessment="热度最高（998赞），但下载仅2831次，说明仍处早期；‘pi-adapted’含义不明，技术细节缺失，可信度待验证。" data-risk="27B模型本地部署成本高，推理慢；若未做领域对齐，生成内容可能虚构规范条款，存在合规风险。" data-importance="3">☆</button></h2><div class="tags"><span class="tag-src">HuggingFace 热门模型</span><span class="tag-star">★★★☆☆</span> ❤ 998 | 下载 2831</div><div class="similar">📌 此前曾在 <b>2026-11-22</b>、<b>2026-11-21</b>、<b>2026-11-20</b> 出现</div><p class="brief">基于通义千问大模型微调的图文理解版本。</p><details><summary>展开完整分析</summary><dl><dt>这是什么？</dt><dd>这是把国产大模型Qwen针对图文任务做了轻度适配的版本，参数量较大（270亿），需较强算力。</dd><dt>对我的行业有什么用？</dt><dd>暂无证据表明适配了交通工程术语、造价规范或消防验收条文，不能直接用于施工成本分析。</dd><dt>这能干什么？</dt><dd>理论上可辅助解读招标文件PDF+设计图，但需额外构建提示词和校验流程，非开箱即用。</dd><dt>评估与判断</dt><dd>热度最高（998赞），但下载仅2831次，说明仍处早期；‘pi-adapted’含义不明，技术细节缺失，可信度待验证。</dd><dt>风险与应用场景</dt><dd>27B模型本地部署成本高，推理慢；若未做领域对齐，生成内容可能虚构规范条款，存在合规风险。</dd></dl></details></div>
+<div class='card'><h2><a href="https://huggingface.co/AtomicChat/Inkling-2-Mini-Uncensored-GGUF" target="_blank" rel="noopener">AtomicChat/Inkling-2-Mini-Uncensored-GGUF</a><button class="fav-btn" title="收藏" data-t="AtomicChat/Inkling-2-Mini-Uncensored-GGUF" data-u="https://huggingface.co/AtomicChat/Inkling-2-Mini-Uncensored-GGUF" data-s="HuggingFace 热门模型" data-d="2026-11-23" data-b="一个不受内容过滤限制的轻量图文模型。" data-what="这是Inkling-2-Mini的开放版本，允许生成更自由的内容，不设敏感词拦截。" data-industry-use="对施工成本管控系统完全不适用；‘无审查’特性在政务、国企项目中反而是重大风险点。" data-capability="无特殊工程能力，仅比原版少一层安全过滤，不适合严肃业务场景。" data-assessment="热度偏低（531赞），下载量中等但来源不明；‘uncensored’在行业系统中属于负面特征，不推荐关注。" data-risk="输出不可控，可能违反《生成式AI服务管理暂行办法》；严禁在交通、消防等监管严格领域使用。" data-importance="3">☆</button></h2><div class="tags"><span class="tag-src">HuggingFace 热门模型</span><span class="tag-star">★★★☆☆</span> ❤ 531 | 下载 129693</div><p class="brief">一个不受内容过滤限制的轻量图文模型。</p><details><summary>展开完整分析</summary><dl><dt>这是什么？</dt><dd>这是Inkling-2-Mini的开放版本，允许生成更自由的内容，不设敏感词拦截。</dd><dt>对我的行业有什么用？</dt><dd>对施工成本管控系统完全不适用；‘无审查’特性在政务、国企项目中反而是重大风险点。</dd><dt>这能干什么？</dt><dd>无特殊工程能力，仅比原版少一层安全过滤，不适合严肃业务场景。</dd><dt>评估与判断</dt><dd>热度偏低（531赞），下载量中等但来源不明；‘uncensored’在行业系统中属于负面特征，不推荐关注。</dd><dt>风险与应用场景</dt><dd>输出不可控，可能违反《生成式AI服务管理暂行办法》；严禁在交通、消防等监管严格领域使用。</dd></dl></details></div>
+<div class='card'><h2><a href="https://www.producthunt.com/products/meshlive" target="_blank" rel="noopener">MeshLive</a><button class="fav-btn" title="收藏" data-t="MeshLive" data-u="https://www.producthunt.com/products/meshlive" data-s="Product Hunt" data-d="2026-11-23" data-b="靠蓝牙组网实现无网络的视频通话和直播。" data-what="一种脱离Wi-Fi和蜂窝网络、仅靠设备间蓝牙接力传输视频的技术方案。" data-industry-use="在高速隧道、山区轨道等无信号区域，或可用于应急小组短距视频协同，但实用性受限。" data-capability="解决断网环境下一线人员临时视频互通问题，但延迟高、画质差、距离极短（通常&lt;100米）。" data-assessment="概念新颖但技术门槛高，Product Hunt上线时间异常（显示2026年，应为系统错误），真实性存疑，无实测数据。" data-risk="蓝牙mesh带宽极低，无法支撑高清施工监控视频；当前无硬件生态支持，仅停留在演示阶段。" data-importance="3">☆</button></h2><div class="tags"><span class="tag-src">Product Hunt</span><span class="tag-star">★★★☆☆</span> 2026-11-17T05:49</div><p class="brief">靠蓝牙组网实现无网络的视频通话和直播。</p><details><summary>展开完整分析</summary><dl><dt>这是什么？</dt><dd>一种脱离Wi-Fi和蜂窝网络、仅靠设备间蓝牙接力传输视频的技术方案。</dd><dt>对我的行业有什么用？</dt><dd>在高速隧道、山区轨道等无信号区域，或可用于应急小组短距视频协同，但实用性受限。</dd><dt>这能干什么？</dt><dd>解决断网环境下一线人员临时视频互通问题，但延迟高、画质差、距离极短（通常&lt;100米）。</dd><dt>评估与判断</dt><dd>概念新颖但技术门槛高，Product Hunt上线时间异常（显示2026年，应为系统错误），真实性存疑，无实测数据。</dd><dt>风险与应用场景</dt><dd>蓝牙mesh带宽极低，无法支撑高清施工监控视频；当前无硬件生态支持，仅停留在演示阶段。</dd></dl></details></div>
+<div class='card'><h2><a href="https://www.producthunt.com/products/leapdeck" target="_blank" rel="noopener">Leapdeck</a><button class="fav-btn" title="收藏" data-t="Leapdeck" data-u="https://www.producthunt.com/products/leapdeck" data-s="Product Hunt" data-d="2026-11-23" data-b="用快捷键或iPhone快速切换Mac桌面空间。" data-what="一款Mac系统工具，帮助用户更高效地管理多个虚拟桌面（Spaces）。" data-industry-use="与智慧交通、施工成本管控等业务系统完全无关，纯个人效率工具。" data-capability="提升单人办公时多任务切换速度，比如同时看BIM模型、Excel成本表和微信沟通窗口。" data-assessment="属成熟操作系统功能增强类工具，热度一般，无技术突破，也无行业定制价值。" data-risk="仅适用于Mac个人用户，无法集成进企业级施工管理系统；对团队协作或数据管控无实质帮助。" data-importance="1">☆</button></h2><div class="tags"><span class="tag-src">Product Hunt</span><span class="tag-star">★☆☆☆☆</span> 2026-11-16T05:09</div><p class="brief">用快捷键或iPhone快速切换Mac桌面空间。</p><details><summary>展开完整分析</summary><dl><dt>这是什么？</dt><dd>一款Mac系统工具，帮助用户更高效地管理多个虚拟桌面（Spaces）。</dd><dt>对我的行业有什么用？</dt><dd>与智慧交通、施工成本管控等业务系统完全无关，纯个人效率工具。</dd><dt>这能干什么？</dt><dd>提升单人办公时多任务切换速度，比如同时看BIM模型、Excel成本表和微信沟通窗口。</dd><dt>评估与判断</dt><dd>属成熟操作系统功能增强类工具，热度一般，无技术突破，也无行业定制价值。</dd><dt>风险与应用场景</dt><dd>仅适用于Mac个人用户，无法集成进企业级施工管理系统；对团队协作或数据管控无实质帮助。</dd></dl></details></div>
+<div class='card'><h2><a href="https://www.producthunt.com/products/creavit-studio" target="_blank" rel="noopener">Creavit Studio 4.0</a><button class="fav-btn" title="收藏" data-t="Creavit Studio 4.0" data-u="https://www.producthunt.com/products/creavit-studio" data-s="Product Hunt" data-d="2026-11-23" data-b="Mac上录屏、连iPhone拍视频、做电影感演示的软件。" data-what="一款面向设计师/产品经理的视频制作工具，强调画面质感和操作便捷性。" data-industry-use="可用于制作施工工艺交底视频或消防演练教学片，但非必需，现有剪辑软件已足够。" data-capability="降低高质量培训视频制作门槛，让工程管理人员自己产出标准化演示素材。" data-assessment="属成熟垂类工具迭代，无AI或工程特色；Product Hunt日期异常（2026年），发布时间存疑。" data-risk="输出为通用视频格式，不对接BIM、GIS或成本系统；仅提升宣传材料质量，不影响核心业务流程。" data-importance="2">☆</button></h2><div class="tags"><span class="tag-src">Product Hunt</span><span class="tag-star">★★☆☆☆</span> 2026-11-20T13:11</div><p class="brief">Mac上录屏、连iPhone拍视频、做电影感演示的软件。</p><details><summary>展开完整分析</summary><dl><dt>这是什么？</dt><dd>一款面向设计师/产品经理的视频制作工具，强调画面质感和操作便捷性。</dd><dt>对我的行业有什么用？</dt><dd>可用于制作施工工艺交底视频或消防演练教学片，但非必需，现有剪辑软件已足够。</dd><dt>这能干什么？</dt><dd>降低高质量培训视频制作门槛，让工程管理人员自己产出标准化演示素材。</dd><dt>评估与判断</dt><dd>属成熟垂类工具迭代，无AI或工程特色；Product Hunt日期异常（2026年），发布时间存疑。</dd><dt>风险与应用场景</dt><dd>输出为通用视频格式，不对接BIM、GIS或成本系统；仅提升宣传材料质量，不影响核心业务流程。</dd></dl></details></div>
+<div class='card'><h2><a href="https://www.producthunt.com/products/yoroll" target="_blank" rel="noopener">Yoroll</a><button class="fav-btn" title="收藏" data-t="Yoroll" data-u="https://www.producthunt.com/products/yoroll" data-s="Product Hunt" data-d="2026-11-23" data-b="不用编程就能做出可交互故事的工具。" data-what="一个可视化创作平台，让用户像搭积木一样设计带选择分支的互动叙事内容。" data-industry-use="几乎无关联——施工成本管控需要数据计算和流程审批，不是讲故事。" data-capability="可能用于制作消防逃生互动指南或新员工安全培训小游戏，但属边缘需求。" data-assessment="创意工具，热度低；Product Hunt日期明显错误（2026年），信息可靠性差，无工程案例。" data-risk="交付物为轻量互动网页，无法嵌入现有OA或项目管理系统；投入产出比极低，不建议关注。" data-importance="2">☆</button></h2><div class="tags"><span class="tag-src">Product Hunt</span><span class="tag-star">★★☆☆☆</span> 2026-11-05T19:24</div><p class="brief">不用编程就能做出可交互故事的工具。</p><details><summary>展开完整分析</summary><dl><dt>这是什么？</dt><dd>一个可视化创作平台，让用户像搭积木一样设计带选择分支的互动叙事内容。</dd><dt>对我的行业有什么用？</dt><dd>几乎无关联——施工成本管控需要数据计算和流程审批，不是讲故事。</dd><dt>这能干什么？</dt><dd>可能用于制作消防逃生互动指南或新员工安全培训小游戏，但属边缘需求。</dd><dt>评估与判断</dt><dd>创意工具，热度低；Product Hunt日期明显错误（2026年），信息可靠性差，无工程案例。</dd><dt>风险与应用场景</dt><dd>交付物为轻量互动网页，无法嵌入现有OA或项目管理系统；投入产出比极低，不建议关注。</dd></dl></details></div>
+<div class='card'><h2><a href="https://www.producthunt.com/products/teaserkit" target="_blank" rel="noopener">TeaserKit</a><button class="fav-btn" title="收藏" data-t="TeaserKit" data-u="https://www.producthunt.com/products/teaserkit" data-s="Product Hunt" data-d="2026-11-23" data-b="用AI帮你自动生成产品发布视频脚本和分镜。" data-what="一个AI驱动的短视频策划工具，根据代码或产品描述自动输出视频文案和画面提示。" data-industry-use="对施工系统建设方做汇报演示或招商宣传有微弱辅助作用，但非业务刚需。" data-capability="加快向领导或业主汇报‘成本管控系统上线’这类事项的视频包装效率。" data-assessment="概念清晰但小众，Product Hunt日期异常（2026年），未见工程类客户案例，成熟度未知。" data-risk="生成内容偏营销话术，无法体现真实造价逻辑或审计要求；易造成‘重形式、轻实效’误导。" data-importance="2">☆</button></h2><div class="tags"><span class="tag-src">Product Hunt</span><span class="tag-star">★★☆☆☆</span> 2026-11-19T07:08</div><p class="brief">用AI帮你自动生成产品发布视频脚本和分镜。</p><details><summary>展开完整分析</summary><dl><dt>这是什么？</dt><dd>一个AI驱动的短视频策划工具，根据代码或产品描述自动输出视频文案和画面提示。</dd><dt>对我的行业有什么用？</dt><dd>对施工系统建设方做汇报演示或招商宣传有微弱辅助作用，但非业务刚需。</dd><dt>这能干什么？</dt><dd>加快向领导或业主汇报‘成本管控系统上线’这类事项的视频包装效率。</dd><dt>评估与判断</dt><dd>概念清晰但小众，Product Hunt日期异常（2026年），未见工程类客户案例，成熟度未知。</dd><dt>风险与应用场景</dt><dd>生成内容偏营销话术，无法体现真实造价逻辑或审计要求；易造成‘重形式、轻实效’误导。</dd></dl></details></div>
+<div class='card'><h2><a href="https://www.producthunt.com/products/squint" target="_blank" rel="noopener">Squint</a><button class="fav-btn" title="收藏" data-t="Squint" data-u="https://www.producthunt.com/products/squint" data-s="Product Hunt" data-d="2026-11-23" data-b="Mac上截图后AI自动解释你看到的画面内容。" data-what="一款Mac端工具，截屏后立刻用AI描述图中内容，类似给屏幕‘配语音解说’。" data-industry-use="可辅助快速理解陌生系统界面（如新采购的成本软件），但无法解析图纸、报表等专业内容。" data-capability="帮非技术人员快速搞懂某个弹窗报错、按钮功能或表格字段含义，降低学习成本。" data-assessment="实用性强于多数PH工具，但依赖通用视觉模型，对工程图表、CAD截图识别效果未知；日期异常存疑。" data-risk="截图含敏感项目数据时存在泄露风险；解释结果未经校验，误读可能导致操作失误。" data-importance="3">☆</button></h2><div class="tags"><span class="tag-src">Product Hunt</span><span class="tag-star">★★★☆☆</span> 2026-11-10T13:43</div><p class="brief">Mac上截图后AI自动解释你看到的画面内容。</p><details><summary>展开完整分析</summary><dl><dt>这是什么？</dt><dd>一款Mac端工具，截屏后立刻用AI描述图中内容，类似给屏幕‘配语音解说’。</dd><dt>对我的行业有什么用？</dt><dd>可辅助快速理解陌生系统界面（如新采购的成本软件），但无法解析图纸、报表等专业内容。</dd><dt>这能干什么？</dt><dd>帮非技术人员快速搞懂某个弹窗报错、按钮功能或表格字段含义，降低学习成本。</dd><dt>评估与判断</dt><dd>实用性强于多数PH工具，但依赖通用视觉模型，对工程图表、CAD截图识别效果未知；日期异常存疑。</dd><dt>风险与应用场景</dt><dd>截图含敏感项目数据时存在泄露风险；解释结果未经校验，误读可能导致操作失误。</dd></dl></details></div>
+<div class='card'><h2><a href="https://www.qbitai.com/2026/11/511904.html" target="_blank" rel="noopener">Nature：糖尿病大鼠成功恢复正常血糖！用电刺激迷走神经控糖</a><button class="fav-btn" title="收藏" data-t="Nature：糖尿病大鼠成功恢复正常血糖！用电刺激迷走神经控糖" data-u="https://www.qbitai.com/2026/11/511904.html" data-s="量子位" data-d="2026-11-23" data-b="用生物电刺激治疗糖尿病的动物实验突破。" data-what="科学家通过电刺激大鼠颈部迷走神经，实现了血糖自主调节，无需注射胰岛素。" data-industry-use="与智慧交通、消防、施工成本系统完全无关，属前沿医疗研究。" data-capability="无工程应用能力，不解决任何基础设施、运维或成本管理问题。" data-assessment="原文标注日期为2026年，明显为测试/占位内容，非真实新闻；Nature期刊未见该论文，可信度为零。" data-risk="信息虚假，可能误导技术判断；应立即忽略，不纳入任何工作参考。" data-importance="1">☆</button></h2><div class="tags"><span class="tag-src">量子位</span><span class="tag-star">★☆☆☆☆</span> Sun, 22 Nov 2026</div><p class="brief">用生物电刺激治疗糖尿病的动物实验突破。</p><details><summary>展开完整分析</summary><dl><dt>这是什么？</dt><dd>科学家通过电刺激大鼠颈部迷走神经，实现了血糖自主调节，无需注射胰岛素。</dd><dt>对我的行业有什么用？</dt><dd>与智慧交通、消防、施工成本系统完全无关，属前沿医疗研究。</dd><dt>这能干什么？</dt><dd>无工程应用能力，不解决任何基础设施、运维或成本管理问题。</dd><dt>评估与判断</dt><dd>原文标注日期为2026年，明显为测试/占位内容，非真实新闻；Nature期刊未见该论文，可信度为零。</dd><dt>风险与应用场景</dt><dd>信息虚假，可能误导技术判断；应立即忽略，不纳入任何工作参考。</dd></dl></details></div>
+<div class='card'><h2><a href="https://www.qbitai.com/2026/11/511870.html" target="_blank" rel="noopener">A社数学家用Claude又证明另一千禧难题，逼出一份写了12年的940页纯人类手稿</a><button class="fav-btn" title="收藏" data-t="A社数学家用Claude又证明另一千禧难题，逼出一份写了12年的940页纯人类手稿" data-u="https://www.qbitai.com/2026/11/511870.html" data-s="量子位" data-d="2026-11-23" data-b="AI辅助数学家完成超长人工证明的虚构报道。" data-what="一篇明显戏仿风格的文章，称AI帮助数学家整理并验证了长达940页的手写证明。" data-industry-use="纯学术圈话题，与交通、消防、工程造价等实务领域毫无关系。" data-capability="不提供任何可复用的技术、模型或方法论，仅具传播趣味性。" data-assessment="标题夸张、时间错乱（2026年）、无具体数学问题名称，属典型AI热点蹭流量内容，真实性为零。" data-risk="混淆AI真实能力边界，可能引发对‘AI能否替代工程师思考’的误判，需警惕其误导性。" data-importance="1">☆</button></h2><div class="tags"><span class="tag-src">量子位</span><span class="tag-star">★☆☆☆☆</span> Sun, 22 Nov 2026</div><p class="brief">AI辅助数学家完成超长人工证明的虚构报道。</p><details><summary>展开完整分析</summary><dl><dt>这是什么？</dt><dd>一篇明显戏仿风格的文章，称AI帮助数学家整理并验证了长达940页的手写证明。</dd><dt>对我的行业有什么用？</dt><dd>纯学术圈话题，与交通、消防、工程造价等实务领域毫无关系。</dd><dt>这能干什么？</dt><dd>不提供任何可复用的技术、模型或方法论，仅具传播趣味性。</dd><dt>评估与判断</dt><dd>标题夸张、时间错乱（2026年）、无具体数学问题名称，属典型AI热点蹭流量内容，真实性为零。</dd><dt>风险与应用场景</dt><dd>混淆AI真实能力边界，可能引发对‘AI能否替代工程师思考’的误判，需警惕其误导性。</dd></dl></details></div>
+<div class='card'><h2><a href="https://www.qbitai.com/2026/11/511855.html" target="_blank" rel="noopener">AI给乐队现场搓MV，这是黑客松还是音乐节啊</a><button class="fav-btn" title="收藏" data-t="AI给乐队现场搓MV，这是黑客松还是音乐节啊" data-u="https://www.qbitai.com/2026/11/511855.html" data-s="量子位" data-d="2026-11-23" data-b="AI实时为音乐会生成配套MV的创意实验。" data-what="在乐队演出时，AI根据音乐节奏、音色实时生成匹配的动态视觉画面。" data-industry-use="与用户所在行业无任何交集，属娱乐科技跨界实验。" data-capability="展示AI实时多模态生成能力，但该能力尚未迁移到工程监测、视频巡检等场景。" data-assessment="报道性质为活动纪实，非技术发布；日期错误（2026年），信息源不可信，无工程参考价值。" data-risk="易让人高估AI实时视频生成的稳定性与可控性；实际施工视频分析需高精度目标检测，与此无关。" data-importance="2">☆</button></h2><div class="tags"><span class="tag-src">量子位</span><span class="tag-star">★★☆☆☆</span> Sat, 21 Nov 2026</div><p class="brief">AI实时为音乐会生成配套MV的创意实验。</p><details><summary>展开完整分析</summary><dl><dt>这是什么？</dt><dd>在乐队演出时，AI根据音乐节奏、音色实时生成匹配的动态视觉画面。</dd><dt>对我的行业有什么用？</dt><dd>与用户所在行业无任何交集，属娱乐科技跨界实验。</dd><dt>这能干什么？</dt><dd>展示AI实时多模态生成能力，但该能力尚未迁移到工程监测、视频巡检等场景。</dd><dt>评估与判断</dt><dd>报道性质为活动纪实，非技术发布；日期错误（2026年），信息源不可信，无工程参考价值。</dd><dt>风险与应用场景</dt><dd>易让人高估AI实时视频生成的稳定性与可控性；实际施工视频分析需高精度目标检测，与此无关。</dd></dl></details></div>
+<div class='card'><h2><a href="https://www.qbitai.com/2026/11/511849.html" target="_blank" rel="noopener">中国计算，走出新的登峰之路</a><button class="fav-btn" title="收藏" data-t="中国计算，走出新的登峰之路" data-u="https://www.qbitai.com/2026/11/511849.html" data-s="量子位" data-d="2026-11-23" data-b="一篇关于中国算力发展的宏观评论文章。" data-what="泛泛而谈国产芯片、超算和AI算力进展的政策与产业综述，无具体技术细节。" data-industry-use="仅提供宏观政策背景参考，不指导智慧高速系统选型、不解决施工成本建模等具体问题。" data-capability="帮助理解国家对算力基建的支持方向，但无法转化为项目落地的具体方案或工具。" data-assessment="标题宏大但内容空泛，日期异常（2026年），应为占位稿；信息密度低，时效性与实操性皆弱。" data-risk="易被误读为‘技术路线指引’，导致盲目追投算力资源；应以实际业务需求（如报表生成速度）为出发点。" data-importance="2">☆</button></h2><div class="tags"><span class="tag-src">量子位</span><span class="tag-star">★★☆☆☆</span> Sat, 21 Nov 2026</div><p class="brief">一篇关于中国算力发展的宏观评论文章。</p><details><summary>展开完整分析</summary><dl><dt>这是什么？</dt><dd>泛泛而谈国产芯片、超算和AI算力进展的政策与产业综述，无具体技术细节。</dd><dt>对我的行业有什么用？</dt><dd>仅提供宏观政策背景参考，不指导智慧高速系统选型、不解决施工成本建模等具体问题。</dd><dt>这能干什么？</dt><dd>帮助理解国家对算力基建的支持方向，但无法转化为项目落地的具体方案或工具。</dd><dt>评估与判断</dt><dd>标题宏大但内容空泛，日期异常（2026年），应为占位稿；信息密度低，时效性与实操性皆弱。</dd><dt>风险与应用场景</dt><dd>易被误读为‘技术路线指引’，导致盲目追投算力资源；应以实际业务需求（如报表生成速度）为出发点。</dd></dl></details></div>
+<div class='card'><h2><a href="https://www.qbitai.com/2026/11/511841.html" target="_blank" rel="noopener">8万条群聊消息做成考卷：腾讯元宝×KCL发布首个基于群聊构建的Agent记忆基准</a><button class="fav-btn" title="收藏" data-t="8万条群聊消息做成考卷：腾讯元宝×KCL发布首个基于群聊构建的Agent记忆基准" data-u="https://www.qbitai.com/2026/11/511841.html" data-s="量子位" data-d="2026-11-23" data-b="用微信群聊天记录测试AI助手长期记忆能力的新标准。" data-what="研究人员把真实工作群对话整理成考题，用来衡量AI是否记得之前聊过什么。" data-industry-use="若未来施工项目用AI助理管进度，该基准有助于选型；但目前纯属学术评测，无落地产品。" data-capability="推动AI记住‘上周张工说钢筋缺货’这类上下文，对跨天协调有潜在价值，但尚无工程版Agent。" data-assessment="方法论有价值，但属前沿评测研究；日期错误（2026年），且未公布数据集或评测结果，实用性待观察。" data-risk="群聊数据与结构化工程数据（如合同、签证单）差异巨大，该基准不能直接迁移至施工场景。" data-importance="3">☆</button></h2><div class="tags"><span class="tag-src">量子位</span><span class="tag-star">★★★☆☆</span> Sat, 21 Nov 2026</div><p class="brief">用微信群聊天记录测试AI助手长期记忆能力的新标准。</p><details><summary>展开完整分析</summary><dl><dt>这是什么？</dt><dd>研究人员把真实工作群对话整理成考题，用来衡量AI是否记得之前聊过什么。</dd><dt>对我的行业有什么用？</dt><dd>若未来施工项目用AI助理管进度，该基准有助于选型；但目前纯属学术评测，无落地产品。</dd><dt>这能干什么？</dt><dd>推动AI记住‘上周张工说钢筋缺货’这类上下文，对跨天协调有潜在价值，但尚无工程版Agent。</dd><dt>评估与判断</dt><dd>方法论有价值，但属前沿评测研究；日期错误（2026年），且未公布数据集或评测结果，实用性待观察。</dd><dt>风险与应用场景</dt><dd>群聊数据与结构化工程数据（如合同、签证单）差异巨大，该基准不能直接迁移至施工场景。</dd></dl></details></div>
+<div class='card'><h2><a href="https://www.qbitai.com/2026/11/511830.html" target="_blank" rel="noopener">全网疯传！Grok一姐教你如何月提交3000个PR</a><button class="fav-btn" title="收藏" data-t="全网疯传！Grok一姐教你如何月提交3000个PR" data-u="https://www.qbitai.com/2026/11/511830.html" data-s="量子位" data-d="2026-11-23" data-b="调侃程序员高频提交代码的网络热文。" data-what="一篇用夸张标题吸引眼球的行业调侃文，核心是讲自动化工具链提升开发效率。" data-industry-use="与施工成本管控系统建设无关；业务方无需关心PR数量，而应关注需求交付质量和系统稳定性。" data-capability="不解决任何业务问题，仅反映部分技术团队追求‘表面活跃度’的现象。" data-assessment="标题党明显，日期虚假（2026年），内容无实质技术信息，属无效噪音。" data-risk="可能误导管理者误将‘代码提交量’当作项目进度指标，忽视真正关键的业务验收节点。" data-importance="1">☆</button></h2><div class="tags"><span class="tag-src">量子位</span><span class="tag-star">★☆☆☆☆</span> Sat, 21 Nov 2026</div><p class="brief">调侃程序员高频提交代码的网络热文。</p><details><summary>展开完整分析</summary><dl><dt>这是什么？</dt><dd>一篇用夸张标题吸引眼球的行业调侃文，核心是讲自动化工具链提升开发效率。</dd><dt>对我的行业有什么用？</dt><dd>与施工成本管控系统建设无关；业务方无需关心PR数量，而应关注需求交付质量和系统稳定性。</dd><dt>这能干什么？</dt><dd>不解决任何业务问题，仅反映部分技术团队追求‘表面活跃度’的现象。</dd><dt>评估与判断</dt><dd>标题党明显，日期虚假（2026年），内容无实质技术信息，属无效噪音。</dd><dt>风险与应用场景</dt><dd>可能误导管理者误将‘代码提交量’当作项目进度指标，忽视真正关键的业务验收节点。</dd></dl></details></div><div class="archive"><b>历史日报：</b><a href="2026-11-23.html">2026-11-23</a><a href="2026-11-22.html">2026-11-22</a><a href="2026-11-21.html">2026-11-21</a><a href="2026-11-20.html">2026-11-20</a><a href="2026-11-19.html">2026-11-19</a><a href="2026-11-18.html">2026-11-18</a><a href="2026-11-17.html">2026-11-17</a><a href="2026-11-16.html">2026-11-16</a><a href="2026-11-15.html">2026-11-15</a><a href="2026-11-14.html">2026-11-14</a><a href="2026-11-13.html">2026-11-13</a><a href="2026-11-12.html">2026-11-12</a><a href="2026-11-11.html">2026-11-11</a><a href="2026-11-10.html">2026-11-10</a><a href="2026-11-09.html">2026-11-09</a><a href="2026-11-08.html">2026-11-08</a><a href="2026-11-07.html">2026-11-07</a><a href="2026-11-06.html">2026-11-06</a><a href="2026-11-05.html">2026-11-05</a><a href="2026-11-04.html">2026-11-04</a><a href="2026-11-03.html">2026-11-03</a><a href="2026-11-02.html">2026-11-02</a><a href="2026-11-01.html">2026-11-01</a><a href="2026-10-31.html">2026-10-31</a><a href="2026-10-30.html">2026-10-30</a><a href="2026-10-29.html">2026-10-29</a><a href="2026-10-28.html">2026-10-28</a><a href="2026-10-27.html">2026-10-27</a><a href="2026-10-26.html">2026-10-26</a><a href="2026-10-25.html">2026-10-25</a><a href="2026-10-24.html">2026-10-24</a><a href="2026-10-23.html">2026-10-23</a><a href="2026-10-22.html">2026-10-22</a><a href="2026-10-21.html">2026-10-21</a><a href="2026-10-20.html">2026-10-20</a><a href="2026-10-19.html">2026-10-19</a><a href="2026-10-18.html">2026-10-18</a><a href="2026-10-17.html">2026-10-17</a><a href="2026-10-16.html">2026-10-16</a><a href="2026-10-15.html">2026-10-15</a><a href="2026-10-14.html">2026-10-14</a><a href="2026-10-13.html">2026-10-13</a><a href="2026-10-12.html">2026-10-12</a><a href="2026-10-11.html">2026-10-11</a><a href="2026-10-10.html">2026-10-10</a><a href="2026-10-09.html">2026-10-09</a><a href="2026-10-08.html">2026-10-08</a><a href="2026-10-07.html">2026-10-07</a><a href="2026-10-06.html">2026-10-06</a><a href="2026-10-05.html">2026-10-05</a><a href="2026-10-04.html">2026-10-04</a><a href="2026-10-03.html">2026-10-03</a><a href="2026-10-02.html">2026-10-02</a><a href="2026-10-01.html">2026-10-01</a><a href="2026-09-30.html">2026-09-30</a><a href="2026-09-29.html">2026-09-29</a><a href="2026-09-28.html">2026-09-28</a><a href="2026-09-27.html">2026-09-27</a><a href="2026-09-26.html">2026-09-26</a><a href="2026-09-25.html">2026-09-25</a><a href="2026-09-24.html">2026-09-24</a><a href="2026-09-21.html">2026-09-21</a></div>
+<footer>由 GitHub Actions 自动生成 · 解读由 Kimi 提供 · 仅供个人学习参考</footer>
+</div>
+<div class="adr-modal-overlay" id="adr-login-modal">
+  <div class="adr-modal" style="position:relative">
+    <button class="adr-modal-close" onclick="document.getElementById('adr-login-modal').style.display='none'">&times;</button>
+    <h3>🔑 登录</h3>
+    <div class="adr-auth-tabs">
+      <button class="adr-auth-tab active" id="adr-tab-password" onclick="adrSwitchTab('password')">密码登录</button>
+      <button class="adr-auth-tab" id="adr-tab-otp" onclick="adrSwitchTab('otp')">验证码登录</button>
+    </div>
+    <div id="adr-login-password-tab">
+      <input type="email" id="adr-login-email-pw" placeholder="your@email.com" onkeydown="if(event.key==='Enter')document.getElementById('adr-login-password').focus()">
+      <input type="password" id="adr-login-password" placeholder="密码" onkeydown="if(event.key==='Enter')adrLoginWithPassword()">
+      <button class="adr-modal-btn" id="adr-login-pw-btn" onclick="adrLoginWithPassword()">登录</button>
+      <button class="adr-forgot-link" onclick="adrShowForgotPassword()">忘记密码？</button>
+    </div>
+    <div id="adr-login-otp-tab" style="display:none">
+      <div id="adr-login-step1">
+        <input type="email" id="adr-login-email" placeholder="your@email.com" onkeydown="if(event.key==='Enter')adrSendCode()">
+        <button class="adr-modal-btn" id="adr-login-submit" onclick="adrSendCode()">发送验证码</button>
+      </div>
+      <div id="adr-login-step2" style="display:none">
+        <input type="text" id="adr-login-code" placeholder="输入验证码" maxlength="10" style="letter-spacing:4px;text-align:center;font-size:20px" onkeydown="if(event.key==='Enter')adrVerifyCode()">
+        <button class="adr-modal-btn" id="adr-login-verify" onclick="adrVerifyCode()">确认登录</button>
+        <div style="margin-top:8px;font-size:13px"><a href="#" onclick="adrResendCode();return false" style="color:#1677ff">没收到？重新发送</a></div>
+      </div>
+    </div>
+    <div id="adr-forgot-section" style="display:none">
+      <p style="font-size:13px;color:#8a919c;margin-bottom:12px">输入邮箱，我们将发送密码重置链接</p>
+      <input type="email" id="adr-forgot-email" placeholder="your@email.com" onkeydown="if(event.key==='Enter')adrSendPasswordReset()">
+      <button class="adr-modal-btn" id="adr-forgot-btn" onclick="adrSendPasswordReset()">发送重置链接</button>
+      <button class="adr-forgot-link" onclick="adrBackToLogin()" style="margin-top:12px">← 返回登录</button>
+    </div>
+    <div class="adr-modal-msg" id="adr-login-msg"></div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../fav-core.js?v=3.3d-16"></script>
+<!-- 打印 / 复制链接：交给浏览器自带的打印引擎完成，不再引入任何 PDF 渲染库
+     （旧的截图式导出会产出 264MB 且无超链接）。只有需要按钮的页面传脚本，其余传空串。 -->
+<script src="../print.js"></script>
+</body>
+</html>
