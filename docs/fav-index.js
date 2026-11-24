@@ -89,18 +89,18 @@
     var endDate = endInput ? endInput.value : "";
 
     if (!startDate || !endDate) {
-      if (resultDiv) resultDiv.innerHTML = '<p style="color:#e63946">请选择开始和结束日期</p>';
+      if (resultDiv) resultDiv.innerHTML = '<p style="color:var(--accent)">请选择开始和结束日期</p>';
       return;
     }
 
     if (startDate > endDate) {
-      if (resultDiv) resultDiv.innerHTML = '<p style="color:#e63946">开始日期不能晚于结束日期</p>';
+      if (resultDiv) resultDiv.innerHTML = '<p style="color:var(--accent)">开始日期不能晚于结束日期</p>';
       return;
     }
 
     if (btn) { btn.disabled = true; btn.textContent = "分析中..."; }
     _setQuickBtnsDisabled(true);
-    setResultText("#1677ff", "🔄 正在分析 " + startDate + " 至 " + endDate + " 的数据，请稍候（约 10-30 秒）...");
+    setResultText("var(--ink)", " 正在分析 " + startDate + " 至 " + endDate + " 的数据，请稍候（约 10-30 秒）...");
 
     try {
       var res = await fetch(EDGE_FUNCTION_URL, {
@@ -118,12 +118,12 @@
       _setQuickBtnsDisabled(false);
 
       if (!data.success) {
-        setResultText("#e63946", "分析失败：" + (data.error || "未知错误"));
+        setResultText("var(--accent)", "分析失败：" + (data.error || "未知错误"));
         return;
       }
 
       if (!data.data) {
-        setResultText("#8a919c", data.message || "该时段暂无数据");
+        setResultText("var(--muted)", data.message || "该时段暂无数据");
         return;
       }
 
@@ -137,12 +137,12 @@
 
         var titleEl = document.createElement("h3");
         titleEl.className = "summary-title";
-        titleEl.textContent = "📊 " + startDate + " 至 " + endDate + " AI 分析报告";
+        titleEl.textContent = " " + startDate + " 至 " + endDate + " AI 分析报告";
         card.appendChild(titleEl);
 
         if (data.cached) {
           var cachedEl = document.createElement("p");
-          cachedEl.style.cssText = "color:#8a919c;font-size:12px";
+          cachedEl.style.cssText = "color:var(--muted);font-size:12px";
           cachedEl.textContent = "（缓存结果）";
           card.appendChild(cachedEl);
         }
@@ -159,7 +159,7 @@
     } catch (e) {
       if (btn) { btn.disabled = false; btn.textContent = "开始 AI 分析"; }
       _setQuickBtnsDisabled(false);
-      setResultText("#e63946", "请求失败：" + (e && e.message ? e.message : "未知错误"));
+      setResultText("var(--accent)", "请求失败：" + (e && e.message ? e.message : "未知错误"));
     }
   };
 

@@ -70,10 +70,10 @@
 
   /* ── AI 自动分类 ── */
   var CATEGORIES = [
-    { name: "工具/框架", icon: "🔧", kw: ["github","框架","工具","sdk","cli","部署","开源","库","plugin","插件","vscode","docker","api","前端","后端","web"] },
-    { name: "模型/算法", icon: "🤖", kw: ["模型","llm","算法","huggingface","推理","训练","fine-tun","gpt","transformer","embedding","量化","蒸馏","token"] },
-    { name: "灵感/案例", icon: "💡", kw: ["product hunt","案例","应用","产品","创意","设计","灵感","project","产品"] },
-    { name: "学习/方法", icon: "📚", kw: ["教程","方法","论文","研究","评测","学术","benchmark","survey","指南","课程","学习","arxiv"] }
+    { name: "工具/框架", icon: "", kw: ["github","框架","工具","sdk","cli","部署","开源","库","plugin","插件","vscode","docker","api","前端","后端","web"] },
+    { name: "模型/算法", icon: "", kw: ["模型","llm","算法","huggingface","推理","训练","fine-tun","gpt","transformer","embedding","量化","蒸馏","token"] },
+    { name: "灵感/案例", icon: "", kw: ["product hunt","案例","应用","产品","创意","设计","灵感","project","产品"] },
+    { name: "学习/方法", icon: "", kw: ["教程","方法","论文","研究","评测","学术","benchmark","survey","指南","课程","学习","arxiv"] }
   ];
   function autoCategorize(source, title, brief) {
     var text = (source + " " + title + " " + brief).toLowerCase();
@@ -94,7 +94,7 @@
     for (var i = 0; i < CATEGORIES.length; i++) {
       if (CATEGORIES[i].name === name) return CATEGORIES[i];
     }
-    return { name: "行业趋势", icon: "📊", kw: [] };
+    return { name: "行业趋势", icon: "", kw: [] };
   }
   /* ── 认证相关 ── */
   function isLoggedIn() { return !!currentUser; }
@@ -180,7 +180,7 @@
     if (emailPwInput) emailPwInput.value = "";
     if (pwInput) pwInput.value = "";
     if (codeInput) codeInput.value = "";
-    if (msg) { msg.textContent = ""; msg.style.color = "#e63946"; }
+    if (msg) { msg.textContent = ""; msg.style.color = "var(--accent)"; }
     if (forgotSection) forgotSection.style.display = "none";
     if (pwTab) pwTab.style.display = "block";
     if (otpTab) otpTab.style.display = "none";
@@ -254,7 +254,7 @@
       updateSyncStatus("已同步");
     } catch (e) {
       console.error("cloud add failed:", e);
-      updateSyncStatus("❌ 同步失败：" + (e.message || "请检查数据库权限"));
+      updateSyncStatus(" 同步失败：" + (e.message || "请检查数据库权限"));
     }
   }
 
@@ -267,7 +267,7 @@
       updateSyncStatus("已同步");
     } catch (e) {
       console.error("cloud remove failed:", e);
-      updateSyncStatus("❌ 同步失败：" + (e.message || "请检查数据库权限"));
+      updateSyncStatus(" 同步失败：" + (e.message || "请检查数据库权限"));
     }
   }
 
@@ -355,11 +355,11 @@
     // 创建对话框 - 添加 autocomplete="off" 防止浏览器弹出密码保存
     var dialog = document.createElement("div");
     dialog.setAttribute("autocomplete", "off");
-    dialog.style.cssText = "background:#fff;border-radius:8px;padding:24px;max-width:500px;width:90%;max-height:80vh;overflow-y:auto;box-shadow:0 4px 12px rgba(0,0,0,0.15)";
+    dialog.style.cssText = "background:var(--bg);border-radius:8px;padding:24px;max-width:500px;width:90%;max-height:80vh;overflow-y:auto;box-shadow:0 4px 12px rgba(0,0,0,0.15)";
 
-    var title = isNew ? "⭐ 收藏成功，补充上下文" : "✏️ 编辑收藏上下文";
-    var html = '<h3 style="margin:0 0 16px;font-size:18px;color:#203a43">' + title + '</h3>';
-    html += '<p style="color:#8a919c;font-size:12px;margin-bottom:16px">💡 上下文用于后续生成会议弹药包，仅自己可见</p>';
+    var title = isNew ? "⭐ 收藏成功，补充上下文" : " 编辑收藏上下文";
+    var html = '<h3 style="margin:0 0 16px;font-size:18px;color:var(--ink)">' + title + '</h3>';
+    html += '<p style="color:var(--muted);font-size:12px;margin-bottom:16px"> 上下文用于后续生成会议弹药包，仅自己可见</p>';
 
     // 标签选择
     html += '<div style="margin-bottom:16px">';
@@ -368,7 +368,7 @@
     var currentTags = fav.context_tags ? fav.context_tags.split(',').filter(function(t) { return t.trim(); }) : [];
     CONTEXT_TAGS.forEach(function(tag) {
       var checked = currentTags.indexOf(tag) >= 0 ? 'checked' : '';
-      html += '<label style="display:flex;align-items:center;gap:4px;background:#f5f5f5;padding:6px 12px;border-radius:4px;cursor:pointer;font-size:13px">';
+      html += '<label style="display:flex;align-items:center;gap:4px;background:var(--bg);padding:6px 12px;border-radius:4px;cursor:pointer;font-size:13px">';
       html += '<input type="checkbox" value="' + tag + '" ' + checked + ' style="margin:0" autocomplete="off"> ' + tag + '</label>';
     });
     html += '</div></div>';
@@ -377,13 +377,13 @@
     html += '<div style="margin-bottom:16px">';
     html += '<label style="display:block;font-size:14px;font-weight:600;margin-bottom:8px">备注</label>';
     var noteValue = fav.context_note || "";
-    html += '<textarea id="ctx-note-input" style="width:100%;min-height:80px;padding:8px;border:1px solid #d9d9d9;border-radius:4px;font-size:13px;resize:vertical" placeholder="为什么收藏？计划用在什么场景？（支持 Markdown：**加粗**、- 列表、> 引用、``` 代码）" autocomplete="off">' + noteValue.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</textarea>';
+    html += '<textarea id="ctx-note-input" style="width:100%;min-height:80px;padding:8px;border:1px solid var(--rule);border-radius:4px;font-size:13px;resize:vertical" placeholder="为什么收藏？计划用在什么场景？（支持 Markdown：**加粗**、- 列表、> 引用、``` 代码）" autocomplete="off">' + noteValue.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</textarea>';
     html += '</div>';
 
     // 按钮
     html += '<div style="display:flex;gap:8px;justify-content:flex-end">';
-    html += '<button id="ctx-cancel-btn" type="button" autocomplete="off" style="background:#fff;border:1px solid #d9d9d9;border-radius:4px;padding:8px 16px;font-size:14px;cursor:pointer">取消</button>';
-    html += '<button id="ctx-save-btn" type="button" autocomplete="off" style="background:#1677ff;color:#fff;border:none;border-radius:4px;padding:8px 16px;font-size:14px;cursor:pointer">保存</button>';
+    html += '<button id="ctx-cancel-btn" type="button" autocomplete="off" style="background:var(--bg);border:1px solid var(--rule);border-radius:4px;padding:8px 16px;font-size:14px;cursor:pointer">取消</button>';
+    html += '<button id="ctx-save-btn" type="button" autocomplete="off" style="background:var(--ink);color:var(--bg);border:none;border-radius:4px;padding:8px 16px;font-size:14px;cursor:pointer">保存</button>';
     html += '</div>';
 
     dialog.innerHTML = html;
@@ -404,7 +404,7 @@
           var tip = document.createElement("div");
           tip.className = "note-tidy-tip";
           tip.textContent = "已整理排版（压缩空行）· 撤销";
-          tip.style.cssText = "margin-top:6px;font-size:12px;color:#8a919c;cursor:pointer;text-decoration:underline";
+          tip.style.cssText = "margin-top:6px;font-size:12px;color:var(--muted);cursor:pointer;text-decoration:underline";
           tip.addEventListener("click", function () {
             ta.value = before;
             tip.remove();
@@ -459,15 +459,15 @@
       sb.from("favorites").upsert(row, { onConflict: 'url' }).then(function(res) {
         if (res.error) {
           console.warn("同步上下文失败:", res.error);
-          showContextToast("❌ 同步失败：" + res.error.message);
+          showContextToast(" 同步失败：" + res.error.message);
         } else {
-          showContextToast("✅ 备注已保存");
+          showContextToast(" 备注已保存");
         }
         document.dispatchEvent(new CustomEvent("favs:changed"));
         if (callback) callback();
       });
     } else {
-      showContextToast("✅ 备注已保存（本地）");
+      showContextToast(" 备注已保存（本地）");
       document.dispatchEvent(new CustomEvent("favs:changed"));
       if (callback) callback();
     }
@@ -483,7 +483,7 @@
     var toast = document.createElement("div");
     toast.id = "context-toast";
     toast.textContent = message;
-    toast.style.cssText = "position:fixed;top:20px;right:20px;background:#333;color:#fff;padding:12px 20px;border-radius:8px;font-size:14px;z-index:10000;box-shadow:0 4px 12px rgba(0,0,0,0.15);animation:slideIn 0.3s ease";
+    toast.style.cssText = "position:fixed;top:20px;right:20px;background:var(--body);color:var(--bg);padding:12px 20px;border-radius:8px;font-size:14px;z-index:10000;box-shadow:0 4px 12px rgba(0,0,0,0.15);animation:slideIn 0.3s ease";
     document.body.appendChild(toast);
 
     // 3 秒后自动消失
@@ -520,7 +520,7 @@
         a.style.color = "inherit";
         var fb = document.createElement("a");
         fb.href = "favorites.html";
-        fb.style.cssText = "font-size:12px;color:#8a919c;margin-left:8px";
+        fb.style.cssText = "font-size:12px;color:var(--muted);margin-left:8px";
         fb.textContent = "在收藏夹查看完整总结 →";
         h.appendChild(fb);
       }
@@ -541,14 +541,14 @@
     /* 分类标签 */
     var catInfo = ADR.getCategoryInfo(f.c || "行业趋势");
     var catTag = document.createElement("span");
-    catTag.style.cssText = "background:#f0f7ff;color:#1677ff;border-radius:6px;padding:1px 8px;margin-right:8px;font-size:12px";
+    catTag.style.cssText = "background:var(--bg);color:var(--ink);border-radius:6px;padding:1px 8px;margin-right:8px;font-size:12px";
     catTag.textContent = catInfo.icon + " " + catInfo.name;
     meta.appendChild(catTag);
     /* 成熟度标签 */
     var mat = f.m || "";
     if (mat) {
       var matTag = document.createElement("span");
-      var matColor = mat === "S" ? "#52c41a" : mat === "A" ? "#1677ff" : "#8a919c";
+      var matColor = mat === "S" ? "var(--muted)" : mat === "A" ? "var(--ink)" : "var(--muted)";
       var matText = mat === "S" ? "已落地" : mat === "A" ? "有POC" : "仅demo";
       matTag.style.cssText = "background:" + matColor + "22;color:" + matColor + ";border-radius:6px;padding:1px 8px;margin-right:8px;font-size:12px;font-weight:600";
       matTag.textContent = matText;
@@ -559,7 +559,7 @@
       var tags = f.context_tags.split(',').filter(function(t) { return t.trim(); });
       tags.forEach(function(tag) {
         var tagEl = document.createElement('span');
-        tagEl.style.cssText = "background:#f0f0f0;color:#666;border-radius:4px;padding:2px 8px;margin-right:6px;font-size:12px";
+        tagEl.style.cssText = "background:var(--rule);color:var(--body);border-radius:4px;padding:2px 8px;margin-right:6px;font-size:12px";
         tagEl.textContent = '#' + tag.trim();
         meta.appendChild(tagEl);
       });
@@ -577,28 +577,24 @@
     /* Phase 3.3c: 显示完整 AI 分析（非 summary:// 类型） */
     if (f.what || f.industry_use || f.capability || f.assessment || f.risk) {
       var analysisDiv = document.createElement("div");
-      analysisDiv.style.cssText = "background:#f8f9fa;border-left:3px solid #1677ff;padding:12px;margin-top:10px;font-size:13px;color:#333;border-radius:4px;line-height:1.6";
-      var analysisHtml = "";
+      analysisDiv.className = "fav-analysis";
+      var esc2 = function (t) {
+        return String(t == null ? "" : t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      };
+      var rows = [];
       if (f.importance && f.importance > 0) {
-        var stars = "⭐".repeat(f.importance);
-        analysisHtml += '<div style="margin-bottom:8px"><strong style="color:#1677ff">重要度：</strong>' + stars + ' <span style="color:#8a919c;font-size:12px">(' + f.importance + '/5)</span></div>';
+        rows.push('<div class="fa-row fa-imp"><b>重要度</b>' +
+          '<span class="fa-stars">' + "★".repeat(Number(f.importance)) + '</span>' +
+          '<span class="fa-meta">(' + Number(f.importance) + '/5)</span></div>');
       }
-      if (f.what) {
-        analysisHtml += '<div style="margin-bottom:6px"><strong style="color:#203a43">💡 这是什么：</strong>' + f.what.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</div>';
+      var LABELS = [["what", "这是什么"], ["industry_use", "对行业有什么用"],
+                    ["capability", "能干什么"], ["assessment", "评估判断"], ["risk", "风险提示"]];
+      for (var ri = 0; ri < LABELS.length; ri++) {
+        var key = LABELS[ri][0];
+        if (!f[key]) continue;
+        rows.push('<div class="fa-row"><b>' + LABELS[ri][1] + '</b>' + esc2(f[key]) + '</div>');
       }
-      if (f.industry_use) {
-        analysisHtml += '<div style="margin-bottom:6px"><strong style="color:#203a43">🏭 对行业有什么用：</strong>' + f.industry_use.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</div>';
-      }
-      if (f.capability) {
-        analysisHtml += '<div style="margin-bottom:6px"><strong style="color:#203a43">🔧 能干什么：</strong>' + f.capability.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</div>';
-      }
-      if (f.assessment) {
-        analysisHtml += '<div style="margin-bottom:6px"><strong style="color:#203a43">📊 评估判断：</strong>' + f.assessment.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</div>';
-      }
-      if (f.risk) {
-        analysisHtml += '<div style="margin-bottom:6px"><strong style="color:#e63946">⚠️ 风险提示：</strong>' + f.risk.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</div>';
-      }
-      analysisDiv.innerHTML = analysisHtml;
+      analysisDiv.innerHTML = rows.join("");
       card.appendChild(analysisDiv);
     }
     /* 收藏备注 */
@@ -617,8 +613,8 @@
     var editBtn = document.createElement("button");
     editBtn.className = "context-edit-btn";
     var hasNote = f.context_note || f.context_tags;
-    editBtn.textContent = hasNote ? "️ 编辑上下文（已填写）" : "✏️ 添加上下文";
-    editBtn.style.cssText = "background:" + (hasNote ? "#f0f7ff" : "#fff") + ";border:1px solid " + (hasNote ? "#1677ff" : "#d9d9d9") + ";border-radius:4px;padding:4px 12px;font-size:12px;color:" + (hasNote ? "#1677ff" : "#666") + ";cursor:pointer;margin-top:8px";
+    editBtn.textContent = hasNote ? "编辑上下文（已填写）" : "添加上下文";
+    editBtn.style.cssText = "background:" + (hasNote ? "var(--bg)" : "var(--bg)") + ";border:1px solid " + (hasNote ? "var(--ink)" : "var(--rule)") + ";border-radius:4px;padding:4px 12px;font-size:12px;color:" + (hasNote ? "var(--ink)" : "var(--body)") + ";cursor:pointer;margin-top:8px";
     editBtn.onclick = function() { showContextEditDialog(f); };
     card.appendChild(editBtn);
     
@@ -661,7 +657,7 @@
       var step2 = document.getElementById("adr-login-step2");
       if (step1) step1.style.display = "none";
       if (step2) step2.style.display = "block";
-      if (msg) { msg.style.color = "#1677ff"; msg.textContent = "验证码已发送到 " + email; }
+      if (msg) { msg.style.color = "var(--ink)"; msg.textContent = "验证码已发送到 " + email; }
       var codeInput = document.getElementById("adr-login-code");
       if (codeInput) codeInput.focus();
     }
@@ -690,7 +686,7 @@
     if (btn) { btn.disabled = false; btn.textContent = "确认登录"; }
 
     if (res.error) {
-      if (msg) { msg.style.color = "#e63946"; msg.textContent = "验证失败：" + res.error.message; }
+      if (msg) { msg.style.color = "var(--accent)"; msg.textContent = "验证失败：" + res.error.message; }
     }
     /* 成功时 onAuthStateChange 会自动处理 */
   };
@@ -699,9 +695,9 @@
     var msg = document.getElementById("adr-login-msg");
     var res = await sb.auth.signInWithOtp({ email: loginEmail });
     if (res.error) {
-      if (msg) { msg.style.color = "#e63946"; msg.textContent = "发送失败：" + res.error.message; }
+      if (msg) { msg.style.color = "var(--accent)"; msg.textContent = "发送失败：" + res.error.message; }
     } else {
-      if (msg) { msg.style.color = "#1677ff"; msg.textContent = "新验证码已发送，请查收"; }
+      if (msg) { msg.style.color = "var(--ink)"; msg.textContent = "新验证码已发送，请查收"; }
     }
   };
   window.adrSwitchTab = function (tab) {
@@ -748,7 +744,7 @@
     if (btn) { btn.disabled = false; btn.textContent = "登录"; }
 
     if (res.error) {
-      if (msg) { msg.style.color = "#e63946"; msg.textContent = "登录失败：" + res.error.message; }
+      if (msg) { msg.style.color = "var(--accent)"; msg.textContent = "登录失败：" + res.error.message; }
     }
     /* 成功时 onAuthStateChange 会自动处理 */
   };
@@ -787,9 +783,9 @@
     if (btn) { btn.disabled = false; btn.textContent = "发送重置链接"; }
 
     if (res.error) {
-      if (msg) { msg.style.color = "#e63946"; msg.textContent = "发送失败：" + res.error.message; }
+      if (msg) { msg.style.color = "var(--accent)"; msg.textContent = "发送失败：" + res.error.message; }
     } else {
-      if (msg) { msg.style.color = "#1677ff"; msg.textContent = "重置链接已发送至 " + email + "，请查收邮件"; }
+      if (msg) { msg.style.color = "var(--ink)"; msg.textContent = "重置链接已发送至 " + email + "，请查收邮件"; }
     }
   };
   window.adrLogout = async function () {
@@ -802,7 +798,7 @@
     /* 如果在收藏夹页面，显示提示 */
     var list = document.getElementById("fav-list");
     if (list) {
-      list.innerHTML = '<p style="color:#8a919c;font-size:14px;margin:12px 0">已登出。请重新登录以查看收藏。</p>';
+      list.innerHTML = '<p style="color:var(--muted);font-size:14px;margin:12px 0">已登出。请重新登录以查看收藏。</p>';
     }
   };
 
@@ -1041,7 +1037,7 @@
     sum.className = "note-table-sum";
     var preview = headerCells.slice(0, 3).map(function (c) { return c.trim(); }).join(" | ");
     if (headerCells.length > 3) preview += " | …";
-    sum.textContent = "📊 表格 " + headerCells.length + "×" + totalRows +
+    sum.textContent = " 表格 " + headerCells.length + "×" + totalRows +
                       (preview ? "（" + preview + "）" : "") + " · 点击展开";
     det.appendChild(sum);
     det.appendChild(wrap);

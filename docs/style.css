@@ -309,3 +309,16 @@ details[open] summary{color:var(--ink);}
   padding:var(--sp-1) var(--sp-3);font-size:13px;margin:0 var(--sp-1) var(--sp-1) 0;line-height:1.6;cursor:pointer;}
 .fav-cat-tab:hover{border-color:var(--ink);color:var(--ink);}
 .fav-cat-tab.active{background:var(--ink);border-color:var(--ink);color:var(--bg);}
+
+/* 收藏页卡片内的 AI 快速解读（原为 fav-core 内联样式，2026-11-21 收编） */
+.fav-analysis{margin-top:var(--sp-3);padding-left:var(--sp-4);border-left:1px solid var(--rail);
+  font-size:14px;line-height:1.85;color:var(--body);max-width:var(--measure-note);}
+.fav-analysis .fa-row{margin-bottom:var(--sp-2);}
+.fav-analysis .fa-row:last-child{margin-bottom:0;}
+.fav-analysis .fa-row b{font-weight:600;color:var(--ink);margin-right:var(--sp-1);}
+.fav-analysis .fa-imp{margin-bottom:var(--sp-3);}
+.fav-analysis .fa-stars{color:var(--accent);letter-spacing:1px;}
+.fav-analysis .fa-meta{color:var(--muted);font-size:12px;margin-left:var(--sp-1);}
+.context-edit-btn{font:inherit;font-size:12px;background:none;border:none;color:var(--muted);cursor:pointer;
+  padding:0;margin-top:var(--sp-2);border-bottom:1px solid var(--rule);}
+.context-edit-btn:hover{color:var(--accent);border-color:var(--accent);}

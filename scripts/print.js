@@ -189,7 +189,7 @@ function adrCopyIssueLink() {
 
   function done(ok) {
     if (btn) {
-      btn.textContent = ok ? "✅ 已复制" : "⚠️ 复制失败";
+      btn.textContent = ok ? "已复制" : "复制失败";
       setTimeout(function () { btn.textContent = label; }, 1600);
     }
     if (!ok) window.prompt("自动复制失败，请手动复制这个链接：", url);

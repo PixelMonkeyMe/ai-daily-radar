@@ -84,7 +84,7 @@
     var list = document.getElementById("fav-list");
     if (!list) return;
     if (!ADR.isLoggedIn()) {
-      list.innerHTML = '<p style="color:#8a919c;font-size:14px;margin:12px 0">请先登录查看收藏。</p>';
+      list.innerHTML = '<p style="color:var(--muted);font-size:14px;margin:12px 0">请先登录查看收藏。</p>';
       document.getElementById("fav-count") && (document.getElementById("fav-count").textContent = "");
       renderCategoryTabs([]);
       return;
@@ -140,7 +140,7 @@
     list.innerHTML = "";
     if (!items.length) {
       var p = document.createElement("p");
-      p.style.cssText = "color:#8a919c;font-size:14px;margin:12px 0";
+      p.style.cssText = "color:var(--muted);font-size:14px;margin:12px 0";
       p.textContent = favs.length ? "没有匹配的收藏。" : "还没有收藏。去日报页点条目旁的 ☆ 即可收藏。";
       list.appendChild(p);
       return;
@@ -162,15 +162,15 @@
       counts[c] = (counts[c] || 0) + 1;
     });
     var html = "";
-    var allActive = filterCategory === "" ? " style=\"background:#1677ff;color:#fff\"" : "";
-    html += '<button class="fav-cat-tab" onclick="adrFilterCategory(\'\')"' + allActive + ' style="padding:4px 12px;border:1px solid #d9dde3;border-radius:16px;font-size:13px;cursor:pointer;margin:2px;background:' + (filterCategory === "" ? "#1677ff" : "#fff") + ';color:' + (filterCategory === "" ? "#fff" : "#333") + '">全部(' + counts["全部"] + ')</button>';
+    var allActive = filterCategory === "" ? " style=\"background:var(--ink);color:var(--bg)\"" : "";
+    html += '<button class="fav-cat-tab" onclick="adrFilterCategory(\'\')"' + allActive + ' style="padding:4px 12px;border:1px solid var(--rule);border-radius:16px;font-size:13px;cursor:pointer;margin:2px;background:' + (filterCategory === "" ? "var(--ink)" : "var(--bg)") + ';color:' + (filterCategory === "" ? "var(--bg)" : "var(--body)") + '">全部(' + counts["全部"] + ')</button>';
     ADR.CATEGORIES.forEach(function (cat) {
       var active = filterCategory === cat.name;
-      html += '<button class="fav-cat-tab" onclick="adrFilterCategory(\'' + cat.name + '\')" style="padding:4px 12px;border:1px solid #d9dde3;border-radius:16px;font-size:13px;cursor:pointer;margin:2px;background:' + (active ? "#1677ff" : "#fff") + ';color:' + (active ? "#fff" : "#333") + '">' + cat.icon + ' ' + cat.name + '(' + (counts[cat.name] || 0) + ')</button>';
+      html += '<button class="fav-cat-tab" onclick="adrFilterCategory(\'' + cat.name + '\')" style="padding:4px 12px;border:1px solid var(--rule);border-radius:16px;font-size:13px;cursor:pointer;margin:2px;background:' + (active ? "var(--ink)" : "var(--bg)") + ';color:' + (active ? "var(--bg)" : "var(--body)") + '">' + cat.icon + ' ' + cat.name + '(' + (counts[cat.name] || 0) + ')</button>';
     });
     /* 行业趋势（不在 ADR.CATEGORIES 数组里的默认分类） */
     var trendActive = filterCategory === "行业趋势";
-    html += '<button class="fav-cat-tab" onclick="adrFilterCategory(\'行业趋势\')" style="padding:4px 12px;border:1px solid #d9dde3;border-radius:16px;font-size:13px;cursor:pointer;margin:2px;background:' + (trendActive ? "#1677ff" : "#fff") + ';color:' + (trendActive ? "#fff" : "#333") + '">📊 行业趋势(' + (counts["行业趋势"] || 0) + ')</button>';
+    html += '<button class="fav-cat-tab" onclick="adrFilterCategory(\'行业趋势\')" style="padding:4px 12px;border:1px solid var(--rule);border-radius:16px;font-size:13px;cursor:pointer;margin:2px;background:' + (trendActive ? "var(--ink)" : "var(--bg)") + ';color:' + (trendActive ? "var(--bg)" : "var(--body)") + '"> 行业趋势(' + (counts["行业趋势"] || 0) + ')</button>';
     /* 「有备注」筛选（需求 1 修订：撤聚合区后的信息可达性补偿） */
     var noteCount = favs.filter(function (f) {
       var n = typeof f.context_note === "string" ? f.context_note.trim() : "";
@@ -178,15 +178,15 @@
       return n || tg;
     }).length;
     html += '<button class="fav-cat-tab" onclick="adrFilterHasNote()" style="padding:4px 12px;border:1px solid ' +
-      (filterHasNote ? "#faad14" : "#d9dde3") + ';border-radius:16px;font-size:13px;cursor:pointer;margin:2px;background:' +
-      (filterHasNote ? "#faad14" : "#fff") + ';color:' + (filterHasNote ? "#fff" : "#333") + '">📝 有备注(' + noteCount + ')</button>';
+      (filterHasNote ? "var(--accent)" : "var(--rule)") + ';border-radius:16px;font-size:13px;cursor:pointer;margin:2px;background:' +
+      (filterHasNote ? "var(--accent)" : "var(--bg)") + ';color:' + (filterHasNote ? "var(--bg)" : "var(--body)") + '"> 有备注(' + noteCount + ')</button>';
     container.innerHTML = html;
     /* 设计系统收编：剥掉内联样式与彩色 emoji，改由 .fav-cat-tab / .active 控制 */
     var tabs = container.querySelectorAll(".fav-cat-tab");
     for (var ti = 0; ti < tabs.length; ti++) {
       var tb = tabs[ti];
       var raw = tb.getAttribute("style") || "";
-      var isOn = raw.indexOf("#1677ff") >= 0 || raw.indexOf("#faad14") >= 0;
+      var isOn = raw.indexOf("var(--ink)") >= 0 || raw.indexOf("var(--accent)") >= 0;
       tb.removeAttribute("style");
       tb.className = "fav-cat-tab" + (isOn ? " active" : "");
       tb.textContent = tb.textContent.replace(/[\u{1F300}-\u{1FAFF}\u{2700}-\u{27BF}]\uFE0F?/gu, "").replace(/^\s+/, "");
@@ -239,29 +239,29 @@
     var s = summaries[date];
     var html = '<div style="padding:0 2px;line-height:1.75;text-align:left">';
     if (!s) {
-      html += '<p style="color:#8a919c">该日总结内容暂未索引，请查看对应日报页面。</p>';
-      html += '<p style="font-size:13px"><a href="' + (window.location.pathname.indexOf("/archive/") >= 0 ? "../" : "") + 'archive/' + encodeURIComponent(date) + '.html" target="_blank" style="color:#1677ff">打开 ' + escapeHtml(date) + ' 日报 →</a></p>';
+      html += '<p style="color:var(--muted)">该日总结内容暂未索引，请查看对应日报页面。</p>';
+      html += '<p style="font-size:13px"><a href="' + (window.location.pathname.indexOf("/archive/") >= 0 ? "../" : "") + 'archive/' + encodeURIComponent(date) + '.html" target="_blank" style="color:var(--ink)">打开 ' + escapeHtml(date) + ' 日报 →</a></p>';
     } else {
-      html += '<h4 style="color:#203a43;margin:0 0 6px"> 今日总览</h4>';
+      html += '<h4 style="color:var(--ink);margin:0 0 6px"> 今日总览</h4>';
       html += '<p style="margin:0 0 12px">' + escapeHtml(s.overview) + '</p>';
       if (s.conclusions && s.conclusions.length) {
-        html += '<h4 style="color:#203a43;margin:0 0 6px">🎯 核心结论</h4><ul style="margin:0 0 12px;padding-left:20px">';
+        html += '<h4 style="color:var(--ink);margin:0 0 6px"> 核心结论</h4><ul style="margin:0 0 12px;padding-left:20px">';
         s.conclusions.forEach(function (c) { html += '<li style="margin:3px 0">' + escapeHtml(c) + '</li>'; });
         html += '</ul>';
       }
       if (s.top_picks && s.top_picks.length) {
-        html += '<h4 style="color:#203a43;margin:0 0 6px">⭐ 今日重点关注</h4>';
+        html += '<h4 style="color:var(--ink);margin:0 0 6px">⭐ 今日重点关注</h4>';
         s.top_picks.forEach(function (p) {
           html += '<div style="margin:0 0 6px"><b>' + escapeHtml(p.title) + '</b><br><span style="color:#555;font-size:13.5px">' + escapeHtml(p.reason) + '</span></div>';
         });
         html += '<div style="margin-bottom:12px"></div>';
       }
       if (s.industry_use) {
-        html += '<h4 style="color:#203a43;margin:0 0 6px">💡 对行业有什么用？</h4>';
+        html += '<h4 style="color:var(--ink);margin:0 0 6px"> 对行业有什么用？</h4>';
         html += '<p style="margin:0 0 12px">' + escapeHtml(s.industry_use) + '</p>';
       }
       if (s.risks) {
-        html += '<h4 style="color:#203a43;margin:0 0 6px">⚠️ 风险提示</h4>';
+        html += '<h4 style="color:var(--ink);margin:0 0 6px">⚠️ 风险提示</h4>';
         html += '<p style="margin:0">' + escapeHtml(s.risks) + '</p>';
       }
     }

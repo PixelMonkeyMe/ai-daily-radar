@@ -82,8 +82,24 @@ dup = re.findall(r"^def (item_line|render_line|card_compact)\(", bs, re.M)
 check("4 唯一卡片产出函数", not dup, ("仍有: " + ", ".join(dup)) if dup else "")
 
 # ── 5. 无彩色 emoji ──
-emo = COLOR_EMOJI.findall(read(os.path.join(DOCS, "index.html")))
-check("5 无彩色 emoji", not emo, ("发现: " + " ".join(sorted(set(emo))[:5])) if emo else "")
+emo_files = [f for f in os.listdir(DOCS) if f.endswith((".html", ".js"))]
+emo_bad = {}
+for f in emo_files:
+    hits = COLOR_EMOJI.findall(read(os.path.join(DOCS, f)))
+    if hits:
+        emo_bad[f] = sorted(set(hits))[:4]
+check("5 无彩色 emoji（HTML+JS）", not emo_bad,
+      ("发现: " + "; ".join(k + ":" + "".join(v) for k, v in list(emo_bad.items())[:3])) if emo_bad else "")
+
+# ── 6. JS 里不得写死色值（防「JS 绕过设计系统」）──
+js_hex = {}
+for f in os.listdir(DOCS):
+    if f.endswith(".js"):
+        hits = {c.lower() for c in re.findall(r"#[0-9a-fA-F]{6}", read(os.path.join(DOCS, f)))} - TOKENS
+        if hits:
+            js_hex[f] = sorted(hits)[:4]
+check("6 JS 无写死色值", not js_hex,
+      ("发现: " + "; ".join(k + ":" + ",".join(v) for k, v in list(js_hex.items())[:3])) if js_hex else "")
 
 failed = [n for n, ok in results if not ok]
 print("\n结果：%d/%d 通过%s" % (len(results) - len(failed), len(results),
