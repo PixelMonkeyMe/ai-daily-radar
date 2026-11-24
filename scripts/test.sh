@@ -86,6 +86,13 @@ if [ "$TEST_MODE" = "full" ] || [ "$TEST_MODE" = "js" ]; then
     fail "docs/print.js 不存在"
   fi
 
+  # 视觉结构断言（DESIGN.md 的机械防线：色值/圆角/钩子/唯一渲染/无 emoji）
+  if python "$ROOT/scripts/check_design.py" > /tmp/adr-design.log 2>&1; then
+    pass "视觉结构断言 8/8"
+  else
+    fail "视觉结构断言未通过（见 /tmp/adr-design.log）"
+  fi
+
   # 自研 PDF 导出已移除，残留检查（防止回退时悄悄复活）
   if grep -rq "html2canvas\|jspdf\|export_pdf" "$ROOT/docs" --include=*.html 2>/dev/null; then
     fail "docs/*.html 仍引用已移除的 PDF 渲染库"
