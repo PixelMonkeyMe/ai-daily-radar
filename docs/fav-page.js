@@ -181,6 +181,16 @@
       (filterHasNote ? "#faad14" : "#d9dde3") + ';border-radius:16px;font-size:13px;cursor:pointer;margin:2px;background:' +
       (filterHasNote ? "#faad14" : "#fff") + ';color:' + (filterHasNote ? "#fff" : "#333") + '">📝 有备注(' + noteCount + ')</button>';
     container.innerHTML = html;
+    /* 设计系统收编：剥掉内联样式与彩色 emoji，改由 .fav-cat-tab / .active 控制 */
+    var tabs = container.querySelectorAll(".fav-cat-tab");
+    for (var ti = 0; ti < tabs.length; ti++) {
+      var tb = tabs[ti];
+      var raw = tb.getAttribute("style") || "";
+      var isOn = raw.indexOf("#1677ff") >= 0 || raw.indexOf("#faad14") >= 0;
+      tb.removeAttribute("style");
+      tb.className = "fav-cat-tab" + (isOn ? " active" : "");
+      tb.textContent = tb.textContent.replace(/[\u{1F300}-\u{1FAFF}\u{2700}-\u{27BF}]\uFE0F?/gu, "").replace(/^\s+/, "");
+    }
   }
 
   window.adrFilterHasNote = function () {

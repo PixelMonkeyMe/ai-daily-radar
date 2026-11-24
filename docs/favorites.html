@@ -16,11 +16,10 @@
 </div></header>
 <div class="wrap">
 <div class="card">
-<h2>云端收藏</h2>
-<div class="fav-link-box">
-  收藏自动保存到云端数据库，登录后任何设备（手机/电脑/平板）打开本网站即可查看。
-  数据实时同步，换设备登录同一邮箱即可看到全部收藏。<br>
-  <span id="fav-sync-status" class="sync-status"></span><br>
+<!-- 「云端收藏」说明块已按用户要求取消。同步状态与导出按钮保留在隐藏容器中，
+     仅为不打断 fav-core 的 JS 引用（updateSyncStatus / adrExport）。 -->
+<div hidden aria-hidden="true">
+  <span id="fav-sync-status" class="sync-status"></span>
   <button class="copy-btn" id="fav-copy" onclick="adrExport()">导出收藏为 JSON 备份</button>
 </div>
 <div class="fav-toolbar">
