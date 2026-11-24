@@ -584,8 +584,7 @@
       var rows = [];
       if (f.importance && f.importance > 0) {
         rows.push('<div class="fa-row fa-imp"><b>重要度</b>' +
-          '<span class="fa-stars">' + "★".repeat(Number(f.importance)) + '</span>' +
-          '<span class="fa-meta">(' + Number(f.importance) + '/5)</span></div>');
+          '<span class="fa-meta">' + Number(f.importance) + '/5</span></div>');
       }
       var LABELS = [["what", "这是什么"], ["industry_use", "对行业有什么用"],
                     ["capability", "能干什么"], ["assessment", "评估判断"], ["risk", "风险提示"]];

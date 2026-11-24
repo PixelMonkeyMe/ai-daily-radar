@@ -45,7 +45,7 @@ DOCS = os.path.join(BASE, "docs")
 ARCHIVE = os.path.join(DOCS, "archive")
 DIGESTS_OUT = os.path.join(DOCS, "digests")
 
-STARS = {1: "★☆☆☆☆", 2: "★★☆☆☆", 3: "★★★☆☆", 4: "★★★★☆", 5: "★★★★★"}
+STARS = {1: "1/5", 2: "2/5", 3: "3/5", 4: "4/5", 5: "5/5"}
 
 CSS_VER = "3.3d-17"
 CSS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "style.css")
@@ -283,7 +283,12 @@ def render_card(i, ai, date="", similar_dates=None, top5=False, variant="full"):
     title = esc(i.get("title"))
     url = esc(i.get("url"))
     src = esc(i.get("source"))
-    extra = esc(_COLOR_EMOJI.sub("", i.get("extra", "") or ""))
+    # GitHub star 数：去掉星形符号改纯文字，避免与「收藏按钮 ☆」混淆
+    _ex = re.sub(r"[⭐★☆]\s*([0-9,]+)", r"\1 stars", i.get("extra", "") or "")
+    _ex = re.sub(r"[❤♥♡]\s*([0-9,]+)", r"\1 喜欢", _ex)
+    _ex = _COLOR_EMOJI.sub("", _ex)
+    _ex = _ex.replace("|", "·")
+    extra = esc(_ex)
     star = ""
     if ai and i.get("importance"):
         star = f'<span class="tag-star">{STARS.get(int(i["importance"]), "")}</span>'
