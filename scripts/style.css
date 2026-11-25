@@ -322,3 +322,7 @@ details[open] summary{color:var(--ink);}
 .context-edit-btn{font:inherit;font-size:12px;background:none;border:none;color:var(--muted);cursor:pointer;
   padding:0;margin-top:var(--sp-2);border-bottom:1px solid var(--rule);}
 .context-edit-btn:hover{color:var(--accent);border-color:var(--accent);}
+
+/* 今日总结里的「核心结论」原本复用 digest 的 .trend（13px），与正文 15px 不一致 */
+.summary-card .trend{font-size:15px;line-height:1.85;color:var(--body);margin:0 0 var(--sp-2);max-width:var(--measure);}
+.summary-card .trend:last-child{margin-bottom:0;}
