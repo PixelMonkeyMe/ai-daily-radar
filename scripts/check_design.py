@@ -12,7 +12,7 @@ import sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DOCS = os.path.join(ROOT, "docs")
 
-TOKENS = {"#fff", "#141414", "#3a3a3a", "#1f1f1f", "#8b8b8b", "#e8e8e8", "#cfcfcf", "#b3261e"}
+TOKENS = {"#fff", "#f7f6f3", "#141414", "#3a3a3a", "#1f1f1f", "#8b8b8b", "#e8e8e8", "#cfcfcf", "#b3261e"}
 RADII = {"0", "2px", "4px", "50%"}
 COLOR_EMOJI = re.compile(r"[\U0001F300-\U0001FAFF\u2700-\u27BF]")
 

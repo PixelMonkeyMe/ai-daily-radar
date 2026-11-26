@@ -3,7 +3,7 @@
    唯一事实源。依据 DESIGN.md；禁止写 token 以外的色值/间距/圆角。
    ═══════════════════════════════════════════════════════════ */
 :root{
-  --bg:#fff; --ink:#141414; --body:#3a3a3a; --note:#1f1f1f;
+  --bg:#f7f6f3; --ink:#141414; --body:#3a3a3a; --note:#1f1f1f;
   --muted:#8b8b8b; --rule:#e8e8e8; --rail:#cfcfcf; --accent:#b3261e;
   --measure:38em; --measure-note:33em;
   --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:20px; --sp-5:32px; --sp-6:48px;
